@@ -60,8 +60,38 @@ class InMemoryUserDAOTest {
     }
 
     @Test
+    @DisplayName("findById - returns user when id matches")
+    void findById_Found() {
+        Long id = 1L;
+        userMap.put(1L, buildUser(id, "John", "Doe", "john.doe", true));
+
+        Optional<User> result = userDAO.findById(id);
+
+        assertThat(result).isPresent();
+        assertThat(result.get().getId()).isEqualTo(id);
+    }
+
+    @Test
+    @DisplayName("findById - returns empty Optional when id not found")
+    void findById_NotFound() {
+        assertThat(userDAO.findById(1L)).isEmpty();
+    }
+
+    @Test
+    @DisplayName("findById - returns empty Optional for null id")
+    void findById_NullId() {
+        assertThat(userDAO.findById(null)).isEmpty();
+    }
+
+    @Test
+    @DisplayName("findById - returns empty Optional for negative value id")
+    void findById_NegativeValueId() {
+        assertThat(userDAO.findById(-1L)).isEmpty();
+    }
+
+    @Test
     @DisplayName("findAll - returns empty list when map is empty")
-    void findAll_EmptyStore() {
+    void findAll_NotFound() {
         assertThat(userDAO.findAll()).isEmpty();
     }
 
@@ -96,7 +126,7 @@ class InMemoryUserDAOTest {
 
     @Test
     @DisplayName("existsByUsername - returns true when username exists")
-    void existsByUsername_True() {
+    void existsByUsername_Found() {
         userMap.put(1L, buildUser(1L, "John", "Doe", "john.doe", true));
 
         assertThat(userDAO.existsByUsername("john.doe")).isTrue();
@@ -104,23 +134,21 @@ class InMemoryUserDAOTest {
 
     @Test
     @DisplayName("existsByUsername - returns false when username absent")
-    void existsByUsername_False() {
+    void existsByUsername_NotFound() {
         assertThat(userDAO.existsByUsername("unknown")).isFalse();
     }
 
     @Test
     @DisplayName("existsById - returns true when user exists by ID")
-    void existsById_True() {
-        // InMemoryUserDAO.findById always returns empty (see implementation),
-        // so existsById is based on findById. We cover both paths.
-        assertThat(userDAO.existsById(1L)).isFalse(); // findById returns empty
+    void existsById_Found() {
+        Long id = 1L;
+        userMap.put(id, buildUser(id, "John", "Doe", "john.doe", true));
+        assertThat(userDAO.existsById(id)).isTrue();
     }
 
     @Test
-    @DisplayName("existsById - returns false for any id because findById is not implemented")
-    void existsById_False() {
-        userMap.put(1L, buildUser(1L, "John", "Doe", "john.doe", true));
-        // findById is intentionally stubbed to return empty in the current implementation
+    @DisplayName("existsById - returns false because user not found")
+    void existsById_NotFound() {
         assertThat(userDAO.existsById(1L)).isFalse();
     }
 
@@ -176,12 +204,19 @@ class InMemoryUserDAOTest {
     }
 
     @Test
-    @DisplayName("deleteById - returns false because findById always returns empty")
-    void deleteById_ReturnsFalse() {
+    @DisplayName("deleteById - returns true because user found")
+    void deleteById_FoundUser() {
         userMap.put(1L, buildUser(1L, "John", "Doe", "john.doe", true));
 
         boolean result = userDAO.deleteById(1L);
 
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    @DisplayName("deleteById - returns false because user not found")
+    void deleteById_NotFoundUser() {
+        boolean result = userDAO.deleteById(1L);
         assertThat(result).isFalse();
     }
 }

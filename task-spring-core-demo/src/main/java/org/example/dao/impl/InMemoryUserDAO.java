@@ -2,13 +2,13 @@ package org.example.dao.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.example.dao.UserDAO;
+import org.example.entity.Trainee;
 import org.example.entity.User;
 import org.example.util.IdGenerator;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -68,9 +68,21 @@ public class InMemoryUserDAO implements UserDAO {
         return findById(id).isPresent();
     }
 
+    /**
+     * Get User by ID
+     *
+     * @param userId the id of the user
+     * @return Optional containing user
+     */
     @Override
     public Optional<User> findById(Long userId) {
-        return Optional.empty();
+        if(userId == null || userId < 0){
+            log.warn("Invalid user ID: {}", userId);
+            return Optional.empty();
+        }
+        User user = users.get(userId);
+        log.debug("User fetched with ID: {}", user);
+        return Optional.ofNullable(user);
     }
 
     /**
