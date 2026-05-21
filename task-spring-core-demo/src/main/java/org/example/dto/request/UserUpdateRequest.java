@@ -1,7 +1,9 @@
 package org.example.dto.request;
 
+import jakarta.validation.constraints.NotBlank;
+
 public record UserUpdateRequest(
-        String firstName,
-        String lastName
+        @NotBlank(message = "First name can't be blank") String firstName,
+        @NotBlank(message = "Last name can't be blank") String lastName
 ) {
 }

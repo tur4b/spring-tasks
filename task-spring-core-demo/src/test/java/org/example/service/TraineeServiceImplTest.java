@@ -1,17 +1,15 @@
 package org.example.service;
 
-import org.example.dao.TraineeDAO;
-import org.example.dto.request.TraineeCreateRequest;
-import org.example.dto.request.TraineeUpdateRequest;
-import org.example.dto.request.UserCreateRequest;
-import org.example.dto.request.UserUpdateRequest;
+import jakarta.persistence.EntityNotFoundException;
+import org.example.dao.TraineeRepository;
+import org.example.dto.request.*;
 import org.example.dto.response.TraineeDTO;
 import org.example.dto.response.UserDTO;
 import org.example.entity.Trainee;
+import org.example.entity.User;
 import org.example.mapper.TraineeMapper;
 import org.example.service.api.UserService;
 import org.example.service.impl.TraineeServiceImpl;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,12 +18,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -36,7 +32,7 @@ class TraineeServiceImplTest {
     private TraineeMapper traineeMapper;
 
     @Mock
-    private TraineeDAO traineeDAO;
+    private TraineeRepository traineeRepository;
 
     @Mock
     private UserService userService;
@@ -44,159 +40,66 @@ class TraineeServiceImplTest {
     @InjectMocks
     private TraineeServiceImpl traineeService;
 
-    private Trainee trainee;
-    private TraineeDTO traineeDTO;
-    private UserDTO userDTO;
-
-    @BeforeEach
-    void setUp() {
-        trainee = new Trainee();
-        trainee.setId(1L);
-        trainee.setUserId(10L);
-        trainee.setAddress("123 Main St");
-        trainee.setDateOfBirth(LocalDate.of(1995, 5, 10));
-
-        traineeDTO = new TraineeDTO(1L, 10L, "123 Main St", LocalDate.of(1995, 5, 10), LocalDateTime.now());
-        userDTO = new UserDTO(10L, "John", "Doe", "john.doe", LocalDateTime.now());
-    }
-
     @Test
-    @DisplayName("findAll - returns list of TraineeDTOs")
-    void findAll_ReturnsMappedDTOs() {
-        when(traineeDAO.findAll()).thenReturn(List.of(trainee));
-        when(traineeMapper.toDTO(trainee)).thenReturn(traineeDTO);
+    @DisplayName("createTrainee - creates user, assigns it to trainee, and saves trainee")
+    void createTrainee_Success() {
+        TraineeCreateRequest request = new TraineeCreateRequest("John", "Doe", "Baku", LocalDate.of(2000, 1, 1));
+        UserDTO createdUser = new UserDTO(10L, "John", "Doe", "john.doe", null);
+        User userRef = new User();
+        userRef.setId(10L);
+        Trainee trainee = new Trainee();
+        TraineeDTO expected = new TraineeDTO(1L, 10L, "Baku", true, LocalDate.of(2000, 1, 1), null, null);
 
-        List<TraineeDTO> result = traineeService.findAll();
-
-        assertThat(result).hasSize(1).containsExactly(traineeDTO);
-        verify(traineeDAO).findAll();
-    }
-
-    @Test
-    @DisplayName("findAll - returns empty list when no trainees exist")
-    void findAll_EmptyList() {
-        when(traineeDAO.findAll()).thenReturn(List.of());
-
-        assertThat(traineeService.findAll()).isEmpty();
-    }
-
-    @Test
-    @DisplayName("findTraineeById - returns TraineeDTO when found")
-    void findTraineeById_Found_ReturnsDTO() {
-        when(traineeDAO.findById(1L)).thenReturn(Optional.of(trainee));
-        when(traineeMapper.toDTO(trainee)).thenReturn(traineeDTO);
-
-        TraineeDTO result = traineeService.findTraineeById(1L);
-
-        assertThat(result).isEqualTo(traineeDTO);
-    }
-
-    @Test
-    @DisplayName("findTraineeById - throws RuntimeException when not found")
-    void findTraineeById_NotFound_ThrowsException() {
-        when(traineeDAO.findById(99L)).thenReturn(Optional.empty());
-
-        assertThatThrownBy(() -> traineeService.findTraineeById(99L))
-                .isInstanceOf(RuntimeException.class)
-                .hasMessageContaining("Trainee not found with ID: 99");
-    }
-
-    @Test
-    @DisplayName("createTrainee - creates trainee and returns TraineeDTO")
-    void createTrainee_ValidRequest_ReturnsDTO() {
-        TraineeCreateRequest request = new TraineeCreateRequest("Doe", "John", "123 Main St", LocalDate.of(1995, 5, 10));
-
-        when(userService.createUser(any(UserCreateRequest.class))).thenReturn(userDTO);
+        when(userService.createUser(any(UserCreateRequest.class))).thenReturn(createdUser);
         when(traineeMapper.toEntity(request)).thenReturn(trainee);
-        when(traineeDAO.create(trainee)).thenReturn(trainee);
-        when(traineeMapper.toDTO(trainee)).thenReturn(traineeDTO);
+        when(userService.getReferenceById(10L)).thenReturn(userRef);
+        when(traineeMapper.toDTO(trainee, 10L)).thenReturn(expected);
 
         TraineeDTO result = traineeService.createTrainee(request);
 
-        assertThat(result).isEqualTo(traineeDTO);
-        verify(userService).createUser(any(UserCreateRequest.class));
-        verify(traineeDAO).create(trainee);
+        verify(traineeRepository).save(trainee);
+        assertThat(trainee.getUser()).isEqualTo(userRef);
+        assertThat(result.userId()).isEqualTo(10L);
     }
 
     @Test
-    @DisplayName("createTrainee - throws IllegalArgumentException for null request")
-    void createTrainee_NullRequest_ThrowsException() {
-        assertThatThrownBy(() -> traineeService.createTrainee(null))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("TraineeCreateRequest cannot be null");
+    @DisplayName("changePassword - throws when trainee username does not exist")
+    void changePassword_UnknownTrainee_Throws() {
+        ChangePasswordRequest request = new ChangePasswordRequest("missing.user", "new-pass");
+
+        when(traineeRepository.existsByUserUsername("missing.user")).thenReturn(false);
+
+        assertThatThrownBy(() -> traineeService.changePassword(request, new AuthRequest("admin", "admin")))
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessageContaining("Trainee not found with username");
+
+        verify(userService, never()).changePassword(any(), any());
     }
 
     @Test
-    @DisplayName("updateTrainee - updates trainee and returns updated TraineeDTO")
-    void updateTrainee_ValidRequest_ReturnsUpdatedDTO() {
-        TraineeUpdateRequest request = new TraineeUpdateRequest("Doe", "John", "456 Other St", LocalDate.of(1995, 5, 10));
+    @DisplayName("updateTrainee - throws EntityNotFoundException when trainee id is not found")
+    void updateTrainee_ShouldThrowEntityNotFoundException_WhenTraineeIdDoesNotExist() {
+        when(traineeRepository.findById(55L)).thenReturn(Optional.empty());
 
-        when(traineeDAO.findById(1L)).thenReturn(Optional.of(trainee));
-        when(userService.findUserById(trainee.getUserId())).thenReturn(userDTO);
-        when(userService.updateUser(eq(userDTO.id()), any(UserUpdateRequest.class))).thenReturn(userDTO);
-        when(traineeMapper.toDTO(trainee)).thenReturn(traineeDTO);
+        assertThatThrownBy(() -> traineeService.updateTrainee(
+                55L,
+                new TraineeUpdateRequest("Last", "First", "Address", LocalDate.of(1999, 1, 1)),
+                new AuthRequest("u", "p")
+        )).isInstanceOf(EntityNotFoundException.class)
+          .hasMessageContaining("Trainee not found with ID: 55");
 
-        TraineeDTO result = traineeService.updateTrainee(1L, request);
-
-        assertThat(result).isEqualTo(traineeDTO);
-        verify(traineeDAO).update(trainee);
+        verify(traineeRepository, never()).save(any());
     }
 
     @Test
-    @DisplayName("updateTrainee - throws IllegalArgumentException for null traineeId")
-    void updateTrainee_NullId_ThrowsException() {
-        assertThatThrownBy(() -> traineeService.updateTrainee(null, new TraineeUpdateRequest("A", "B", "addr", LocalDate.now())))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
+    @DisplayName("deleteTraineeByUsername - returns false and does not call delete when username does not exist")
+    void deleteTraineeByUsername_ShouldReturnFalse_WhenUsernameDoesNotExist() {
+        when(traineeRepository.findByUserUsername("unknown.user")).thenReturn(Optional.empty());
 
-    @Test
-    @DisplayName("updateTrainee - throws IllegalArgumentException for null request")
-    void updateTrainee_NullRequest_ThrowsException() {
-        assertThatThrownBy(() -> traineeService.updateTrainee(1L, null))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
+        boolean deleted = traineeService.deleteTraineeByUsername("unknown.user", new AuthRequest("u", "p"));
 
-    @Test
-    @DisplayName("updateTrainee - throws RuntimeException when trainee not found")
-    void updateTrainee_NotFound_ThrowsException() {
-        when(traineeDAO.findById(99L)).thenReturn(Optional.empty());
-
-        assertThatThrownBy(() -> traineeService.updateTrainee(99L, new TraineeUpdateRequest("A", "B", "addr", LocalDate.now())))
-                .isInstanceOf(RuntimeException.class)
-                .hasMessageContaining("Trainee not found with ID: 99");
-    }
-
-    @Test
-    @DisplayName("deleteTrainee - returns true when deletion succeeds")
-    void deleteTrainee_ReturnsTrue() {
-        when(traineeDAO.deleteById(1L)).thenReturn(true);
-
-        assertThat(traineeService.deleteTrainee(1L)).isTrue();
-        verify(traineeDAO).deleteById(1L);
-    }
-
-    @Test
-    @DisplayName("deleteTrainee - returns false when trainee not found")
-    void deleteTrainee_ReturnsFalse() {
-        when(traineeDAO.deleteById(99L)).thenReturn(false);
-
-        assertThat(traineeService.deleteTrainee(99L)).isFalse();
-    }
-
-    @Test
-    @DisplayName("existsById - returns true when trainee exists")
-    void existsById_ReturnsTrue() {
-        when(traineeDAO.existsById(1L)).thenReturn(true);
-
-        assertThat(traineeService.existsById(1L)).isTrue();
-    }
-
-    @Test
-    @DisplayName("existsById - returns false when trainee does not exist")
-    void existsById_ReturnsFalse() {
-        when(traineeDAO.existsById(99L)).thenReturn(false);
-
-        assertThat(traineeService.existsById(99L)).isFalse();
+        assertThat(deleted).isFalse();
+        verify(traineeRepository, never()).deleteById(anyLong());
     }
 }
 

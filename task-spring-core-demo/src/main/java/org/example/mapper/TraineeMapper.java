@@ -8,13 +8,15 @@ import org.springframework.stereotype.Component;
 @Component
 public class TraineeMapper {
 
-    public TraineeDTO toDTO(Trainee trainee) {
+    public TraineeDTO toDTO(Trainee trainee, Long userId) {
         return new TraineeDTO(
                 trainee.getId(),
-                trainee.getUserId(),
+                userId,
                 trainee.getAddress(),
+                trainee.isActive(),
                 trainee.getDateOfBirth(),
-                trainee.getCreatedAt()
+                trainee.getCreatedAt(),
+                trainee.getUpdatedAt()
         );
     }
 

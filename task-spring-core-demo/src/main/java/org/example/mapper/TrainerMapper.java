@@ -8,18 +8,14 @@ import org.springframework.stereotype.Component;
 @Component
 public class TrainerMapper {
 
-    public TrainerDTO toDTO(Trainer trainer) {
+    public TrainerDTO toDTO(Trainer trainer, Long userId, Integer specializationId) {
         return new TrainerDTO(
                 trainer.getId(),
-                trainer.getUserId(),
-                trainer.getSpecialization(),
-                trainer.getCreatedAt()
+                userId,
+                specializationId,
+                trainer.isActive(),
+                trainer.getCreatedAt(),
+                trainer.getUpdatedAt()
         );
-    }
-
-    public Trainer toEntity(TrainerCreateRequest createRequest) {
-        Trainer trainer = new Trainer();
-        trainer.setSpecialization(createRequest.specialization());
-        return trainer;
     }
 }

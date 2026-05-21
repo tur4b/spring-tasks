@@ -1,52 +1,47 @@
 package org.example.service.impl;
 
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.dao.UserDAO;
+import org.example.aspect.Secured;
+import org.example.dao.UserRepository;
+import org.example.dto.request.AuthRequest;
+import org.example.dto.request.ChangePasswordRequest;
 import org.example.dto.request.UserCreateRequest;
 import org.example.dto.request.UserUpdateRequest;
 import org.example.dto.response.UserDTO;
 import org.example.entity.User;
 import org.example.mapper.UserMapper;
-import org.example.util.IdGenerator;
 import org.example.service.api.UserService;
 import org.example.util.CredentialGenerator;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
+@RequiredArgsConstructor
+@Transactional
+@Validated
 @Service
 public class UserServiceImpl implements UserService {
 
-    private final UserDAO userDAO;
     private final UserMapper userMapper;
-    private final IdGenerator idGenerator;
-
-    /**
-     * Constructor for <code>UserServiceImpl</code>
-     * constructor injection applied for required dependencies
-     *
-     * @param userDAO UserDAO instance
-     * @param userMapper UserMapper instance
-     */
-    public UserServiceImpl(UserDAO userDAO,
-                           UserMapper userMapper, IdGenerator idGenerator) {
-        this.userDAO = userDAO;
-        this.userMapper = userMapper;
-        this.idGenerator = idGenerator;
-    }
-
+    private final UserRepository userRepository;
 
     /**
      * Get list of UserDTO
      *
-     * @return list of users that converted to dtos
+     * @param authRequest the instance of AuthRequest containing credentials
+     * @return list of users that converted to the list of UserDTO
      */
+    @Secured
     @Override
-    public List<UserDTO> findAll() {
+    @Transactional(readOnly = true)
+    public List<UserDTO> findAll(AuthRequest authRequest) {
         log.debug("Find All User");
-        return userDAO.findAll()
+        return userRepository.findAll()
                 .stream()
                 .map(userMapper::toDTO)
                 .toList();
@@ -56,60 +51,36 @@ public class UserServiceImpl implements UserService {
      * Get UserDTO by user ID
      *
      * @param userId the ID of the user
+     * @param authRequest the instance of AuthRequest containing credentials
+     * @throws EntityNotFoundException if the User not found with given id
      * @return UserDTO corresponding to the given ID
      */
+    @Secured
     @Override
-    public UserDTO findUserById(Long userId) {
+    @Transactional(readOnly = true)
+    public UserDTO findById(Long userId, AuthRequest authRequest) {
         log.debug("Find User by ID: {}", userId);
-        return userDAO.findById(userId)
+        return userRepository.findById(userId)
                 .map(userMapper::toDTO)
-                .orElseThrow(() -> new RuntimeException("User not found by id: " + userId));
+                .orElseThrow(() -> new EntityNotFoundException("User not found by id: " + userId));
     }
 
     /**
      * Get UserDTO by username
      *
      * @param username the username of the user
+     * @param authRequest the instance of AuthRequest containing credentials
+     * @throws EntityNotFoundException if the User not found with given username
      * @return UserDTO corresponding to the given username
      */
+    @Secured
     @Override
-    public UserDTO findUserByUsername(String username) {
+    @Transactional(readOnly = true)
+    public UserDTO findByUsername(String username, AuthRequest authRequest) {
         log.debug("Find User by username: {}", username);
-        return userDAO.findByUsername(username)
+        return userRepository.findByUsername(username)
                 .map(userMapper::toDTO)
-                .orElseThrow(() -> new RuntimeException("User not found by username: " + username));
-    }
-
-    @Override
-    public UserDTO createUser(UserCreateRequest userCreateRequest) {
-        if(userCreateRequest == null) {
-            log.error("UserCreateRequest cannot be null");
-            throw new IllegalArgumentException("UserCreateRequest cannot be null");
-        }
-
-        log.debug("Create User reuqest: {}", userCreateRequest);
-
-        // User instance without credentials
-        User user = userMapper.toEntity(userCreateRequest);
-
-        String username = CredentialGenerator.generateUsername(user.getFirstName(), user.getLastName());
-
-        int serialNumber = 1;
-        while(userDAO.existsByUsername(username)) {
-            log.debug("User already exists with given username: {}", username);
-            username = CredentialGenerator.generateUsernameWithSerial(user.getFirstName(), user.getLastName(), serialNumber);
-            serialNumber++;
-        }
-
-        // set credentials
-        user.setId(idGenerator.getNextId(User.class.getSimpleName()));
-        user.setUsername(username);
-        user.setPassword(CredentialGenerator.generatePassword());
-
-        userDAO.create(user);
-
-        log.debug("User created: {}", user);
-        return userMapper.toDTO(user);
+                .orElseThrow(() -> new EntityNotFoundException("User not found by username: " + username));
     }
 
     /**
@@ -117,49 +88,110 @@ public class UserServiceImpl implements UserService {
      *
      * @param userId the ID of user
      * @param updateRequest the request object containing updated user details
+     * @param authRequest the instance of AuthRequest containing credentials
+     * @throws EntityNotFoundException if the User not found with given userId
      * @return updated UserDTO
      */
+    @Secured
     @Override
-    public UserDTO updateUser(Long userId, UserUpdateRequest updateRequest) {
-        if(userId == null || updateRequest == null) {
-            log.error("User ID and UserUpdateRequest cannot be null");
-            throw new IllegalArgumentException("User id and UserUpdateRequest cannot be null");
-        }
-
+    public UserDTO updateUser(Long userId, UserUpdateRequest updateRequest, AuthRequest authRequest) {
         log.debug("Update Trainee id: {} and request: {}", userId, updateRequest);
 
-        User user = userDAO.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found by id: " + userId));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found by id: " + userId));
 
         // apply changes
         user.setFirstName(updateRequest.firstName());
         user.setLastName(updateRequest.lastName());
-        user.setUpdatedAt(LocalDateTime.now());
 
-        userDAO.update(user);
+        String username = defineNewUsernameForNewUserEntity(user);
+        user.setUsername(username);
+
+        userRepository.save(user);
 
         return userMapper.toDTO(user);
     }
 
     /**
-     * Soft Delete user by ID
+     * Create a new user
      *
-     * @param userId the ID of user
-     * @return true if deletion was successful, false is not
+     * @param userCreateRequest the request object containing user details for create
+     * @return created UserDTO
      */
     @Override
-    public boolean deleteUser(Long userId) {
-        return userDAO.deleteById(userId);
-    }
+    public UserDTO createUser(UserCreateRequest userCreateRequest) {
+        if(userCreateRequest == null) {
+            log.error("UserCreateRequest cannot be null");
+            throw new IllegalArgumentException("UserCreateRequest cannot be null");
+        }
 
+        log.debug("Create User request: {}", userCreateRequest);
+
+        // User instance without credentials
+        User user = userMapper.toEntity(userCreateRequest);
+
+        String username = defineNewUsernameForNewUserEntity(user);
+
+        // set credentials
+        user.setUsername(username);
+        user.setPassword(CredentialGenerator.generatePassword());
+
+        userRepository.save(user);
+
+        log.info("User created with username: {}", user.getUsername());
+        return userMapper.toDTO(user);
+    }
 
     /**
      * Check if user exists by ID
+     *
      * @param userId the id of the user
      * @return true if user found, false is not found
      */
     @Override
     public boolean existsById(Long userId) {
-        return userDAO.existsById(userId);
+        return userRepository.existsById(userId);
+    }
+
+    /**
+     * Get Reference to User entity
+     *
+     * @param userId the id of the user
+     * @return User reference to User entity
+     */
+    @Transactional(readOnly = true)
+    @Override
+    public User getReferenceById(Long userId) {
+        return userRepository.getReferenceById(userId);
+    }
+
+    /**
+     * Change the password of User
+     *
+     * @param changePasswordRequest the ChangePasswordRequest instance details required to change the password
+     * @param authRequest the instance of AuthRequest containing credentials
+     */
+    @Secured
+    @Override
+    public void changePassword(ChangePasswordRequest changePasswordRequest, AuthRequest authRequest) {
+        userRepository.changePassword(changePasswordRequest.username(), changePasswordRequest.password());
+    }
+
+    /**
+     * Define a new username for the new User entity
+     *
+     * @param user the User entity
+     * @return String new username according to user data
+     */
+    private String defineNewUsernameForNewUserEntity(User user) {
+        String username = CredentialGenerator.generateUsername(user.getFirstName(), user.getLastName());
+
+        int serialNumber = 1;
+        while(userRepository.existsByUsername(username)) {
+            log.debug("User already exists with given username: {}", username);
+            username = CredentialGenerator.generateUsernameWithSerial(user.getFirstName(), user.getLastName(), serialNumber);
+            serialNumber++;
+        }
+        return username;
     }
 }
