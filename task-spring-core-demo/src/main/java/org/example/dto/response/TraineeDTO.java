@@ -7,7 +7,8 @@ public record TraineeDTO(
         Long id,
         Long userId,
         String address,
+        boolean isActive,
         LocalDate dateOfBirth,
-        LocalDateTime createdAt
-) {
+        LocalDateTime createdAt,
+        LocalDateTime updatedAt) {
 }

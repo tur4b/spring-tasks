@@ -1,16 +1,29 @@
 package org.example.service.impl;
 
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.dao.TrainingDAO;
+import org.example.aspect.Secured;
+import org.example.dao.TrainingRepository;
+import org.example.dao.projection.TrainingView;
+import org.example.dto.request.AuthRequest;
 import org.example.dto.request.TrainingCreateRequest;
 import org.example.dto.request.TrainingUpdateRequest;
 import org.example.dto.response.TrainingDTO;
+import org.example.entity.Trainee;
+import org.example.entity.Trainer;
 import org.example.entity.Training;
+import org.example.entity.TrainingType;
 import org.example.mapper.TrainingMapper;
 import org.example.service.api.TraineeService;
 import org.example.service.api.TrainerService;
 import org.example.service.api.TrainingService;
+import org.example.service.api.TrainingTypeService;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -19,59 +32,43 @@ import java.util.List;
  * Service layer for training operations
  */
 @Slf4j
+@RequiredArgsConstructor
+@Transactional
+@Validated
 @Service
 public class TrainingServiceImpl implements TrainingService {
 
     private final TrainingMapper trainingMapper;
-    private final TrainingDAO trainingDAO;
+    private final TrainingRepository trainingRepository;
     private final TraineeService traineeService;
     private final TrainerService trainerService;
-
-    /**
-     * Constructor for <code>TrainingServiceImpl</code>
-     * constructor injection applied for required dependencies
-     *
-     * @param trainingMapper   TrainingMapper instance
-     * @param trainingDAO      TrainingDAO instance
-     * @param traineeService   TraineeService instance
-     * @param trainerService   TrainerService instance
-     */
-    public TrainingServiceImpl(TrainingMapper trainingMapper,
-                               TrainingDAO trainingDAO,
-                               TraineeService traineeService,
-                               TrainerService trainerService) {
-        this.trainingMapper = trainingMapper;
-        this.trainingDAO = trainingDAO;
-        this.traineeService = traineeService;
-        this.trainerService = trainerService;
-    }
+    private final TrainingTypeService trainingTypeService;
 
     /**
      * Get list of TrainingDTO
      *
-     * @return list of trainings that converted to dtos
+     * @return list of trainings view
      */
+    @Secured
     @Override
-    public List<TrainingDTO> findAll() {
+    public List<TrainingView> findAllTrainingsView(AuthRequest authRequest) {
         log.debug("Find All Training");
-        return trainingDAO.findAll()
-                .stream()
-                .map(trainingMapper::toDTO)
-                .toList();
+        return trainingRepository.findAllTrainingsView();
     }
 
+
     /**
-     * Get TrainingDTO by training ID
+     * Get TrainingView by trainingId
      *
-     * @param trainingId the ID of the training
-     * @return TrainingDTO corresponding to the given ID
+     * @param trainingId the id of the training
+     * @return TrainingView corresponding to the given trainingId
      */
+    @Secured
     @Override
-    public TrainingDTO findTrainingById(Long trainingId) {
+    public TrainingView findTrainingViewById(Long trainingId, AuthRequest authRequest) {
         log.debug("Find Training by ID: {}", trainingId);
-        return trainingDAO.findById(trainingId)
-                .map(trainingMapper::toDTO)
-                .orElseThrow(() -> new RuntimeException("Training not found with ID: " + trainingId));
+        return trainingRepository.findTrainingViewById(trainingId)
+                .orElseThrow(() -> new EntityNotFoundException("Training not found with ID: " + trainingId));
     }
 
     /**
@@ -81,31 +78,54 @@ public class TrainingServiceImpl implements TrainingService {
      * @param createRequest the request object containing training details
      * @return created TrainingDTO with generated username and password
      */
+    @Secured
     @Override
-    public TrainingDTO createTraining(TrainingCreateRequest createRequest) {
-        if(createRequest == null) {
-            log.error("TrainingCreateRequest cannot be null");
-            throw new IllegalArgumentException("TrainingCreateRequest cannot be null");
-        }
-
+    public TrainingDTO createTraining(TrainingCreateRequest createRequest, AuthRequest authRequest) {
         log.debug("Create Training request: {}", createRequest);
+
+        // check training type with given id
+        if(!trainingTypeService.existsById(createRequest.typeId())) {
+            throw new EntityNotFoundException("TraineeType not found");
+        }
 
         // check if trainee exists with given id
         if(!traineeService.existsById(createRequest.traineeId())) {
-            throw new RuntimeException("TraineeId not found");
+            throw new EntityNotFoundException("Trainee not found");
         }
 
         // check if trainer exists with given id
         if(!trainerService.existsById(createRequest.trainerId())) {
-            throw new RuntimeException("TrainerId not found");
+            throw new EntityNotFoundException("Trainer not found");
+        }
+
+        boolean isTrainerTraineeRelation = trainerService.existsTrainerTraineeRelation(
+                createRequest.trainerId(),
+                createRequest.traineeId()
+        );
+
+        if(!isTrainerTraineeRelation) {
+            throw new RuntimeException("Trainer and Trainee relation does not exists");
         }
 
         Training training = trainingMapper.toEntity(createRequest);
 
-        Training createdTraining = trainingDAO.create(training);
-        log.info("Training Created: {}", createdTraining);
+        // set type
+        TrainingType trainingType = trainingTypeService.getReferenceById(createRequest.typeId());
+        training.setType(trainingType);
 
-        return trainingMapper.toDTO(createdTraining);
+        // set trainer
+        Trainer trainerEntityRef = trainerService.getReferenceById(createRequest.trainerId());
+        training.setTrainer(trainerEntityRef);
+
+        // set trainee
+        Trainee traineeEntityRef = traineeService.getReferenceById(createRequest.traineeId());
+        training.setTrainee(traineeEntityRef);
+
+
+        trainingRepository.save(training);
+        log.info("Training Created: {}", training);
+
+        return trainingMapper.toDTO(training, createRequest.traineeId(), createRequest.trainerId(), createRequest.typeId());
     }
 
     /**
@@ -115,39 +135,44 @@ public class TrainingServiceImpl implements TrainingService {
      * @param updateRequest the request object containing updated training details
      * @return updated TrainingDTO
      */
+    @Secured
     @Override
-    public TrainingDTO updateTraining(Long trainingId, TrainingUpdateRequest updateRequest) {
-        if(trainingId == null || updateRequest == null) {
-            log.error("Training ID and TrainingUpdateRequest cannot be null");
-            throw new IllegalArgumentException("TrainingId and TrainingUpdateRequest cannot be null");
-        }
-
+    public TrainingDTO updateTraining(Long trainingId, TrainingUpdateRequest updateRequest, AuthRequest authRequest) {
         log.debug("Update Training id: {} and request: {}", trainingId, updateRequest);
+
+        Training training = trainingRepository.findById(trainingId)
+                .orElseThrow(() -> new RuntimeException("Training not found with ID: " + trainingId));
 
         // check if trainee exists with given id
         if(!traineeService.existsById(updateRequest.traineeId())) {
-            throw new RuntimeException("TraineeId not found");
+            throw new EntityNotFoundException("TraineeId not found");
         }
 
         // check if trainer exists with given id
         if(!trainerService.existsById(updateRequest.trainerId())) {
-            throw new RuntimeException("TrainerId not found");
+            throw new EntityNotFoundException("TrainerId not found");
         }
 
         // update the training details
-        Training training = trainingDAO.findById(trainingId)
-                .orElseThrow(() -> new RuntimeException("Training not found with ID: " + trainingId));
-
-        training.setTraineeId(updateRequest.traineeId());
-        training.setTrainerId(updateRequest.trainerId());
         training.setName(updateRequest.name());
         training.setDate(updateRequest.date());
         training.setDuration(updateRequest.duration());
-        training.setUpdatedAt(LocalDateTime.now());
 
-        trainingDAO.update(training);
+        // set type
+        TrainingType trainingType = trainingTypeService.getReferenceById(updateRequest.typeId());
+        training.setType(trainingType);
 
-        return trainingMapper.toDTO(training);
+        // set trainer
+        Trainer trainerEntityRef = trainerService.getReferenceById(updateRequest.trainerId());
+        training.setTrainer(trainerEntityRef);
+
+        // set trainee
+        Trainee traineeEntityRef = traineeService.getReferenceById(updateRequest.traineeId());
+        training.setTrainee(traineeEntityRef);
+
+        trainingRepository.save(training);
+
+        return trainingMapper.toDTO(training, updateRequest.traineeId(), updateRequest.trainerId(), updateRequest.typeId());
     }
 
     /**
@@ -156,9 +181,10 @@ public class TrainingServiceImpl implements TrainingService {
      * @param trainingId the ID of the training to delete
      * @return true if deletion was successful, false otherwise
      */
+    @Secured
     @Override
-    public boolean deleteTraining(Long trainingId) {
-        return trainingDAO.deleteById(trainingId);
+    public boolean deleteTraining(Long trainingId, AuthRequest authRequest) {
+        return trainingRepository.softDeleteById(trainingId) != 0;
     }
 
 }

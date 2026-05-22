@@ -1,10 +1,19 @@
 package org.example.dto.request;
 
-import org.example.entity.TrainingType;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 public record TrainerCreateRequest(
-        String lastName,
+        @NotBlank(message = "First name can't be blank")
+        @Size(min = 3, max = 30, message = "Size of first name min=3, max=30")
         String firstName,
-        TrainingType specialization
+
+        @NotBlank(message = "Last name can't be blank")
+        @Size(min = 3, max = 60, message = "Size of last name min=3, max=60")
+        String lastName,
+
+        @NotNull(message = "Specialization id can't be null")
+        Integer specializationId
 ) {
 }

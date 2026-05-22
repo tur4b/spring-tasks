@@ -1,18 +1,23 @@
 package org.example.service.impl;
 
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.dao.TraineeDAO;
-import org.example.dto.request.TraineeCreateRequest;
-import org.example.dto.request.TraineeUpdateRequest;
-import org.example.dto.request.UserCreateRequest;
-import org.example.dto.request.UserUpdateRequest;
+import org.example.aspect.Secured;
+import org.example.dao.TraineeRepository;
+import org.example.dao.projection.TraineeView;
+import org.example.dao.projection.TrainingView;
+import org.example.dto.request.*;
 import org.example.dto.response.TraineeDTO;
 import org.example.dto.response.UserDTO;
 import org.example.entity.Trainee;
+import org.example.entity.User;
 import org.example.mapper.TraineeMapper;
 import org.example.service.api.TraineeService;
 import org.example.service.api.UserService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -21,55 +26,45 @@ import java.util.List;
  * Service layer for trainee operations
  */
 @Slf4j
+@RequiredArgsConstructor
+@Validated
+@Transactional
 @Service
 public class TraineeServiceImpl implements TraineeService {
 
     private final TraineeMapper traineeMapper;
-    private final TraineeDAO traineeDAO;
+    private final TraineeRepository traineeRepository;
     private final UserService userService;
 
     /**
-     * Constructor for <code>TraineeServiceImpl</code>
-     * constructor injection applied for required dependencies
+     * Get list of TraineeView
      *
-     * @param traineeMapper TraineeMapper instance
-     * @param traineeDAO    TraineeDAO instance
-     * @param userService   UserService instance
+     * @param authRequest the instance of AuthRequest containing credentials
+     * @return list of projected view of trainees
      */
-    public TraineeServiceImpl(TraineeMapper traineeMapper,
-                              TraineeDAO traineeDAO,
-                              UserService userService) {
-        this.traineeMapper = traineeMapper;
-        this.traineeDAO = traineeDAO;
-        this.userService = userService;
-    }
-
-    /**
-     * Get list of TraineeDTO
-     *
-     * @return list of trainees that converted to dtos
-     */
+    @Transactional(readOnly = true)
+    @Secured
     @Override
-    public List<TraineeDTO> findAll() {
-        log.debug("Find All Trainee");
-        return traineeDAO.findAll()
-                .stream()
-                .map(traineeMapper::toDTO)
-                .toList();
+    public List<TraineeView> findAllTraineesView(AuthRequest authRequest) {
+        log.debug("Find All Trainees");
+        return traineeRepository.findAllTraineesView();
     }
 
     /**
-     * Get TraineeDTO by trainee ID
+     * Get TraineeView by trainee ID
      *
      * @param traineeId the ID of the trainee
-     * @return TraineeDTO corresponding to the given ID
+     * @param authRequest the instance of AuthRequest containing credentials
+     * @throws EntityNotFoundException if Trainee not found with given id
+     * @return TraineeView corresponding to the given ID
      */
+    @Transactional(readOnly = true)
+    @Secured
     @Override
-    public TraineeDTO findTraineeById(Long traineeId) {
+    public TraineeView findTraineeViewById(Long traineeId, AuthRequest authRequest) {
         log.debug("Find Trainee by ID: {}", traineeId);
-        return traineeDAO.findById(traineeId)
-                .map(traineeMapper::toDTO)
-                .orElseThrow(() -> new RuntimeException("Trainee not found with ID: " + traineeId));
+        return traineeRepository.findTraineeViewById(traineeId)
+                .orElseThrow(() -> new EntityNotFoundException("Trainee not found with given id: " + traineeId));
     }
 
     /**
@@ -81,11 +76,6 @@ public class TraineeServiceImpl implements TraineeService {
      */
     @Override
     public TraineeDTO createTrainee(TraineeCreateRequest createRequest) {
-        if(createRequest == null) {
-            log.error("TraineeCreateRequest cannot be null");
-            throw new IllegalArgumentException("TraineeCreateRequest cannot be null");
-        }
-
         log.debug("Create Trainee request: {}", createRequest);
 
         // creating a new user
@@ -93,12 +83,14 @@ public class TraineeServiceImpl implements TraineeService {
 
         // create a new trainee and set required fields
         Trainee trainee = traineeMapper.toEntity(createRequest);
-        trainee.setUserId(userDTO.id());
 
-        Trainee createdTrainee = traineeDAO.create(trainee);
+        User userEntityRef = userService.getReferenceById(userDTO.id());
+        trainee.setUser(userEntityRef);
+
+        traineeRepository.save(trainee);
         log.debug("Trainee created with username: {}", userDTO.username());
 
-        return traineeMapper.toDTO(createdTrainee);
+        return traineeMapper.toDTO(trainee, userDTO.id());
     }
 
     /**
@@ -106,44 +98,53 @@ public class TraineeServiceImpl implements TraineeService {
      *
      * @param traineeId the ID of the trainee to update
      * @param updateRequest the request object containing updated trainee details
+     * @param authRequest the instance of AuthRequest containing credentials
+     * @throws EntityNotFoundException if Trainee not found with given id
      * @return updated TraineeDTO
      */
+    @Secured
     @Override
-    public TraineeDTO updateTrainee(Long traineeId, TraineeUpdateRequest updateRequest) {
-        if(traineeId == null || updateRequest == null) {
-            log.error("Trainee ID and TraineeUpdateRequest cannot be null");
-            throw new IllegalArgumentException("TraineeId and TraineeUpdateRequest cannot be null");
-        }
-
+    public TraineeDTO updateTrainee(Long traineeId, TraineeUpdateRequest updateRequest, AuthRequest authRequest) {
         log.debug("Update Trainee id: {} and request: {}", traineeId, updateRequest);
 
-        Trainee trainee = traineeDAO.findById(traineeId)
-                .orElseThrow(() -> new RuntimeException("Trainee not found with ID: " + traineeId));
+        Trainee trainee = traineeRepository.findById(traineeId)
+                .orElseThrow(() -> new EntityNotFoundException("Trainee not found with ID: " + traineeId));
 
         // update user details trainee belongs to
-        UserDTO userDTO = userService.findUserById(trainee.getUserId());
+        User user = trainee.getUser();
+
         // apply changes to user
-        userService.updateUser(userDTO.id(), new UserUpdateRequest(updateRequest.firstName(), updateRequest.lastName()));
+        userService.updateUser(user.getId(), new UserUpdateRequest(updateRequest.firstName(), updateRequest.lastName()), authRequest);
 
         // apply changes to training
         trainee.setAddress(updateRequest.address());
         trainee.setDateOfBirth(updateRequest.dateOfBirth());
         trainee.setUpdatedAt(LocalDateTime.now());
 
-        traineeDAO.update(trainee);
+        traineeRepository.save(trainee);
 
-        return traineeMapper.toDTO(trainee);
+        return traineeMapper.toDTO(trainee, user.getId());
     }
 
     /**
-     * Delete a trainee by ID.
+     * Delete a trainee by username.
      *
-     * @param traineeId the ID of the trainee to delete
+     * @param traineeUsername the username of the trainee to delete
+     * @param authRequest the instance of AuthRequest containing credentials
      * @return true if deletion was successful, false otherwise
      */
+    @Secured
     @Override
-    public boolean deleteTrainee(Long traineeId) {
-        return traineeDAO.deleteById(traineeId);
+    public boolean deleteTraineeByUsername(String traineeUsername, AuthRequest authRequest) {
+        Trainee trainee = traineeRepository.findByUserUsername(traineeUsername)
+                .orElse(null);
+
+        if(trainee == null) {
+            log.debug("Trainee not found with username: {}", traineeUsername);
+            return false;
+        }
+        traineeRepository.deleteById(trainee.getId());
+        return true;
     }
 
     /**
@@ -154,6 +155,99 @@ public class TraineeServiceImpl implements TraineeService {
      */
     @Override
     public boolean existsById(Long traineeId) {
-        return traineeDAO.existsById(traineeId);
+        return traineeRepository.existsById(traineeId);
     }
+
+    /**
+     * Activate Trainee with given ID
+     *
+     * @throws RuntimeException if trainee not found or already active
+     * @throws EntityNotFoundException if Trainee not found with given id
+     * @param traineeId the id of the trainee
+     * @param authRequest the instance of AuthRequest containing credentials
+     */
+    @Secured
+    @Override
+    public void activate(Long traineeId, AuthRequest authRequest) {
+        Trainee trainee = traineeRepository.findById(traineeId)
+                .orElseThrow(() -> new EntityNotFoundException("Trainee not found with ID: " + traineeId));
+
+        if(trainee.isActive()) {
+            throw new RuntimeException("Trainee already active");
+        }
+        trainee.setActive(true);
+        traineeRepository.save(trainee);
+    }
+
+    /**
+     * Deactivate Trainee with given ID
+     *
+     * @throws RuntimeException if trainee not found or already inactive
+     * @throws EntityNotFoundException if Trainee not found with given id
+     * @param traineeId the id of the trainee
+     * @param authRequest the instance of AuthRequest containing credentials
+     */
+    @Secured
+    @Override
+    public void deactivate(Long traineeId, AuthRequest authRequest) {
+        Trainee trainee = traineeRepository.findById(traineeId)
+                .orElseThrow(() -> new EntityNotFoundException("Trainee not found with ID: " + traineeId));
+
+        if(!trainee.isActive()) {
+            throw new RuntimeException("Trainee already deactive");
+        }
+        trainee.setActive(false);
+        traineeRepository.save(trainee);
+    }
+
+    /**
+     * Get reference to Trainee entity
+     *
+     * @param traineeId the id of Trainee
+     * @return Trainee reference to Trainee entity
+     */
+    @Transactional(readOnly = true)
+    @Override
+    public Trainee getReferenceById(Long traineeId) {
+        return traineeRepository.getReferenceById(traineeId);
+    }
+
+    /**
+     * ChangePassword according given credentials
+     *
+     * @param changePasswordRequest the instance of ChangePasswordRequest
+     * @param authRequest the instance of AuthRequest containing credentials
+     */
+    @Secured
+    @Override
+    public void changePassword(ChangePasswordRequest changePasswordRequest, AuthRequest authRequest) {
+        if(!traineeRepository.existsByUserUsername(changePasswordRequest.username())) {
+            throw new EntityNotFoundException("Trainee not found with username: " + changePasswordRequest.username());
+        }
+        userService.changePassword(changePasswordRequest, authRequest);
+    }
+
+    /**
+     * Get all Trainings of Trainee according to given searchCriteria
+     *
+     * @param searchCriteria containing criteria data for filtering
+     * @param authRequest the instance of AuthRequest containing credentials
+     * @return list of TrainingView
+     */
+    @Secured
+    @Transactional(readOnly = true)
+    @Override
+    public List<TrainingView> findTrainingsOfTraineeByCriteria(TrainingsOfTraineeSearchCriteria searchCriteria,
+                                                               AuthRequest authRequest) {
+        return traineeRepository.findTrainingsOfTraineeByCriteria(
+                searchCriteria.traineeUsername(),
+                searchCriteria.fromDate(),
+                searchCriteria.toDate(),
+                searchCriteria.trainerName(),
+                searchCriteria.typeId()
+        );
+    }
+
+
+
 }

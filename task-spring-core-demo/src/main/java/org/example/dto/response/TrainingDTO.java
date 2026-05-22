@@ -1,7 +1,5 @@
 package org.example.dto.response;
 
-import org.example.entity.TrainingType;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -10,9 +8,9 @@ public record TrainingDTO(
         Long traineeId,
         Long trainerId,
         String name,
-        TrainingType type,
+        Integer typeId,
         LocalDate date,
         int duration,
-        LocalDateTime createdAt
-) {
+        LocalDateTime createdAt,
+        LocalDateTime updatedAt) {
 }
