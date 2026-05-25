@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Import;
 @Configuration
 @Import({ DataConfig.class })
 @ComponentScan(basePackages = {
-        "org.example.service.impl",
+        "org.example.service",
         "org.example.mapper",
         "org.example.aspect"
 })

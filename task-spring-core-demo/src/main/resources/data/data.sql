@@ -5,11 +5,11 @@ insert into training_types (name) values ('STRENGTH');
 -- USERS (only rows referenced by trainee/trainer seeds below)
 insert into users (active, createdat, deletedat, updatedat, firstname, lastname, password, username)
 values
-    (true, timestamp '2026-05-21 22:25:43.674585', null, timestamp '2026-05-22 12:06:39.660994', 'Trainee', 'Admin', 'admin123', 'trainee.admin'),
-    (true, timestamp '2026-05-21 22:25:43.972696', null, timestamp '2026-05-21 22:25:43.972696', 'Trainer-2', 'Trainerrrrr-2', 'admin123', 'trainer-2.admin'),
-    (true, timestamp '2026-05-22 12:00:03.127727', null, timestamp '2026-05-22 12:00:03.127727', 'Brian', 'Mills', 'DMp79oeKLk', 'brian.mills1'),
-    (true, timestamp '2026-05-21 22:25:43.762584', null, timestamp '2026-05-21 23:05:28.347365', 'Hero', 'Heros', 'pw2', 'hero.heros'),
-    (true, timestamp '2026-05-21 22:25:43.926793', null, timestamp '2026-05-22 12:06:40.293999', 'Trainer-1', 'Trainerrrrr-1', 'pw4', 'trainer-1.trainerrrrr-1');
+    (true, timestamp '2026-05-21 22:25:43.674585', null, timestamp '2026-05-22 12:06:39.660994', 'Trainee', 'Admin', '$2a$10$LMbuazOB/M5A1.sbg49fieak.l9UhhBiVNa0E4hh2uG.NeAnHW2va', 'trainee.admin'),
+    (true, timestamp '2026-05-21 22:25:43.972696', null, timestamp '2026-05-21 22:25:43.972696', 'Trainer-2', 'Trainerrrrr-2', '$2a$10$LMbuazOB/M5A1.sbg49fieak.l9UhhBiVNa0E4hh2uG.NeAnHW2va', 'trainer-2.admin'),
+    (true, timestamp '2026-05-22 12:00:03.127727', null, timestamp '2026-05-22 12:00:03.127727', 'Brian', 'Mills', '$2a$10$qMqCA5nNIMqLUgYRhMCbnekaYs1w/jYwp/R9HhLbRWsbnzJ/NPM0e', 'brian.mills1'),
+    (true, timestamp '2026-05-21 22:25:43.762584', null, timestamp '2026-05-21 23:05:28.347365', 'Hero', 'Heros', '$2a$10$Yq6rSP3SovpmHV/lNLu3I.HNdPhnsQePD4qiHjS/jeBF/eBOGb9pO', 'hero.heros'),
+    (true, timestamp '2026-05-21 22:25:43.926793', null, timestamp '2026-05-22 12:06:40.293999', 'Trainer-1', 'Trainerrrrr-1', '$2a$10$QrcjOEbAUJFAMZ40ErjthOyP1ufvmfwstZOoCAqT80DBehq/ptbQ.', 'trainer-1.trainerrrrr-1');
 
 -- TRAINEES (FK by username)
 insert into trainees (active, dateofbirth, createdat, deletedat, updatedat, user_id, address)

@@ -7,6 +7,8 @@ import org.example.dto.request.ChangePasswordRequest;
 import org.example.dto.request.TraineeCreateRequest;
 import org.example.dto.response.TraineeDTO;
 import org.example.entity.Trainee;
+import org.example.entity.User;
+import org.example.service.api.PasswordEncoder;
 import org.example.service.api.TraineeService;
 import org.example.testsupport.AbstractServiceSliceTest;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,6 +36,9 @@ class TraineeServiceImplIT extends AbstractServiceSliceTest {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @BeforeEach
     void ensureAuthenticatedUserExists() {
@@ -126,12 +131,12 @@ class TraineeServiceImplIT extends AbstractServiceSliceTest {
                 .hasMessageContaining("INvalid credentials");
     }
 
-    private org.example.entity.User user(String username, String password) {
-        org.example.entity.User user = new org.example.entity.User();
+    private User user(String username, String password) {
+        User user = new User();
         user.setFirstName("IT");
         user.setLastName("Auth");
         user.setUsername(username);
-        user.setPassword(password);
+        user.setPassword(passwordEncoder.encode(password));
         return user;
     }
 }

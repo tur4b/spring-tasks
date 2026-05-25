@@ -1,6 +1,7 @@
 package org.example.dao;
 
 import org.example.entity.User;
+import org.example.service.api.PasswordEncoder;
 import org.example.testsupport.AbstractRepositoryIntegrationTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,10 +15,16 @@ class UserRepositoryIT extends AbstractRepositoryIntegrationTest {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @Test
     @DisplayName("save + findByUsername - persists and retrieves by username")
     void saveAndFindByUsername() {
-        userRepository.save(user("alice.bob", "secret"));
+        String rawPassword = "secret";
+        String hashedPassword = passwordEncoder.encode(rawPassword);
+
+        userRepository.save(user("alice.bob", hashedPassword));
 
         assertThat(userRepository.findByUsername("alice.bob"))
                 .isPresent()
@@ -42,14 +49,18 @@ class UserRepositoryIT extends AbstractRepositoryIntegrationTest {
     @Test
     @DisplayName("changePassword - updates password and returns 1 affected row")
     void changePassword_UpdatesSuccessfully() {
-        userRepository.save(user("change.me", "old"));
+        String oldRawPassword = "old";
+        String newRawPassword = "new";
+        String hashedNewPassword = passwordEncoder.encode(newRawPassword);
 
-        int rows = userRepository.changePassword("change.me", "new");
+        userRepository.save(user("change.me", oldRawPassword));
+
+        int rows = userRepository.changePassword("change.me", hashedNewPassword);
 
         assertThat(rows).isEqualTo(1);
         assertThat(userRepository.findByUsername("change.me"))
                 .isPresent()
-                .get().extracting(User::getPassword).isEqualTo("new");
+                .get().extracting(User::getPassword).matches(pwd -> passwordEncoder.matches(newRawPassword, pwd));
     }
 
     @Test
