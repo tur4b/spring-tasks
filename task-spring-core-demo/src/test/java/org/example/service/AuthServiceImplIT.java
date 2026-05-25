@@ -4,6 +4,7 @@ import org.example.dao.UserRepository;
 import org.example.dto.request.AuthRequest;
 import org.example.entity.User;
 import org.example.service.api.AuthService;
+import org.example.service.api.PasswordEncoder;
 import org.example.testsupport.AbstractServiceSliceTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,6 +18,9 @@ class AuthServiceImplIT extends AbstractServiceSliceTest {
 
     @Autowired
     private AuthService authService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     private UserRepository userRepository;
@@ -51,7 +55,7 @@ class AuthServiceImplIT extends AbstractServiceSliceTest {
         u.setFirstName("Auth");
         u.setLastName("User");
         u.setUsername(username);
-        u.setPassword(password);
+        u.setPassword(passwordEncoder.encode(password));
         return u;
     }
 }

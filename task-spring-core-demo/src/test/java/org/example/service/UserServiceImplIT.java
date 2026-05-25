@@ -6,6 +6,7 @@ import org.example.dto.request.UserCreateRequest;
 import org.example.dto.request.ChangePasswordRequest;
 import org.example.dto.response.UserDTO;
 import org.example.entity.User;
+import org.example.service.api.PasswordEncoder;
 import org.example.service.api.UserService;
 import org.example.testsupport.AbstractServiceSliceTest;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,6 +29,8 @@ class UserServiceImplIT extends AbstractServiceSliceTest {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @BeforeEach
     void ensureAuthenticatedUserExists() {
@@ -81,15 +84,18 @@ class UserServiceImplIT extends AbstractServiceSliceTest {
     @Test
     @DisplayName("changePassword - updates existing user's password through repository modifying query")
     void changePassword_ShouldPersistNewPassword_WhenUsernameExists() {
-        userRepository.save(user("update.pass", "old-pass"));
+        String oldRawPassword = "old-pass";
+        String newRawPassword = "new-pass";
 
-        userService.changePassword(new ChangePasswordRequest("update.pass", "new-pass"), AUTHENTICATED_USER);
+        userRepository.save(user("update.pass", oldRawPassword));
+
+        userService.changePassword(new ChangePasswordRequest("update.pass", newRawPassword), AUTHENTICATED_USER);
 
         assertThat(userRepository.findByUsername("update.pass"))
                 .isPresent()
                 .get()
                 .extracting(User::getPassword)
-                .isEqualTo("new-pass");
+                .matches(pwd -> passwordEncoder.matches(newRawPassword, pwd));
     }
 
     @Test
@@ -107,7 +113,7 @@ class UserServiceImplIT extends AbstractServiceSliceTest {
         u.setFirstName("E");
         u.setLastName("User");
         u.setUsername(username);
-        u.setPassword(password);
+        u.setPassword(passwordEncoder.encode(password));
         return u;
     }
 }

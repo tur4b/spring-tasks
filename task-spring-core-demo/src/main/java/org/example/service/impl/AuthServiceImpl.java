@@ -6,6 +6,7 @@ import org.example.dao.UserRepository;
 import org.example.dto.request.AuthRequest;
 import org.example.entity.User;
 import org.example.service.api.AuthService;
+import org.example.service.api.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 /**
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     /**
      * Authenticate according to credentials
@@ -31,7 +33,7 @@ public class AuthServiceImpl implements AuthService {
         User user = userRepository.findByUsername(authRequest.username())
                 .orElseThrow(() -> securityException);
 
-        if(!user.getPassword().equals(authRequest.password())) {
+        if (!passwordEncoder.matches(authRequest.password(), user.getPassword())) {
             throw securityException;
         }
     }

@@ -13,6 +13,7 @@ import org.example.dto.response.TrainingDTO;
 import org.example.entity.TrainingType;
 import org.example.entity.TrainingTypeName;
 import org.example.entity.User;
+import org.example.service.api.PasswordEncoder;
 import org.example.service.api.TrainerService;
 import org.example.service.api.TraineeService;
 import org.example.service.api.TrainingService;
@@ -52,6 +53,8 @@ class TrainingServiceImplIT extends AbstractServiceSliceTest {
 
     @Autowired
     private org.example.dao.UserRepository userRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @BeforeEach
     void ensureAuthenticatedUserExists() {
@@ -146,7 +149,7 @@ class TrainingServiceImplIT extends AbstractServiceSliceTest {
         user.setFirstName("IT");
         user.setLastName("Auth");
         user.setUsername(username);
-        user.setPassword(password);
+        user.setPassword(passwordEncoder.encode(password));
         return user;
     }
 }

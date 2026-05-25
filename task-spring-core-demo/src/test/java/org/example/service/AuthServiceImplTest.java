@@ -3,7 +3,9 @@ package org.example.service;
 import org.example.dao.UserRepository;
 import org.example.dto.request.AuthRequest;
 import org.example.entity.User;
+import org.example.service.api.PasswordEncoder;
 import org.example.service.impl.AuthServiceImpl;
+import org.example.service.impl.BCryptPasswordEncoder;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,16 +26,23 @@ class AuthServiceImplTest {
     @Mock
     private UserRepository userRepository;
 
+    @Mock
+    private PasswordEncoder passwordEncoder;
+
     @InjectMocks
     private AuthServiceImpl authService;
 
     @Test
     @DisplayName("authenticate - succeeds for valid credentials")
     void authenticate_ValidCredentials_Succeeds() {
-        AuthRequest authRequest = new AuthRequest("john.doe", "secret");
-        User user = buildUser("john.doe", "secret");
+        String rawPassword = "secret";
+        String hashedPassword = "dummyhashedpassword";
+
+        AuthRequest authRequest = new AuthRequest("john.doe", rawPassword);
+        User user = buildUser("john.doe", hashedPassword);
 
         when(userRepository.findByUsername("john.doe")).thenReturn(Optional.of(user));
+        when(passwordEncoder.matches(rawPassword, hashedPassword)).thenReturn(true);
 
         assertThatCode(() -> authService.authenticate(authRequest)).doesNotThrowAnyException();
     }

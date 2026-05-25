@@ -12,6 +12,7 @@ import org.example.dto.request.UserUpdateRequest;
 import org.example.dto.response.UserDTO;
 import org.example.entity.User;
 import org.example.mapper.UserMapper;
+import org.example.service.api.PasswordEncoder;
 import org.example.service.api.UserService;
 import org.example.util.CredentialGenerator;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserMapper userMapper;
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     /**
      * Get list of UserDTO
@@ -130,11 +132,11 @@ public class UserServiceImpl implements UserService {
         // User instance without credentials
         User user = userMapper.toEntity(userCreateRequest);
 
-        String username = defineNewUsernameForNewUserEntity(user);
-
         // set credentials
+        String username = defineNewUsernameForNewUserEntity(user);
         user.setUsername(username);
-        user.setPassword(CredentialGenerator.generatePassword());
+        String rawPassword = CredentialGenerator.generatePassword();
+        user.setPassword(passwordEncoder.encode(rawPassword));
 
         userRepository.save(user);
 
@@ -174,7 +176,8 @@ public class UserServiceImpl implements UserService {
     @Secured
     @Override
     public void changePassword(ChangePasswordRequest changePasswordRequest, AuthRequest authRequest) {
-        userRepository.changePassword(changePasswordRequest.username(), changePasswordRequest.password());
+        String rawPassword = changePasswordRequest.password();
+        userRepository.changePassword(changePasswordRequest.username(), passwordEncoder.encode(rawPassword));
     }
 
     /**

@@ -2,6 +2,7 @@ package org.example.service;
 
 import org.example.dao.TrainerRepository;
 import org.example.dao.TrainingTypeRepository;
+import org.example.dao.UserRepository;
 import org.example.dao.projection.TrainerView;
 import org.example.dto.request.AuthRequest;
 import org.example.dto.request.TraineeCreateRequest;
@@ -10,6 +11,7 @@ import org.example.dto.response.TraineeDTO;
 import org.example.dto.response.TrainerDTO;
 import org.example.entity.TrainingType;
 import org.example.entity.TrainingTypeName;
+import org.example.service.api.PasswordEncoder;
 import org.example.service.api.TraineeService;
 import org.example.service.api.TrainerService;
 import org.example.testsupport.AbstractServiceSliceTest;
@@ -45,7 +47,10 @@ class TrainerServiceImplIT extends AbstractServiceSliceTest {
     private TraineeService traineeService;
 
     @Autowired
-    private org.example.dao.UserRepository userRepository;
+    private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @BeforeEach
     void ensureAuthenticatedUserExists() {
@@ -134,7 +139,7 @@ class TrainerServiceImplIT extends AbstractServiceSliceTest {
         user.setFirstName("IT");
         user.setLastName("Auth");
         user.setUsername(username);
-        user.setPassword(password);
+        user.setPassword(passwordEncoder.encode(password));
         return user;
     }
 }

@@ -8,6 +8,7 @@ import org.example.dto.request.UserUpdateRequest;
 import org.example.dto.response.UserDTO;
 import org.example.entity.User;
 import org.example.mapper.UserMapper;
+import org.example.service.api.PasswordEncoder;
 import org.example.service.impl.UserServiceImpl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,6 +35,9 @@ class UserServiceImplTest {
     @Mock
     private UserRepository userRepository;
 
+    @Mock
+    private PasswordEncoder passwordEncoder;
+
     @InjectMocks
     private UserServiceImpl userService;
 
@@ -57,10 +61,13 @@ class UserServiceImplTest {
 
         UserDTO expectedDto = new UserDTO(1L, "John", "Doe", "john.doe1", null);
 
+        String hashedPassword = "dummyhashedpassword";
+
         when(userMapper.toEntity(request)).thenReturn(mappedUser);
         when(userRepository.existsByUsername("john.doe")).thenReturn(true);
         when(userRepository.existsByUsername("john.doe1")).thenReturn(false);
         when(userMapper.toDTO(any(User.class))).thenReturn(expectedDto);
+        when(passwordEncoder.encode(any())).thenReturn(hashedPassword);
 
         UserDTO result = userService.createUser(request);
 
