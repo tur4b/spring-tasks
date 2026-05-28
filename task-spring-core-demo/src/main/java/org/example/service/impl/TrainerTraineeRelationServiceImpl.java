@@ -27,6 +27,13 @@ public class TrainerTraineeRelationServiceImpl implements TrainerTraineeRelation
     private final TrainerRepository trainerRepository;
     private final TraineeRepository traineeRepository;
 
+    /**
+     * Replace the full trainer list of a trainee with the trainers provided in the request.
+     *
+     * @param request payload with trainee username and ordered list of trainer usernames
+     * @return updated list of assigned trainer DTOs
+     * @throws org.example.exception.model.NotFoundException if the trainee or any trainer is not found
+     */
     @Override
     public List<TraineeProfileTrainerDTO> updateTraineeTrainers(TraineeUpdateTrainersRequest request) {
 
@@ -103,11 +110,23 @@ public class TrainerTraineeRelationServiceImpl implements TrainerTraineeRelation
         return trainerRepository.existsTrainerTraineeRelation(trainerUsername, traineeUsername);
     }
 
+    /**
+     * Return all trainers currently assigned to the specified trainee.
+     *
+     * @param traineeUsername the trainee's login username
+     * @return list of trainer DTOs assigned to the trainee
+     */
     @Override
     public List<TraineeProfileTrainerDTO> findTrainersOfTraineeByTraineeUsername(String traineeUsername) {
         return trainerRepository.findTrainersOfTraineeByTraineeUsername(traineeUsername);
     }
 
+    /**
+     * Return all trainees currently assigned to the specified trainer.
+     *
+     * @param trainerUsername the trainer's login username
+     * @return list of trainee DTOs assigned to the trainer
+     */
     @Override
     public List<TrainerProfileTraineeDTO> findTraineesOfTrainerByTrainerUsername(String trainerUsername) {
         return trainerRepository.findTraineesOfTrainerByTrainerUsername(trainerUsername);

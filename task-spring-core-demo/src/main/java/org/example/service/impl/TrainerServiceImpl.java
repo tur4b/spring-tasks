@@ -219,6 +219,13 @@ public class TrainerServiceImpl implements TrainerService {
         return trainerRepository.findTrainersNotAssignedToTrainee(traineeUsername);
     }
 
+    /**
+     * Find the Trainer entity by username.
+     *
+     * @param username the trainer's login username
+     * @return the Trainer entity
+     * @throws org.example.exception.model.NotFoundException if no trainer with the given username exists
+     */
     @Override
     public Trainer findTrainerByUsername(String username) {
         return trainerRepository.findByUserUsername(username)
@@ -228,6 +235,11 @@ public class TrainerServiceImpl implements TrainerService {
                 ));
     }
 
+    /**
+     * Activate or deactivate the trainer identified in the request.
+     *
+     * @param statusRequest payload with the trainer's username and desired active state
+     */
     @Override
     public void updateStatus(UpdateStatusRequest statusRequest) {
         if(statusRequest.active()) {

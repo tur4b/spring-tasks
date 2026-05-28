@@ -45,6 +45,13 @@ public class AuthServiceImpl implements AuthService {
         }
     }
 
+    /**
+     * Change the password for the user identified in the request.
+     * Verifies the old password before applying the new hashed password.
+     *
+     * @param changePasswordRequest payload containing username, old password, and new password
+     * @throws org.example.exception.model.BadCredentialsException if the old password does not match
+     */
     @Override
     public void changePassword(ChangePasswordRequest changePasswordRequest) {
         BadCredentialsException badCredentialsException = new BadCredentialsException("Invalid credentials",

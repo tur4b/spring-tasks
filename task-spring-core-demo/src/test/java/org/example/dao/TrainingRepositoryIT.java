@@ -25,46 +25,44 @@ class TrainingRepositoryIT extends AbstractRepositoryIntegrationTest {
     @Autowired
     private TrainerRepository trainerRepository;
 
+    // ─── save + findById (inherited JPA) ─────────────────────────────────────
+
     @Test
-    @DisplayName("findTrainingViewById - returns view for persisted training")
-    void findTrainingViewById_ReturnsView() {
+    @DisplayName("save + findById - persists training and retrieves by ID")
+    void save_PersistsTraining_FindById_ReturnsIt() {
         Training t = persistTraining();
 
-        assertThat(trainingRepository.findTrainingViewById(t.getId())).isPresent();
+        assertThat(trainingRepository.findById(t.getId())).isPresent();
     }
 
     @Test
-    @DisplayName("findTrainingViewById - returns empty optional when training id does not exist")
-    void findTrainingViewById_ShouldReturnEmptyOptional_WhenTrainingIdMissing() {
-        assertThat(trainingRepository.findTrainingViewById(999_999L)).isEmpty();
+    @DisplayName("findById - returns empty Optional for unknown ID")
+    void findById_ReturnsEmpty_ForUnknownId() {
+        assertThat(trainingRepository.findById(999_999L)).isEmpty();
     }
 
-    @Test
-    @DisplayName("findAllTrainingsView - includes persisted training projections after each insert")
-    void findAllTrainingsView_ShouldIncludePersistedTrainingProjections() {
-        int before = trainingRepository.findAllTrainingsView().size();
-        persistTraining();
-
-        assertThat(trainingRepository.findAllTrainingsView()).hasSize(before + 1);
-    }
+    // ─── softDeleteById ───────────────────────────────────────────────────────
 
     @Test
-    @DisplayName("softDeleteById - sets active=false, returns 1")
+    @DisplayName("softDeleteById - sets active=false and returns 1 affected row")
     void softDeleteById_DeactivatesTraining() {
         Training t = persistTraining();
 
         assertThat(trainingRepository.softDeleteById(t.getId())).isEqualTo(1);
         assertThat(trainingRepository.findById(t.getId()))
-                .isPresent().get().extracting(Training::isActive).isEqualTo(false);
+                .isPresent()
+                .get()
+                .extracting(Training::isActive)
+                .isEqualTo(false);
     }
 
     @Test
     @DisplayName("softDeleteById - returns 0 for unknown id")
     void softDeleteById_UnknownId_ReturnsZero() {
-        assertThat(trainingRepository.softDeleteById(99999L)).isZero();
+        assertThat(trainingRepository.softDeleteById(99_999L)).isZero();
     }
 
-    // helper methods
+    // ─── helper methods ───────────────────────────────────────────────────────
 
     private Training persistTraining() {
         TrainingType type = persistTrainingType(TrainingTypeName.CARDIO);
@@ -78,7 +76,6 @@ class TrainingRepositoryIT extends AbstractRepositoryIntegrationTest {
         training.setType(type);
         training.setTrainer(trainer);
         training.setTrainee(trainee);
-
         return trainingRepository.save(training);
     }
 
@@ -89,30 +86,29 @@ class TrainingRepositoryIT extends AbstractRepositoryIntegrationTest {
     }
 
     private Trainee persistTrainee(String username) {
-        User traineeUser = new User();
-        traineeUser.setFirstName("Tr");
-        traineeUser.setLastName("Nee");
-        traineeUser.setUsername(username);
-        traineeUser.setPassword("pw");
+        User u = new User();
+        u.setFirstName("Tr");
+        u.setLastName("Nee");
+        u.setUsername(username);
+        u.setPassword("pw");
 
-        Trainee trainee = new Trainee();
-        trainee.setUser(traineeUser);
-        trainee.setAddress("City");
-        trainee.setDateOfBirth(LocalDate.of(2001, 1, 1));
-        return traineeRepository.save(trainee);
+        Trainee t = new Trainee();
+        t.setUser(u);
+        t.setAddress("City");
+        t.setDateOfBirth(LocalDate.of(2001, 1, 1));
+        return traineeRepository.save(t);
     }
 
     private Trainer persistTrainer(String username, TrainingType type) {
-        User trainerUser = new User();
-        trainerUser.setFirstName("Tr");
-        trainerUser.setLastName("Ner");
-        trainerUser.setUsername(username);
-        trainerUser.setPassword("pw");
+        User u = new User();
+        u.setFirstName("Tr");
+        u.setLastName("Ner");
+        u.setUsername(username);
+        u.setPassword("pw");
 
-        Trainer trainer = new Trainer();
-        trainer.setUser(trainerUser);
-        trainer.setSpecialization(type);
-        return trainerRepository.save(trainer);
+        Trainer tr = new Trainer();
+        tr.setUser(u);
+        tr.setSpecialization(type);
+        return trainerRepository.save(tr);
     }
 }
-

@@ -3,6 +3,7 @@ package org.example.service;
 import org.example.dao.UserRepository;
 import org.example.dto.request.AuthRequest;
 import org.example.entity.User;
+import org.example.exception.model.BadCredentialsException;
 import org.example.service.api.AuthService;
 import org.example.service.api.PasswordEncoder;
 import org.example.testsupport.AbstractServiceSliceTest;
@@ -40,14 +41,14 @@ class AuthServiceImplIT extends AbstractServiceSliceTest {
         userRepository.save(user("auth.user2", "correct"));
 
         assertThatThrownBy(() -> authService.authenticate(new AuthRequest("auth.user2", "wrong")))
-                .isInstanceOf(SecurityException.class);
+                .isInstanceOf(BadCredentialsException.class);
     }
 
     @Test
     @DisplayName("authenticate - throws SecurityException for unknown username")
     void authenticate_IfUnknownUser_ThrowsSecurityException() {
         assertThatThrownBy(() -> authService.authenticate(new AuthRequest("ghost.user", "pw")))
-                .isInstanceOf(SecurityException.class);
+                .isInstanceOf(BadCredentialsException.class);
     }
 
     private User user(String username, String password) {

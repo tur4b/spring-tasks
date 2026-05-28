@@ -201,11 +201,24 @@ public class TraineeServiceImpl implements TraineeService {
         );
     }
 
+    /**
+     * Check if trainee exists by username
+     *
+     * @param username the login username of the trainee
+     * @return {@code true} if a trainee with the given username exists
+     */
     @Override
     public boolean existsByUsername(String username) {
         return traineeRepository.existsByUserUsername(username);
     }
 
+    /**
+     * Find the Trainee entity by username.
+     *
+     * @param username the trainee's login username
+     * @return the Trainee entity
+     * @throws org.example.exception.model.NotFoundException if no trainee with the given username exists
+     */
     @Override
     public Trainee findTraineeByUsername(String username) {
         return traineeRepository.findByUserUsername(username)
@@ -215,6 +228,11 @@ public class TraineeServiceImpl implements TraineeService {
                 ));
     }
 
+    /**
+     * Activate or deactivate the trainee identified in the request.
+     *
+     * @param statusRequest payload with the trainee's username and desired active state
+     */
     @Override
     public void updateStatus(UpdateStatusRequest statusRequest) {
         if(statusRequest.active()) {

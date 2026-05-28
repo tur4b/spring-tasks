@@ -1,6 +1,7 @@
 package org.example.controller;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.example.dto.request.*;
 import org.example.dto.response.BaseResponse;
@@ -10,6 +11,7 @@ import org.example.service.api.TrainerService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,6 +19,7 @@ import java.util.List;
 /**
  * REST Controller for Trainer operations.
  */
+@Validated
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/trainers")
@@ -51,7 +54,8 @@ public class TrainerController {
      * @return trainer profile view response
      */
     @GetMapping("/{username}")
-    public ResponseEntity<BaseResponse<?>> getTrainerProfile(@PathVariable("username") String trainerUsername) {
+    public ResponseEntity<BaseResponse<?>> getTrainerProfile(
+            @NotBlank(message = "Username can't be blank") @PathVariable("username") String trainerUsername) {
         var trainers = trainerService.findTrainerViewByUsername(trainerUsername);
 
         return ResponseEntity
@@ -85,7 +89,8 @@ public class TrainerController {
      * @return completion response
      */
     @DeleteMapping("/{username}")
-    public ResponseEntity<?> deleteTrainee(@PathVariable("username") String traineeUsername) {
+    public ResponseEntity<?> deleteTrainee(
+            @NotBlank(message = "Username can't be blank") @PathVariable("username") String traineeUsername) {
 
         trainerService.deleteTrainer(traineeUsername);
         return ResponseEntity.ok(
@@ -100,7 +105,8 @@ public class TrainerController {
      * @return list of trainers not assigned to the trainee
      */
     @GetMapping("/not-assigned-on-trainee/{traineeUsername}")
-    public ResponseEntity<BaseResponse<?>> notAssignedOnTraineeTrainers(@PathVariable("traineeUsername") String traineeUsername) {
+    public ResponseEntity<BaseResponse<?>> notAssignedOnTraineeTrainers(
+            @NotBlank(message = "Username can't be blank") @PathVariable("traineeUsername") String traineeUsername) {
 
         var trainers = trainerService.findTrainersNotAssignedToTrainee(traineeUsername);
 

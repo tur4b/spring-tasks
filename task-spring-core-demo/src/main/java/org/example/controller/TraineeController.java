@@ -1,6 +1,7 @@
 package org.example.controller;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.example.dto.request.*;
 import org.example.dto.response.*;
@@ -8,6 +9,7 @@ import org.example.service.api.TraineeService;
 import org.example.service.api.TrainerTraineeRelationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,6 +17,7 @@ import java.util.List;
 /**
  * REST Controller for Trainee operations.
  */
+@Validated
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/trainees")
@@ -50,7 +53,8 @@ public class TraineeController {
      * @return trainee profile view response
      */
     @GetMapping("/{username}")
-    public ResponseEntity<BaseResponse<?>> getTraineeProfile(@PathVariable("username") String traineeUsername) {
+    public ResponseEntity<BaseResponse<?>> getTraineeProfile(
+            @NotBlank(message = "Username can't be blank") @PathVariable("username") String traineeUsername) {
 
         var trainees = traineeService.findTraineeViewByUsername(traineeUsername);
 
@@ -85,7 +89,8 @@ public class TraineeController {
      * @return completion response
      */
     @DeleteMapping("/{username}")
-    public ResponseEntity<?> deleteTrainee(@PathVariable("username") String traineeUsername) {
+    public ResponseEntity<?> deleteTrainee(
+            @NotBlank(message = "Username can't be blank") @PathVariable("username") String traineeUsername) {
 
         traineeService.deleteTrainee(traineeUsername);
         return ResponseEntity.ok(
