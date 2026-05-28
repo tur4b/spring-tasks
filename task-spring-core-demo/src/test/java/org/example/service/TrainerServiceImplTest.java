@@ -8,7 +8,6 @@ import org.example.dto.request.TrainerCreateRequest;
 import org.example.dto.response.UserDTO;
 import org.example.entity.Trainee;
 import org.example.entity.Trainer;
-import org.example.mapper.TrainerMapper;
 import org.example.service.api.TraineeService;
 import org.example.service.api.TrainingTypeService;
 import org.example.service.api.UserService;

@@ -1,4 +1,4 @@
-package org.example.config;
+package org.example.config.validation;
 
 import jakarta.validation.Validator;
 import org.springframework.context.annotation.Bean;

@@ -6,7 +6,6 @@ import org.example.dto.request.AuthRequest;
 import org.example.dto.request.TrainerCreateRequest;
 import org.example.dto.request.TraineeCreateRequest;
 import org.example.dto.request.TrainingCreateRequest;
-import org.example.dto.request.TrainingUpdateRequest;
 import org.example.dto.response.TrainerDTO;
 import org.example.dto.response.TraineeDTO;
 import org.example.dto.response.TrainingDTO;

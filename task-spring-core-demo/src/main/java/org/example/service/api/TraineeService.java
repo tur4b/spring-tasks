@@ -1,46 +1,30 @@
 package org.example.service.api;
 
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import org.example.dao.projection.TraineeView;
-import org.example.dao.projection.TrainingView;
 import org.example.dto.request.*;
-import org.example.dto.response.TraineeDTO;
+import org.example.dto.response.*;
 import org.example.entity.Trainee;
 
 import java.util.List;
 
 public interface TraineeService {
 
-    List<TraineeView> findAllTraineesView(@Valid AuthRequest authRequest);
+    TraineeProfileView findTraineeViewByUsername(String username);
 
-    TraineeView findTraineeViewById(@NotNull(message = "Trainee id can't be null") Long traineeId,
-                                    @Valid AuthRequest authRequest);
+    UserCredentialsDTO createTrainee(TraineeCreateRequest traineeCreateRequest);
 
-    TraineeDTO createTrainee(@Valid TraineeCreateRequest traineeCreateRequest);
+    TraineeProfileView updateTrainee(TraineeUpdateRequest traineeUpdateRequest);
 
-    TraineeDTO updateTrainee(@NotNull(message = "Trainee id can't be null") Long traineeId,
-                             @Valid TraineeUpdateRequest traineeUpdateRequest,
-                             @Valid AuthRequest authRequest);
+    boolean deleteTrainee(String username);
 
-    boolean deleteTraineeByUsername(@NotBlank(message = "Username can't be blank") String username,
-                                    @Valid AuthRequest authRequest);
+    boolean existsById(Long id);
 
-    boolean existsById(@NotNull(message = "Trainee id can't be null") Long id);
+    Trainee getReferenceById(Long traineeId);
 
-    void activate(@NotNull(message = "Trainee id can't be null") Long traineeId,
-                  @Valid AuthRequest authRequest);
+    List<TraineeTrainingProfileView> findTrainingsOfTraineeByCriteria(TrainingsOfTraineeSearchCriteria searchCriteria);
 
-    void deactivate(@NotNull(message = "Trainee id can't be null") Long traineeId,
-                    @Valid AuthRequest authRequest);
+    boolean existsByUsername(String username);
 
-    Trainee getReferenceById(@NotNull(message = "Trainee id can't be null") Long traineeId);
+    Trainee findTraineeByUsername(String username);
 
-    void changePassword(@Valid ChangePasswordRequest changePasswordRequest,
-                        @Valid AuthRequest authRequest);
-
-    List<TrainingView> findTrainingsOfTraineeByCriteria(@Valid TrainingsOfTraineeSearchCriteria searchCriteria,
-                                                        @Valid AuthRequest authRequest);
-
+    void updateStatus(UpdateStatusRequest statusRequest);
 }

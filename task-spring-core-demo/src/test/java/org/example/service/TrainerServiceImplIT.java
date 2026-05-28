@@ -3,7 +3,6 @@ package org.example.service;
 import org.example.dao.TrainerRepository;
 import org.example.dao.TrainingTypeRepository;
 import org.example.dao.UserRepository;
-import org.example.dao.projection.TrainerView;
 import org.example.dto.request.AuthRequest;
 import org.example.dto.request.TraineeCreateRequest;
 import org.example.dto.request.TrainerCreateRequest;

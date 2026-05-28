@@ -1,5 +1,7 @@
 package org.example.service.api;
 
+import jakarta.validation.constraints.NotBlank;
+
 public interface PasswordEncoder {
 
     /**
@@ -8,7 +10,7 @@ public interface PasswordEncoder {
      * @param rawPassword plaintext password
      * @return encoded version of rawPassword
      */
-    String encode(String rawPassword);
+    String encode(@NotBlank(message = "Password can't be null") String rawPassword);
 
     /**
      * Matches a raw password against an existing encoded format.

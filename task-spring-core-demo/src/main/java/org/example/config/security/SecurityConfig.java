@@ -1,4 +1,4 @@
-package org.example.config;
+package org.example.config.security;
 
 import org.example.service.api.PasswordEncoder;
 import org.example.service.impl.BCryptPasswordEncoder;

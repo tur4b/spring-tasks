@@ -4,10 +4,10 @@ import jakarta.persistence.EntityNotFoundException;
 import org.example.dao.TraineeRepository;
 import org.example.dto.request.*;
 import org.example.dto.response.TraineeDTO;
+import org.example.dto.response.UserCredentialsDTO;
 import org.example.dto.response.UserDTO;
 import org.example.entity.Trainee;
 import org.example.entity.User;
-import org.example.mapper.TraineeMapper;
 import org.example.service.api.UserService;
 import org.example.service.impl.TraineeServiceImpl;
 import org.junit.jupiter.api.DisplayName;
@@ -18,6 +18,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -44,7 +45,7 @@ class TraineeServiceImplTest {
     @DisplayName("createTrainee - creates user, assigns it to trainee, and saves trainee")
     void createTrainee_Success() {
         TraineeCreateRequest request = new TraineeCreateRequest("John", "Doe", "Baku", LocalDate.of(2000, 1, 1));
-        UserDTO createdUser = new UserDTO(10L, "John", "Doe", "john.doe", null);
+        UserDTO createdUser = new UserDTO(10L, "John", "Doe", "john.doe", "test", LocalDateTime.now());
         User userRef = new User();
         userRef.setId(10L);
         Trainee trainee = new Trainee();
@@ -55,7 +56,7 @@ class TraineeServiceImplTest {
         when(userService.getReferenceById(10L)).thenReturn(userRef);
         when(traineeMapper.toDTO(trainee, 10L)).thenReturn(expected);
 
-        TraineeDTO result = traineeService.createTrainee(request);
+        UserCredentialsDTO result = traineeService.createTrainee(request);
 
         verify(traineeRepository).save(trainee);
         assertThat(trainee.getUser()).isEqualTo(userRef);

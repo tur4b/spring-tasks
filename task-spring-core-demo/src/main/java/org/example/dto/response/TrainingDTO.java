@@ -10,7 +10,5 @@ public record TrainingDTO(
         String name,
         Integer typeId,
         LocalDate date,
-        int duration,
-        LocalDateTime createdAt,
-        LocalDateTime updatedAt) {
+        int duration) {
 }

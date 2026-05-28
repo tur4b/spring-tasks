@@ -1,6 +1,6 @@
-package org.example.config;
+package org.example.config.datasource;
 
-public record DataSourceProperties(
+record DataSourceProperties(
         String url,
         String username,
         String password,
@@ -9,7 +9,7 @@ public record DataSourceProperties(
         HikariProperties hikariCPProps
 ) {
 
-    public record JpaProperties(
+    record JpaProperties(
             String ddlAuto,
             String dialect,
             boolean showSql,
@@ -17,7 +17,7 @@ public record DataSourceProperties(
             String namingStrategy) {
     }
 
-    public record HikariProperties(
+    record HikariProperties(
             int maximumPoolSize,
             int minimumIdle,
             long connectionTimeout,

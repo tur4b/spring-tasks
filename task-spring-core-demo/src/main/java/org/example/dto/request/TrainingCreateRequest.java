@@ -9,17 +9,14 @@ import java.time.LocalDate;
 
 public record TrainingCreateRequest(
 
-        @NotNull(message = "Trainee id can't be null")
-        Long traineeId,
+        @NotBlank(message = "Trainee username can't be blank")
+        String traineeUsername,
 
-        @NotNull(message = "Trainer id can't be null")
-        Long trainerId,
+        @NotBlank(message = "Trainer username can't be blank")
+        String trainerUsername,
 
         @NotBlank(message = "Name can't be blank")
         String name,
-
-        @NotNull(message = "Type id can't be null")
-        Integer typeId,
 
         @NotNull(message = "Date can't be null")
         @FutureOrPresent(message = "Training date should be future or present")
