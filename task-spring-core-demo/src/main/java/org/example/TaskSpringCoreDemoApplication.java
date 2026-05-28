@@ -1,7 +1,7 @@
 package org.example;
 
-import jakarta.servlet.DispatcherType;
-import jakarta.servlet.Filter;
+import javax.servlet.DispatcherType;
+import javax.servlet.Filter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.Context;
 import org.apache.catalina.Wrapper;

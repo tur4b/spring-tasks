@@ -1,6 +1,6 @@
 package org.example.dto.request;
 
-import jakarta.validation.constraints.NotBlank;
+import javax.validation.constraints.NotBlank;
 
 import java.time.LocalDate;
 

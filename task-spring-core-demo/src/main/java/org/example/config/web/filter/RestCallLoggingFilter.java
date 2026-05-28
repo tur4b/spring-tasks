@@ -1,10 +1,11 @@
 package org.example.config.web.filter;
 
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.ContentCachingRequestWrapper;
@@ -12,6 +13,8 @@ import org.springframework.web.util.ContentCachingResponseWrapper;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
+import java.util.Set;
 
 @Slf4j
 @Component("RestCallLoggingFilter")
@@ -19,12 +22,19 @@ public class RestCallLoggingFilter extends OncePerRequestFilter {
 
     private static final int MAX_LOG_LENGTH = 2000;
 
+    private static final Map<String, Set<HttpMethod>> NOT_FILTER = Map.ofEntries(
+            Map.entry("/swagger-ui", Set.of(HttpMethod.GET)),
+            Map.entry("/swagger-ui.html", Set.of(HttpMethod.GET)),
+            Map.entry("/swagger-ui/index.html", Set.of(HttpMethod.GET)),
+            Map.entry("/v2/api-docs", Set.of(HttpMethod.GET))
+    );
+
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
 
-        ContentCachingRequestWrapper requestWrapper = new ContentCachingRequestWrapper(request, -1);
+        ContentCachingRequestWrapper requestWrapper = new ContentCachingRequestWrapper(request);
         ContentCachingResponseWrapper responseWrapper = new ContentCachingResponseWrapper(response);
 
         long startedAt = System.currentTimeMillis();
@@ -86,5 +96,42 @@ public class RestCallLoggingFilter extends OncePerRequestFilter {
                 .replaceAll("(?i)\"password\"\\s*:\\s*\"[^\"]*\"", "\"password\":\"***\"")
                 .replaceAll("(?i)\"oldPassword\"\\s*:\\s*\"[^\"]*\"", "\"oldPassword\":\"***\"")
                 .replaceAll("(?i)\"newPassword\"\\s*:\\s*\"[^\"]*\"", "\"newPassword\":\"***\"");
+    }
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String path = request.getRequestURI();
+        String method = request.getMethod();
+
+        if (isSwaggerStaticPath(path)) {
+            log.debug("Path {} method {} is swagger static resource (logging skipped)", path, method);
+            return true;
+        }
+
+        // Check method-specific unsecured routes (exact path match only, no subpaths)
+        boolean isUnsecured = NOT_FILTER.entrySet().stream()
+                .anyMatch(entry -> {
+                    String routePath = entry.getKey();
+                    Set<HttpMethod> allowedMethods = entry.getValue();
+
+                    boolean pathMatches = path.equals(routePath);
+
+                    boolean methodMatches = allowedMethods.stream()
+                            .anyMatch(m -> m.name().equals(method));
+
+                    return pathMatches && methodMatches;
+                });
+
+        if (isUnsecured) {
+            log.debug("Path {} method {} is unsecured (no auth required)", path, method);
+            return true;
+        }
+
+        log.debug("Path {} method {} requires authentication", path, method);
+        return false;
+    }
+
+    private boolean isSwaggerStaticPath(String path) {
+        return path.startsWith("/swagger-resources") || path.startsWith("/webjars/");
     }
 }

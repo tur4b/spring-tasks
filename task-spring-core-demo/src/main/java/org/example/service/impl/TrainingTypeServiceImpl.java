@@ -1,6 +1,6 @@
 package org.example.service.impl;
 
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.example.dao.TrainingTypeRepository;
 import org.example.dto.response.TrainingTypeDTO;

@@ -6,7 +6,6 @@ import org.example.exception.model.NotFoundException;
 import org.example.exception.model.ErrorResponse;
 import org.example.exception.model.SecurityException;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -28,7 +27,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> handleSecurityException(SecurityException exc) {
         ErrorResponse errorResponse = ErrorResponse.of(exc.getType(), exc.getMessage(), List.of());
 
-        HttpStatusCode statusCode = HttpStatus.FORBIDDEN;
+        HttpStatus statusCode = HttpStatus.FORBIDDEN;
 
         if(exc instanceof BadCredentialsException) {
             statusCode = HttpStatus.UNAUTHORIZED;

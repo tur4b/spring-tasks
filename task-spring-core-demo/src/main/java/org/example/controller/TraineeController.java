@@ -1,7 +1,9 @@
 package org.example.controller;
 
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.example.dto.request.*;
 import org.example.dto.response.*;
@@ -21,6 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/trainees")
+@Api(tags = "Trainees")
 public class TraineeController {
 
     private final TraineeService traineeService;
@@ -33,6 +36,7 @@ public class TraineeController {
      * @return ResponseEntity with 201 status and UserCredentialsDTO
      */
     @PostMapping
+    @ApiOperation(value = "Register trainee")
     public ResponseEntity<BaseResponse<UserCredentialsDTO>> registerTrainee(
             @Valid @RequestBody TraineeCreateRequest registrationRequest) {
 
@@ -53,6 +57,7 @@ public class TraineeController {
      * @return trainee profile view response
      */
     @GetMapping("/{username}")
+    @ApiOperation(value = "Get trainee profile by username")
     public ResponseEntity<BaseResponse<?>> getTraineeProfile(
             @NotBlank(message = "Username can't be blank") @PathVariable("username") String traineeUsername) {
 
@@ -73,6 +78,7 @@ public class TraineeController {
      * @return updated trainee profile view response
      */
     @PutMapping
+    @ApiOperation(value = "Update trainee profile")
     public ResponseEntity<BaseResponse<?>> updateTrainee(@Valid @RequestBody TraineeUpdateRequest updateRequest) {
 
         var traineeProfileView = traineeService.updateTrainee(updateRequest);
@@ -89,6 +95,7 @@ public class TraineeController {
      * @return completion response
      */
     @DeleteMapping("/{username}")
+    @ApiOperation(value = "Delete trainee by username")
     public ResponseEntity<?> deleteTrainee(
             @NotBlank(message = "Username can't be blank") @PathVariable("username") String traineeUsername) {
 
@@ -105,6 +112,7 @@ public class TraineeController {
      * @return updated list of assigned trainers
      */
     @PutMapping("/{username}/trainers")
+    @ApiOperation(value = "Replace trainee trainers list")
     public ResponseEntity<BaseResponse<?>> updateTraineeTrainersList(
             @Valid @RequestBody TraineeUpdateTrainersRequest updateRequest) {
 
@@ -125,6 +133,7 @@ public class TraineeController {
      * @return filtered trainee trainings list
      */
     @GetMapping("/trainings")
+    @ApiOperation(value = "Get trainee trainings by criteria")
     public ResponseEntity<BaseResponse<?>> getTraineeTrainingsList(@Valid TrainingsOfTraineeSearchCriteria searchCriteria) {
 
         List<TraineeTrainingProfileView> trainings = traineeService.findTrainingsOfTraineeByCriteria(searchCriteria);
@@ -144,6 +153,7 @@ public class TraineeController {
      * @return OK when status update succeeds
      */
     @PatchMapping("/status")
+    @ApiOperation(value = "Update trainee active status")
     public ResponseEntity<BaseResponse<?>> statusUpdate(@Valid @RequestBody UpdateStatusRequest statusRequest) {
 
         traineeService.updateStatus(statusRequest);

@@ -1,10 +1,10 @@
 package org.example.config.web.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.dto.request.AuthRequest;
@@ -16,7 +16,6 @@ import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
-import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -35,7 +34,9 @@ public class AuthenticationFilter extends OncePerRequestFilter {
      * Method-specific unsecured routes: path -> allowed methods (no auth required)
      */
     private static final Map<String, Set<HttpMethod>> UNSECURED_ROUTES = Map.ofEntries(
-            Map.entry("/login", Set.of(HttpMethod.POST)),
+            Map.entry("/swagger-ui", Set.of(HttpMethod.GET)),
+            Map.entry("/auth/login", Set.of(HttpMethod.POST)),
+            Map.entry("/auth/base64-token", Set.of(HttpMethod.GET)),
             Map.entry("/trainees", Set.of(HttpMethod.POST)),
             Map.entry("/trainers", Set.of(HttpMethod.POST))
     );
@@ -52,25 +53,21 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 
         String authToken = request.getHeader(HttpHeaders.AUTHORIZATION);
 
-        if (authToken != null && authToken.startsWith("Basic ")) {
-            try {
-                AuthRequest authRequest = AuthRequest.fromBasicAuth(authToken);
-                authService.authenticate(authRequest);
-            } catch (SecurityException ex){
-                log.warn("Authentication failed for request {} {}: {}",
-                        request.getMethod(), request.getRequestURI(), ex.getMessage());
+        if (authToken == null || !authToken.startsWith("Basic ")) {
+            log.warn("Missing or invalid Authorization header for secured request {} {}",
+                    request.getMethod(), request.getRequestURI());
+            writeUnauthorizedResponse(response, "Authentication required");
+            return;
+        }
 
-                ErrorResponse errorResponse = ErrorResponse.of(
-                        ex.getType(),
-                        ex.getMessage(),
-                        List.of()
-                );
-
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                response.setContentType("application/json");
-                objectMapper.writeValue(response.getWriter(), errorResponse);
-                return;
-            }
+        try {
+            AuthRequest authRequest = AuthRequest.fromBasicAuth(authToken);
+            authService.authenticate(authRequest);
+        } catch (SecurityException ex){
+            log.warn("Authentication failed for request {} {}: {}",
+                    request.getMethod(), request.getRequestURI(), ex.getMessage());
+            writeUnauthorizedResponse(response, ex.getMessage());
+            return;
         }
 
         filterChain.doFilter(request, response);
@@ -80,6 +77,11 @@ public class AuthenticationFilter extends OncePerRequestFilter {
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getRequestURI();
         String method = request.getMethod();
+
+        if (isSwaggerPath(path)) {
+            log.debug("Path {} method {} is swagger-related (no auth required)", path, method);
+            return true;
+        }
 
         // Check method-specific unsecured routes (exact path match only, no subpaths)
         boolean isUnsecured = UNSECURED_ROUTES.entrySet().stream()
@@ -103,5 +105,26 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 
         log.debug("Path {} method {} requires authentication", path, method);
         return false;
+    }
+
+    private boolean isSwaggerPath(String path) {
+        return "/swagger-ui.html".equals(path)
+                || "/swagger-ui".equals(path)
+                || "/swagger-ui/index.html".equals(path)
+                || "/v2/api-docs".equals(path)
+                || path.startsWith("/swagger-resources")
+                || path.startsWith("/webjars/");
+    }
+
+    private void writeUnauthorizedResponse(HttpServletResponse response, String message) throws IOException {
+        ErrorResponse errorResponse = ErrorResponse.of(
+                ErrorResponse.ErrorType.UNAUTHORIZED,
+                message,
+                List.of()
+        );
+
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setContentType("application/json");
+        objectMapper.writeValue(response.getWriter(), errorResponse);
     }
 }

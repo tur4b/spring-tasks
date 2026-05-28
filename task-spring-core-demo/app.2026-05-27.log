@@ -1,2 +1,0 @@
-2026-05-27 02:38:44.069 [http-nio-8080-exec-3] ERROR o.e.s.impl.BCryptPasswordEncoder - >> error for password matching: Invalid salt version
-2026-05-27 02:40:51.086 [http-nio-8080-exec-2] ERROR o.e.s.impl.BCryptPasswordEncoder - >> error for password matching: Invalid salt version

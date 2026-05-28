@@ -1,6 +1,6 @@
 package org.example.dao;
 
-import jakarta.validation.Valid;
+import javax.validation.Valid;
 import org.example.dto.request.AuthRequest;
 import org.example.dto.request.ChangePasswordRequest;
 import org.example.entity.User;
