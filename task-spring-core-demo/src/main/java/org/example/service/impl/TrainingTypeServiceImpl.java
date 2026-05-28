@@ -1,11 +1,12 @@
 package org.example.service.impl;
 
-import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.example.dao.TrainingTypeRepository;
 import org.example.dto.response.TrainingTypeDTO;
 import org.example.entity.TrainingType;
+import org.example.exception.model.NotFoundException;
+import org.example.exception.model.ErrorResponse;
 import org.example.mapper.TrainingTypeMapper;
 import org.example.service.api.TrainingTypeService;
 import org.springframework.stereotype.Service;
@@ -30,7 +31,7 @@ public class TrainingTypeServiceImpl implements TrainingTypeService {
     public TrainingTypeDTO findById(Integer id) {
         return trainingTypeRepository.findById(id)
                 .map(trainingTypeMapper::toDTO)
-                .orElseThrow(() -> new EntityNotFoundException("TrainingType found with ID: " + id));
+                .orElseThrow(() -> new NotFoundException("TrainingType found with ID: " + id, ErrorResponse.ErrorPointer.id));
     }
 
     /**

@@ -1,22 +1,18 @@
 package org.example.service.impl;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.aspect.Secured;
+import org.example.dao.TraineeRepository;
 import org.example.dao.TrainerRepository;
-import org.example.dao.projection.TrainerView;
-import org.example.dao.projection.TrainingView;
 import org.example.dto.request.*;
-import org.example.dto.response.TrainerDTO;
-import org.example.dto.response.UserDTO;
-import org.example.entity.Trainee;
+import org.example.dto.response.*;
 import org.example.entity.Trainer;
 import org.example.entity.TrainingType;
 import org.example.entity.User;
-import org.example.mapper.TrainerMapper;
-import org.example.service.api.TraineeService;
+import org.example.exception.model.NotFoundException;
+import org.example.exception.model.ErrorResponse;
 import org.example.service.api.TrainerService;
+import org.example.service.api.TrainerTraineeRelationService;
 import org.example.service.api.TrainingTypeService;
 import org.example.service.api.UserService;
 import org.springframework.stereotype.Service;
@@ -35,53 +31,72 @@ import java.util.List;
 @Service
 public class TrainerServiceImpl implements TrainerService {
 
-    private final TrainerMapper trainerMapper;
     private final TrainerRepository trainerRepository;
     private final UserService userService;
     private final TrainingTypeService trainingTypeService;
-    private final TraineeService traineeService;
-
-    /**
-     * Get list of TrainerView
-     *
-     * @param authRequest the instance of AuthRequest containing credentials
-     * @return list of projected trainers as TrainerView
-     */
-    @Secured
-    @Override
-    public List<TrainerView> findAllTrainersView(AuthRequest authRequest) {
-        log.debug("Find All Trainer");
-        return trainerRepository.findAllTrainersView();
-    }
+    private final TrainerTraineeRelationService trainerTraineeRelationService;
+    private final TraineeRepository traineeRepository;
 
     /**
      * Get TrainerView by trainer ID
      *
-     * @param trainerId the ID of the trainer
-     * @param authRequest the instance of AuthRequest containing credentials
+     * @param trainerUsername the username of the trainer
      * @return TrainerView corresponding to the given ID
      */
-    @Secured
     @Override
-    public TrainerView findTrainerViewById(Long trainerId, AuthRequest authRequest) {
-        log.debug("Find Trainer by ID: {}", trainerId);
-        return trainerRepository.findTrainerViewById(trainerId)
-                .orElseThrow(() -> new EntityNotFoundException("Trainer not found with ID: " + trainerId));
+    public TrainerProfileView findTrainerViewByUsername(String trainerUsername) {
+        log.debug("Find Trainer by username: {}", trainerUsername);
+
+        TrainerDTO trainerDTO = trainerRepository.findTrainerDTOByUsername(trainerUsername)
+                .orElseThrow(() -> new NotFoundException(
+                        "Trainer not found with given username: " + trainerUsername,
+                        ErrorResponse.ErrorPointer.username)
+                );
+
+        List<TrainerProfileTraineeDTO> trainerDTOS = trainerTraineeRelationService
+                .findTraineesOfTrainerByTrainerUsername(trainerUsername);
+
+        return new TrainerProfileView(
+                trainerDTO.firstName(),
+                trainerDTO.lastName(),
+                trainerDTO.specializationId(),
+                trainerDTO.isActive(),
+                trainerDTOS
+        );
     }
 
     /**
-     * Create a new trainer with auto-generated credentials.
-     * Handles duplicate username scenarios by appending a serial number.
+     * Delete a trainer by username.
      *
-     * @param trainerCreateRequest the request object containing trainer details
-     * @return created TrainerDTO with generated username and password
+     * @param trainerUsername the username of the trainer to delete
+     * @return true if deletion was successful, false otherwise
      */
     @Override
-    public TrainerDTO createTrainer(TrainerCreateRequest trainerCreateRequest) {
-        log.debug("Create Trainer request: {}", trainerCreateRequest);
+    public boolean deleteTrainer(String trainerUsername) {
+        if (!trainerRepository.existsByUserUsername(trainerUsername)) {
+            log.debug("Trainer not found with username: {}", trainerUsername);
+            return false;
+        }
 
-        // creating a new user
-        UserDTO userDTO = userService.createUser(
+        trainerRepository.deleteByUserUsername(trainerUsername);
+        return true;
+    }
+
+    /**
+     * Register a new trainer with auto-generated credentials.
+     * Handles duplicate username scenarios by appending a serial number.
+     * Returns only credentials for security-focused registration response.
+     *
+     * @param trainerCreateRequest the request object containing trainer details
+     * @return UserCredentialsDTO containing generated username and password
+     * @throws NotFoundException if specialization does not exist
+     */
+    @Override
+    public UserCredentialsDTO createTrainer(TrainerCreateRequest trainerCreateRequest) {
+        log.debug("Register Trainer request: {}", trainerCreateRequest);
+
+        // creating a new user with auto-generated credentials
+        UserCredentialsDTO userCredentialsDTO = userService.createUser(
                 new UserCreateRequest(
                     trainerCreateRequest.firstName(),
                     trainerCreateRequest.lastName()
@@ -90,48 +105,56 @@ public class TrainerServiceImpl implements TrainerService {
 
         Trainer trainer = new Trainer();
 
-        // set newly create user to trainer
-        User createdUserEntityRef = userService.getReferenceById(userDTO.id());
+        // set newly created user to trainer
+        User createdUserEntityRef = userService.getReferenceById(userCredentialsDTO.id());
         trainer.setUser(createdUserEntityRef);
 
         // set specialization
         if (!trainingTypeService.existsById(trainerCreateRequest.specializationId())) {
-            throw new EntityNotFoundException("TrainingType not found with ID: " + trainerCreateRequest.specializationId());
+            throw new NotFoundException("TrainingType not found with ID: " + trainerCreateRequest.specializationId(), ErrorResponse.ErrorPointer.id);
         }
 
         TrainingType specialization = trainingTypeService.getReferenceById(trainerCreateRequest.specializationId());
         trainer.setSpecialization(specialization);
 
-        // save changes
-        Trainer createdTrainer = trainerRepository.save(trainer);
-        log.debug("Trainer created with username: {}", userDTO.username());
+        // save trainer with associated user and specialization
+        trainerRepository.save(trainer);
+        log.debug("Trainer registered with username: {}", userCredentialsDTO.username());
 
-        return trainerMapper.toDTO(trainer, userDTO.id(), trainerCreateRequest.specializationId());
+        // Best Practice: Return only credentials for security-sensitive registration
+        return userCredentialsDTO;
     }
 
     /**
      * Update an existing trainer profile.
      *
-     * @param trainerId the ID of the trainer to update
      * @param updateRequest the request object containing updated trainer details
-     * @param authRequest the instance of AuthRequest containing credentials
      * @return updated TrainerDTO
      */
-    @Secured
     @Override
-    public TrainerDTO updateTrainer(Long trainerId, TrainerUpdateRequest updateRequest, AuthRequest authRequest) {
-        log.debug("Update Trainer id: {} and request: {}", trainerId, updateRequest);
+    public TrainerProfileView updateTrainer(TrainerUpdateRequest updateRequest) {
+        log.debug("Update Trainer - request: {}", updateRequest);
 
-        Trainer trainer = trainerRepository.findById(trainerId)
-                .orElseThrow(() -> new RuntimeException("Trainer not found with ID: " + trainerId));
+        Trainer trainer = trainerRepository.findByUserUsername(updateRequest.username())
+                .orElseThrow(() -> new NotFoundException(
+                        "Trainer not found with username: " + updateRequest.username(),
+                        ErrorResponse.ErrorPointer.username)
+                );
 
         // update user details trainer belongs to
         User user = trainer.getUser();
-        userService.updateUser(user.getId(), new UserUpdateRequest(updateRequest.firstName(), updateRequest.lastName()), authRequest);
+
+        System.out.println("----------------------");
+
+        userService.updateUser(user.getId(),
+                new UserUpdateRequest(updateRequest.firstName(), updateRequest.lastName()));
 
         // set specialization
         if (!trainingTypeService.existsById(updateRequest.specializationId())) {
-            throw new EntityNotFoundException("TrainingType not found with ID: " + updateRequest.specializationId());
+            throw new NotFoundException(
+                    "TrainingType not found with ID: " + updateRequest.specializationId(),
+                    ErrorResponse.ErrorPointer.id
+            );
         }
 
         TrainingType specialization = trainingTypeService.getReferenceById(updateRequest.specializationId());
@@ -140,7 +163,16 @@ public class TrainerServiceImpl implements TrainerService {
         // save changes
         trainerRepository.save(trainer);
 
-        return trainerMapper.toDTO(trainer, user.getId(), updateRequest.specializationId());
+        List<TrainerProfileTraineeDTO> trainerDTOS = trainerTraineeRelationService
+                .findTraineesOfTrainerByTrainerUsername(updateRequest.username());
+
+        return new TrainerProfileView(
+                user.getFirstName(),
+                user.getLastName(),
+                updateRequest.specializationId(),
+                trainer.isActive(),
+                trainerDTOS
+        );
     }
 
     /**
@@ -155,97 +187,14 @@ public class TrainerServiceImpl implements TrainerService {
     }
 
     /**
-     * Activate Trainer with given ID
-     *
-     * @param trainerId the id of the trainer
-     * @param authRequest the instance of AuthRequest containing credentials
-     * @throws EntityNotFoundException if trainer not found
-     * @throws RuntimeException if trainer is already active
-     */
-    @Secured
-    @Override
-    public void activate(Long trainerId, AuthRequest authRequest) {
-        Trainer trainer = trainerRepository.findById(trainerId)
-                .orElseThrow(() -> new EntityNotFoundException("Trainer not found with ID: " + trainerId));
-
-        if(trainer.isActive()) {
-            throw new RuntimeException("Trainer already active with ID: " + trainerId);
-        }
-        trainer.setActive(true);
-        trainerRepository.save(trainer);
-    }
-
-    /**
-     * Deactivate Trainer with given ID
-     *
-     * @param authRequest the instance of AuthRequest containing credentials
-     * @throws EntityNotFoundException if trainer not found
-     * @throws RuntimeException if trainer is already inactive
-     */
-    @Secured
-    @Override
-    public void deactivate(Long trainerId, AuthRequest authRequest) {
-        Trainer trainer = trainerRepository.findById(trainerId)
-                .orElseThrow(() -> new EntityNotFoundException("Trainer not found with ID: " + trainerId));
-
-        if(!trainer.isActive()) {
-            throw new RuntimeException("Trainer already inactive with ID: " + trainerId);
-        }
-        trainer.setActive(false);
-        trainerRepository.save(trainer);
-    }
-
-    /**
-     * Check if Trainer Trainee relationship exists according to trainerId and traineeId
-     *
-     * @param trainerId the id of Trainer
-     * @param traineeId the id of Trainee
-     * @return boolean true of exists, false it does not exist
-     */
-    @Override
-    public boolean existsTrainerTraineeRelation(Long trainerId, Long traineeId) {
-        return trainerRepository.existsTrainerTraineeRelation(trainerId, traineeId);
-    }
-
-    /**
-     * Get reference to Trainer entity
-     *
-     * @param trainerId the ig of Trainer
-     * @return Trainer entity
-     */
-    @Override
-    public Trainer getReferenceById(Long trainerId) {
-        return trainerRepository.getReferenceById(trainerId);
-    }
-
-    /**
-     * ChangePassword according given credentials
-     *
-     * @param changePasswordRequest the instance of ChangePasswordRequest
-     * @param authRequest the instance of AuthRequest containing credentials
-     */
-    @Override
-    @Secured
-    public void changePassword(ChangePasswordRequest changePasswordRequest,
-                               AuthRequest authRequest) {
-        if(!trainerRepository.existsByUserUsername(changePasswordRequest.username())) {
-            throw new EntityNotFoundException("Trainer not found with username: " + changePasswordRequest.username());
-        }
-        userService.changePassword(changePasswordRequest, authRequest);
-    }
-
-    /**
      * Get all Trainings of Trainer according to given searchCriteria
      *
      * @param searchCriteria containing criteria data for filtering
-     * @param authRequest the instance of AuthRequest containing credentials
      * @return list of TrainingView
      */
     @Transactional(readOnly = true)
-    @Secured
     @Override
-    public List<TrainingView> findTrainingsOfTrainerByCriteria(TrainingsOfTrainerSearchCriteria searchCriteria,
-                                                               AuthRequest authRequest) {
+    public List<TrainerTrainingProfileView> findTrainingsOfTrainerByCriteria(TrainingsOfTrainerSearchCriteria searchCriteria) {
         return trainerRepository.findTrainingsOfTrainerByCriteria(
                 searchCriteria.trainerUsername(),
                 searchCriteria.fromDate(),
@@ -259,49 +208,79 @@ public class TrainerServiceImpl implements TrainerService {
      * Get list of TrainerView which not assigned to given trainee
      *
      * @param traineeUsername username of Trainee
-     * @param authRequest the instance of AuthRequest containing credentials
-     * @return list of TraineeView
+     * @return list of TraineeProfileTrainerDTO
      */
     @Transactional(readOnly = true)
-    @Secured
     @Override
-    public List<TrainerView> findTrainersNotAssignedToTrainee(String traineeUsername, AuthRequest authRequest) {
+    public List<TraineeProfileTrainerDTO> findTrainersNotAssignedToTrainee(String traineeUsername) {
+        if (!traineeRepository.existsByUserUsername(traineeUsername)) {
+            return List.of();
+        }
         return trainerRepository.findTrainersNotAssignedToTrainee(traineeUsername);
     }
 
     /**
-     * Reassign Trainee to Trainers
+     * Find the Trainer entity by username.
      *
-     * @param traineeId id of Trainee
-     * @param trainerIds id list of Trainer
-     * @param authRequest the instance of AuthRequest containing credentials
+     * @param username the trainer's login username
+     * @return the Trainer entity
+     * @throws org.example.exception.model.NotFoundException if no trainer with the given username exists
      */
-    @Secured
     @Override
-    public void reassignTraineeToTrainers(Long traineeId, List<Long> trainerIds, AuthRequest authRequest) {
-        // Optional: remove duplicates to keep behavior deterministic
-        List<Long> uniqueTrainerIds = trainerIds.stream().distinct().toList();
-
-        Trainee trainee = traineeService.getReferenceById(traineeId);
-
-        List<Trainer> targetTrainers = trainerRepository.findAllById(uniqueTrainerIds);
-        if (targetTrainers.size() != uniqueTrainerIds.size()) {
-            throw new EntityNotFoundException("All trainers not found");
-        }
-
-        List<Trainer> currentTrainers = trainerRepository.findAllByTraineesId(traineeId);
-        for (Trainer current : currentTrainers) {
-            current.getTrainees().remove(trainee);
-        }
-
-        for (Trainer target : targetTrainers) {
-            if (!target.getTrainees().contains(trainee)) {
-                target.getTrainees().add(trainee);
-            }
-        }
-
-        trainerRepository.saveAll(currentTrainers);
-        trainerRepository.saveAll(targetTrainers);
+    public Trainer findTrainerByUsername(String username) {
+        return trainerRepository.findByUserUsername(username)
+                .orElseThrow(() -> new NotFoundException(
+                        "Trainer not found by username: " + username,
+                        ErrorResponse.ErrorPointer.username
+                ));
     }
 
+    /**
+     * Activate or deactivate the trainer identified in the request.
+     *
+     * @param statusRequest payload with the trainer's username and desired active state
+     */
+    @Override
+    public void updateStatus(UpdateStatusRequest statusRequest) {
+        if(statusRequest.active()) {
+            activate(statusRequest.username());
+        } else {
+            deactivate(statusRequest.username());
+        }
+    }
+
+    // helper methods
+
+    /**
+     * Activate Trainer with given username
+     *
+     * @param trainerUsername the username of the trainer
+     * @throws NotFoundException if trainer not found
+     * @throws RuntimeException if trainer is already active
+     */
+    private void activate(String trainerUsername) {
+        Trainer trainer = findTrainerByUsername(trainerUsername);
+
+        if(trainer.isActive()) {
+            throw new RuntimeException("Trainer already active with username: " + trainerUsername);
+        }
+        trainer.setActive(true);
+        trainerRepository.save(trainer);
+    }
+
+    /**
+     * Deactivate Trainer with given ID
+     *
+     * @throws NotFoundException if trainer not found
+     * @throws RuntimeException if trainer is already inactive
+     */
+    private void deactivate(String trainerUsername) {
+        Trainer trainer = findTrainerByUsername(trainerUsername);
+
+        if(!trainer.isActive()) {
+            throw new RuntimeException("Trainer already inactive for username: " + trainerUsername);
+        }
+        trainer.setActive(false);
+        trainerRepository.save(trainer);
+    }
 }

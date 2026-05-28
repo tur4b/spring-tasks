@@ -1,30 +1,24 @@
 package org.example.service.api;
 
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
-import org.example.dao.projection.TrainingView;
-import org.example.dto.request.AuthRequest;
 import org.example.dto.request.TrainingCreateRequest;
-import org.example.dto.request.TrainingUpdateRequest;
 import org.example.dto.response.TrainingDTO;
-
-import java.util.List;
 
 public interface TrainingService {
 
-    List<TrainingView> findAllTrainingsView(@Valid AuthRequest authRequest);
+    /**
+     * Create a new training session between an already-linked trainer and trainee.
+     *
+     * @param createRequest payload with trainee/trainer usernames, name, date, and duration
+     * @return TrainingDTO representing the persisted training
+     * @throws org.example.exception.model.NotFoundException if the trainer–trainee relationship does not exist
+     */
+    TrainingDTO createTraining(TrainingCreateRequest createRequest);
 
-    TrainingView findTrainingViewById(@NotNull(message = "Training id cant be null") Long trainingId,
-                                      @Valid AuthRequest authRequest);
-
-    TrainingDTO createTraining(@Valid TrainingCreateRequest createRequest,
-                               @Valid AuthRequest authRequest);
-
-    TrainingDTO updateTraining(@NotNull(message = "Training id cant be null")  Long trainingId,
-                               @Valid TrainingUpdateRequest updateRequest,
-                               @Valid AuthRequest authRequest);
-
-    boolean deleteTraining(@NotNull(message = "Training id cant be null") Long trainingId,
-                           @Valid AuthRequest authRequest);
-
+    /**
+     * Soft-delete a training by ID (sets {@code active = false}).
+     *
+     * @param trainingId the ID of the training to delete
+     * @return {@code true} if a row was affected, {@code false} if no matching training found
+     */
+    boolean deleteTraining(Long trainingId);
 }

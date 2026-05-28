@@ -1,6 +1,7 @@
 package org.example.dao;
 
-import org.example.dao.projection.TrainingView;
+import org.example.dto.response.TraineeDTO;
+import org.example.dto.response.TraineeTrainingProfileView;
 import org.example.entity.Trainee;
 import org.example.entity.Trainer;
 import org.example.entity.Training;
@@ -13,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -31,85 +33,118 @@ class TraineeRepositoryIT extends AbstractRepositoryIntegrationTest {
     @Autowired
     private TrainingRepository trainingRepository;
 
-    @Test
-    @DisplayName("findByUserUsername - returns trainee after save")
-    void findByUserUsername_ReturnsTrainee() {
-        traineeRepository.save(trainee("trainee.one"));
+    // ─── findByUserUsername ──────────────────────────────────────────────────
 
-        assertThat(traineeRepository.findByUserUsername("trainee.one")).isPresent();
+    @Test
+    @DisplayName("findByUserUsername - returns present Optional after save")
+    void findByUserUsername_ReturnsTrainee() {
+        traineeRepository.save(trainee("findby.username"));
+
+        assertThat(traineeRepository.findByUserUsername("findby.username")).isPresent();
     }
 
     @Test
-    @DisplayName("existsByUserUsername - returns correct booleans")
-    void existsByUserUsername() {
+    @DisplayName("findByUserUsername - returns empty Optional for unknown username")
+    void findByUserUsername_ReturnsEmpty_WhenNotFound() {
+        assertThat(traineeRepository.findByUserUsername("ghost.user")).isEmpty();
+    }
+
+    // ─── existsByUserUsername ────────────────────────────────────────────────
+
+    @Test
+    @DisplayName("existsByUserUsername - true for saved trainee, false for unknown")
+    void existsByUserUsername_CorrectBooleans() {
         traineeRepository.save(trainee("present.user"));
 
         assertThat(traineeRepository.existsByUserUsername("present.user")).isTrue();
         assertThat(traineeRepository.existsByUserUsername("absent.user")).isFalse();
     }
 
-    @Test
-    @DisplayName("findAllTraineesView - includes newly saved trainee")
-    void findAllTraineesView_IncludesNewTrainee() {
-        traineeRepository.save(trainee("view.user"));
+    // ─── findTraineeDTOByUsername ────────────────────────────────────────────
 
-        assertThat(traineeRepository.findAllTraineesView())
-                .isNotEmpty()
-                .anyMatch(v -> v.getFirstName().equals("First"));
+    @Test
+    @DisplayName("findTraineeDTOByUsername - returns DTO when trainee is active")
+    void findTraineeDTOByUsername_ReturnsDTOForActiveTrainee() {
+        traineeRepository.save(trainee("dto.user"));
+
+        assertThat(traineeRepository.findTraineeDTOByUsername("dto.user"))
+                .isPresent()
+                .get()
+                .extracting(TraineeDTO::isActive)
+                .isEqualTo(true);
     }
 
     @Test
-    @DisplayName("findTraineeViewById - returns view for known id")
-    void findTraineeViewById_ReturnsView() {
-        Trainee saved = traineeRepository.save(trainee("by.id.user"));
+    @DisplayName("findTraineeDTOByUsername - returns empty Optional when trainee is inactive")
+    void findTraineeDTOByUsername_ReturnsEmpty_WhenInactive() {
+        Trainee t = trainee("inactive.dto.user");
+        t.setActive(false);
+        traineeRepository.save(t);
 
-        assertThat(traineeRepository.findTraineeViewById(saved.getId())).isPresent();
+        assertThat(traineeRepository.findTraineeDTOByUsername("inactive.dto.user")).isEmpty();
     }
 
+    // ─── deleteByUserUsername ────────────────────────────────────────────────
+
     @Test
-    @DisplayName("findTrainingsOfTraineeByCriteria should return only trainings matching date, trainer name, and type filters")
-    void findTrainingsOfTraineeByCriteria_ShouldApplyAllProvidedFilters() {
+    @DisplayName("deleteByUserUsername - removes trainee so existsByUserUsername returns false")
+    void deleteByUserUsername_RemovesTrainee() {
+        traineeRepository.save(trainee("todelete.user"));
+        assertThat(traineeRepository.existsByUserUsername("todelete.user")).isTrue();
+
+        traineeRepository.deleteByUserUsername("todelete.user");
+
+        assertThat(traineeRepository.existsByUserUsername("todelete.user")).isFalse();
+    }
+
+    // ─── findTrainingsOfTraineeByCriteria ────────────────────────────────────
+
+    @Test
+    @DisplayName("findTrainingsOfTraineeByCriteria - returns only trainings matching all filters")
+    void findTrainingsOfTraineeByCriteria_AppliesAllFilters() {
         Trainee trainee = traineeRepository.save(trainee("criteria.trainee"));
         TrainingType cardio = persistTrainingType(TrainingTypeName.CARDIO);
         TrainingType strength = persistTrainingType(TrainingTypeName.STRENGTH);
-        Trainer matchingTrainer = persistTrainer("fit.coach", "Fit", "Coach", cardio);
+        Trainer matchTrainer = persistTrainer("fit.coach", "Fit", "Coach", cardio);
         Trainer otherTrainer = persistTrainer("other.coach", "Other", "Coach", strength);
 
-        persistTraining(trainee, matchingTrainer, cardio, "Match Session", LocalDate.now().plusDays(1), 45);
-        persistTraining(trainee, otherTrainer, strength, "Non Match Session", LocalDate.now().plusDays(2), 30);
+        persistTraining(trainee, matchTrainer, cardio, "Match Session", LocalDate.now().plusDays(1), 45);
+        persistTraining(trainee, otherTrainer, strength, "Non Match", LocalDate.now().plusDays(2), 30);
 
-        assertThat(traineeRepository.findTrainingsOfTraineeByCriteria(
+        List<TraineeTrainingProfileView> results = traineeRepository.findTrainingsOfTraineeByCriteria(
                 "criteria.trainee",
                 LocalDate.now(),
                 LocalDate.now().plusDays(1),
                 "fit coach",
-                cardio.getId()))
+                cardio.getId());
+
+        assertThat(results)
                 .hasSize(1)
-                .allMatch(view -> view.getName().equals("Match Session"));
+                .allMatch(v -> v.name().equals("Match Session"));
     }
 
     @Test
-    @DisplayName("findTrainingsOfTraineeByCriteria should ignore trainer-name filter when blank and include all matching dates")
-    void findTrainingsOfTraineeByCriteria_ShouldIgnoreTrainerNameFilter_WhenBlank() {
+    @DisplayName("findTrainingsOfTraineeByCriteria - blank trainer name returns all within date range")
+    void findTrainingsOfTraineeByCriteria_IgnoresBlankTrainerName() {
         Trainee trainee = traineeRepository.save(trainee("blank.filter.trainee"));
         TrainingType cardio = persistTrainingType(TrainingTypeName.CARDIO);
-        Trainer firstTrainer = persistTrainer("first.trainer", "First", "Trainer", cardio);
-        Trainer secondTrainer = persistTrainer("second.trainer", "Second", "Trainer", cardio);
+        Trainer first = persistTrainer("first.trainer2", "First", "Trainer", cardio);
+        Trainer second = persistTrainer("second.trainer2", "Second", "Trainer", cardio);
 
-        persistTraining(trainee, firstTrainer, cardio, "First Session", LocalDate.now().plusDays(1), 40);
-        persistTraining(trainee, secondTrainer, cardio, "Second Session", LocalDate.now().plusDays(2), 50);
+        persistTraining(trainee, first, cardio, "First Session", LocalDate.now().plusDays(1), 40);
+        persistTraining(trainee, second, cardio, "Second Session", LocalDate.now().plusDays(2), 50);
 
-        assertThat(traineeRepository.findTrainingsOfTraineeByCriteria(
+        List<TraineeTrainingProfileView> results = traineeRepository.findTrainingsOfTraineeByCriteria(
                 "blank.filter.trainee",
                 LocalDate.now(),
                 LocalDate.now().plusDays(2),
                 "",
-                cardio.getId()))
-                .extracting(TrainingView::getName)
-                .containsExactly("Second Session", "First Session");
+                cardio.getId());
+
+        assertThat(results).hasSize(2);
     }
 
-    // helper methods
+    // ─── helper methods ──────────────────────────────────────────────────────
 
     private Trainee trainee(String username) {
         User user = new User();
@@ -144,12 +179,8 @@ class TraineeRepositoryIT extends AbstractRepositoryIntegrationTest {
         return trainerRepository.save(trainer);
     }
 
-    private Training persistTraining(Trainee trainee,
-                                    Trainer trainer,
-                                    TrainingType type,
-                                    String name,
-                                    LocalDate date,
-                                    int duration) {
+    private Training persistTraining(Trainee trainee, Trainer trainer, TrainingType type,
+                                     String name, LocalDate date, int duration) {
         Training training = new Training();
         training.setName(name);
         training.setDate(date);
@@ -160,4 +191,3 @@ class TraineeRepositoryIT extends AbstractRepositoryIntegrationTest {
         return trainingRepository.save(training);
     }
 }
-

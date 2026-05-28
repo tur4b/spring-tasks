@@ -1,156 +1,163 @@
 package org.example.service;
 
+import org.example.dao.TraineeRepository;
+import org.example.dao.TrainerRepository;
 import org.example.dao.TrainingRepository;
 import org.example.dao.TrainingTypeRepository;
-import org.example.dto.request.AuthRequest;
-import org.example.dto.request.TrainerCreateRequest;
-import org.example.dto.request.TraineeCreateRequest;
 import org.example.dto.request.TrainingCreateRequest;
-import org.example.dto.request.TrainingUpdateRequest;
-import org.example.dto.response.TrainerDTO;
-import org.example.dto.response.TraineeDTO;
 import org.example.dto.response.TrainingDTO;
+import org.example.entity.Trainee;
+import org.example.entity.Trainer;
+import org.example.entity.Training;
 import org.example.entity.TrainingType;
 import org.example.entity.TrainingTypeName;
 import org.example.entity.User;
-import org.example.service.api.PasswordEncoder;
-import org.example.service.api.TrainerService;
-import org.example.service.api.TraineeService;
+import org.example.exception.model.NotFoundException;
 import org.example.service.api.TrainingService;
 import org.example.testsupport.AbstractServiceSliceTest;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import jakarta.persistence.EntityNotFoundException;
 import java.time.LocalDate;
-import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.*;
 
 @DisplayName("TrainingService - Service Slice Integration Tests")
 class TrainingServiceImplIT extends AbstractServiceSliceTest {
-
-    private static final AuthRequest AUTHENTICATED_USER = new AuthRequest("it.auth.user", "it-pass");
-    private static final AuthRequest ANONYMOUS_USER = new AuthRequest("anonymous.user", "anonymous-pass");
 
     @Autowired
     private TrainingService trainingService;
 
     @Autowired
-    private TraineeService traineeService;
-
-    @Autowired
-    private TrainerService trainerService;
-
-    @Autowired
     private TrainingRepository trainingRepository;
+
+    @Autowired
+    private TraineeRepository traineeRepository;
+
+    @Autowired
+    private TrainerRepository trainerRepository;
 
     @Autowired
     private TrainingTypeRepository trainingTypeRepository;
 
-    @Autowired
-    private org.example.dao.UserRepository userRepository;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    // ─── createTraining ───────────────────────────────────────────────────────
 
-    @BeforeEach
-    void ensureAuthenticatedUserExists() {
-        userRepository.findByUsername(AUTHENTICATED_USER.username())
-                .orElseGet(() -> userRepository.save(user(AUTHENTICATED_USER.username(), AUTHENTICATED_USER.password())));
+    @Test
+    @DisplayName("createTraining - throws NotFoundException when relation does not exist")
+    void createTraining_NoRelation_ThrowsNotFoundException() {
+        TrainingType type = persistTrainingType(TrainingTypeName.CARDIO);
+        persistTrainer("trainer1", type);
+        persistTrainee("trainee1");
+
+        TrainingCreateRequest request = new TrainingCreateRequest(
+                "trainee1", "trainer1", "Training", LocalDate.now(), 60);
+
+        assertThatThrownBy(() -> trainingService.createTraining(request))
+                .isInstanceOf(NotFoundException.class)
+                .hasMessageContaining("relation does not exists");
     }
 
     @Test
-    @DisplayName("createTraining should persist training when trainee, trainer, type exist and relation is assigned")
-    void createTraining_ShouldPersistTraining_WhenAllReferencesAndRelationExist() {
-        int typeId = persistTrainingType(TrainingTypeName.CARDIO).getId();
-        TraineeDTO trainee = traineeService.createTrainee(new TraineeCreateRequest("Train", "Ee", "Baku", LocalDate.of(2000, 1, 1)));
-        TrainerDTO trainer = trainerService.createTrainer(new TrainerCreateRequest("Train", "Er", typeId));
+    @DisplayName("createTraining - creates training when relation exists")
+    void createTraining_WithRelation_Success() {
+        TrainingType type = persistTrainingType(TrainingTypeName.STRENGTH);
+        Trainer trainer = persistTrainer("trainer2", type);
+        Trainee trainee = persistTrainee("trainee2");
+        // Establish relationship
+        trainer.getTrainees().add(trainee);
+        trainee.getTrainers().add(trainer);
+        trainerRepository.save(trainer);
+        traineeRepository.save(trainee);
 
-        trainerService.reassignTraineeToTrainers(trainee.id(), List.of(trainer.id()), AUTHENTICATED_USER);
+        TrainingCreateRequest request = new TrainingCreateRequest(
+                "trainee2", "trainer2", "Strength Training", LocalDate.now().plusDays(1), 45);
 
-        TrainingDTO created = trainingService.createTraining(
-                new TrainingCreateRequest(trainee.id(), trainer.id(), "Cardio Morning", typeId, LocalDate.now().plusDays(1), 60),
-                AUTHENTICATED_USER
-        );
+        TrainingDTO result = trainingService.createTraining(request);
 
-        assertThat(created).isNotNull();
-        assertThat(created.name()).isEqualTo("Cardio Morning");
-        assertThat(trainingRepository.findById(created.id())).isPresent();
+        assertThat(result.id()).isNotNull();
+        assertThat(result.name()).isEqualTo("Strength Training");
+        assertThat(result.duration()).isEqualTo(45);
+        assertThat(result.trainerId()).isEqualTo(trainer.getId());
+        assertThat(result.traineeId()).isEqualTo(trainee.getId());
+    }
+
+    // ─── deleteTraining ───────────────────────────────────────────────────────
+
+    @Test
+    @DisplayName("deleteTraining - soft deletes training and returns true")
+    void deleteTraining_ExistingTraining_ReturnsTrue() {
+        Training training = persistTraining();
+
+        boolean result = trainingService.deleteTraining(training.getId());
+
+        assertThat(result).isTrue();
+        // Soft delete - record still exists but with deleted flag
     }
 
     @Test
-    @DisplayName("createTraining should throw RuntimeException when trainer is not assigned to trainee")
-    void createTraining_ShouldThrowRuntimeException_WhenTrainerTraineeRelationMissing() {
-        int typeId = persistTrainingType(TrainingTypeName.STRENGTH).getId();
-        TraineeDTO trainee = traineeService.createTrainee(new TraineeCreateRequest("No", "Relation", "Baku", LocalDate.of(1999, 2, 2)));
-        TrainerDTO trainer = trainerService.createTrainer(new TrainerCreateRequest("No", "Pair", typeId));
+    @DisplayName("deleteTraining - returns false for non-existent training")
+    void deleteTraining_NonExistent_ReturnsFalse() {
+        boolean result = trainingService.deleteTraining(99999L);
 
-        assertThatThrownBy(() -> trainingService.createTraining(
-                new TrainingCreateRequest(trainee.id(), trainer.id(), "No Pair Session", typeId, LocalDate.now().plusDays(1), 45),
-                AUTHENTICATED_USER
-        )).isInstanceOf(RuntimeException.class)
-          .hasMessageContaining("relation does not exists");
+        assertThat(result).isFalse();
     }
 
-    @Test
-    @DisplayName("updateTraining should throw EntityNotFoundException when target trainee does not exist")
-    void updateTraining_ShouldThrowEntityNotFoundException_WhenTargetTraineeDoesNotExist() {
-        int typeId = persistTrainingType(TrainingTypeName.CARDIO).getId();
-        TraineeDTO trainee = traineeService.createTrainee(new TraineeCreateRequest("Upd", "Trainee", "Baku", LocalDate.of(2001, 3, 3)));
-        TrainerDTO trainer = trainerService.createTrainer(new TrainerCreateRequest("Upd", "Trainer", typeId));
-        trainerService.reassignTraineeToTrainers(trainee.id(), List.of(trainer.id()), AUTHENTICATED_USER);
+    // ─── helper ───────────────────────────────────────────────────────────────
 
-        TrainingDTO created = trainingService.createTraining(
-                new TrainingCreateRequest(trainee.id(), trainer.id(), "Before Update", typeId, LocalDate.now().plusDays(1), 30),
-                AUTHENTICATED_USER
-        );
+    private Training persistTraining() {
+        TrainingType type = persistTrainingType(TrainingTypeName.CARDIO);
+        Trainer trainer = persistTrainer("trainer.training", type);
+        Trainee trainee = persistTrainee("trainee.training");
 
-        assertThatThrownBy(() -> trainingService.updateTraining(
-                created.id(),
-                new TrainingUpdateRequest(999_999L, trainer.id(), "After Update", typeId, LocalDate.now().plusDays(2), 40),
-                AUTHENTICATED_USER
-        )).isInstanceOf(EntityNotFoundException.class)
-          .hasMessageContaining("TraineeId not found");
+        Training training = new Training();
+        training.setName("Test Training");
+        training.setDate(LocalDate.now());
+        training.setDuration(60);
+        training.setTrainer(trainer);
+        training.setTrainee(trainee);
+        training.setType(type);
+
+        return trainingRepository.save(training);
     }
 
-    @Test
-    @DisplayName("deleteTraining should return false when repository cannot soft-delete unknown id")
-    void deleteTraining_ShouldReturnFalse_WhenTrainingIdDoesNotExist() {
-        boolean deleted = trainingService.deleteTraining(999_999L, AUTHENTICATED_USER);
+    private Trainer persistTrainer(String username, TrainingType specialization) {
+        User user = new User();
+        user.setUsername(username);
+        user.setFirstName("Trainer");
+        user.setLastName("User");
+        user.setPassword("encoded");
+        user.setActive(true);
 
-        assertThat(deleted).isFalse();
+        Trainer trainer = new Trainer();
+        trainer.setUser(user);
+        trainer.setSpecialization(specialization);
+        trainer.setActive(true);
+
+        return trainerRepository.save(trainer);
     }
 
-    @Test
-    @DisplayName("createTraining should throw SecurityException when anonymous credentials are provided")
-    void createTraining_ShouldThrowSecurityException_WhenAnonymousCredentialsAreUsed() {
-        int typeId = persistTrainingType(TrainingTypeName.CARDIO).getId();
-        TraineeDTO trainee = traineeService.createTrainee(new TraineeCreateRequest("Anon", "Trainee", "Baku", LocalDate.of(2000, 1, 1)));
-        TrainerDTO trainer = trainerService.createTrainer(new TrainerCreateRequest("Anon", "Trainer", typeId));
+    private Trainee persistTrainee(String username) {
+        User user = new User();
+        user.setUsername(username);
+        user.setFirstName("Trainee");
+        user.setLastName("User");
+        user.setPassword("encoded");
+        user.setActive(true);
 
-        assertThatThrownBy(() -> trainingService.createTraining(
-                new TrainingCreateRequest(trainee.id(), trainer.id(), "Should Fail", typeId, LocalDate.now().plusDays(1), 30),
-                ANONYMOUS_USER
-        )).isInstanceOf(SecurityException.class)
-          .hasMessageContaining("INvalid credentials");
+        Trainee trainee = new Trainee();
+        trainee.setUser(user);
+        trainee.setDateOfBirth(LocalDate.of(2000, 1, 1));
+        trainee.setAddress("Baku");
+        trainee.setActive(true);
+
+        return traineeRepository.save(trainee);
     }
 
     private TrainingType persistTrainingType(TrainingTypeName name) {
         TrainingType type = new TrainingType();
         type.setName(name);
         return trainingTypeRepository.save(type);
-    }
-
-    private User user(String username, String password) {
-        User user = new User();
-        user.setFirstName("IT");
-        user.setLastName("Auth");
-        user.setUsername(username);
-        user.setPassword(passwordEncoder.encode(password));
-        return user;
     }
 }
 

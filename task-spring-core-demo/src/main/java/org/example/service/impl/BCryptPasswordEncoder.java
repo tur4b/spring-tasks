@@ -4,7 +4,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.service.api.PasswordEncoder;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.annotation.Validated;
 
+@Validated
 @Slf4j
 public class BCryptPasswordEncoder implements PasswordEncoder {
 
@@ -25,9 +27,6 @@ public class BCryptPasswordEncoder implements PasswordEncoder {
 
     @Override
     public String encode(String rawPassword) {
-        if (rawPassword == null) {
-            throw new IllegalArgumentException("Password cannot be null");
-        }
         String salt = BCrypt.gensalt(rounds);
         return BCrypt.hashpw(rawPassword, salt);
     }

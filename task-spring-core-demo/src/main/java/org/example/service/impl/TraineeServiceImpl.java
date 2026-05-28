@@ -1,26 +1,25 @@
 package org.example.service.impl;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.aspect.Secured;
 import org.example.dao.TraineeRepository;
-import org.example.dao.projection.TraineeView;
-import org.example.dao.projection.TrainingView;
 import org.example.dto.request.*;
-import org.example.dto.response.TraineeDTO;
-import org.example.dto.response.UserDTO;
+import org.example.dto.response.*;
 import org.example.entity.Trainee;
 import org.example.entity.User;
-import org.example.mapper.TraineeMapper;
+import org.example.exception.model.NotFoundException;
+import org.example.exception.model.ErrorResponse;
 import org.example.service.api.TraineeService;
+import org.example.service.api.TrainerTraineeRelationService;
 import org.example.service.api.UserService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Service layer for trainee operations
@@ -32,39 +31,38 @@ import java.util.List;
 @Service
 public class TraineeServiceImpl implements TraineeService {
 
-    private final TraineeMapper traineeMapper;
     private final TraineeRepository traineeRepository;
     private final UserService userService;
+    private final TrainerTraineeRelationService trainerTraineeRelationService;
 
     /**
-     * Get list of TraineeView
+     * Get Trainee Profile by trainee username
      *
-     * @param authRequest the instance of AuthRequest containing credentials
-     * @return list of projected view of trainees
-     */
-    @Transactional(readOnly = true)
-    @Secured
-    @Override
-    public List<TraineeView> findAllTraineesView(AuthRequest authRequest) {
-        log.debug("Find All Trainees");
-        return traineeRepository.findAllTraineesView();
-    }
-
-    /**
-     * Get TraineeView by trainee ID
-     *
-     * @param traineeId the ID of the trainee
-     * @param authRequest the instance of AuthRequest containing credentials
-     * @throws EntityNotFoundException if Trainee not found with given id
+     * @param traineeUsername the username of the trainee
+     * @throws NotFoundException if Trainee not found with given username
      * @return TraineeView corresponding to the given ID
      */
     @Transactional(readOnly = true)
-    @Secured
     @Override
-    public TraineeView findTraineeViewById(Long traineeId, AuthRequest authRequest) {
-        log.debug("Find Trainee by ID: {}", traineeId);
-        return traineeRepository.findTraineeViewById(traineeId)
-                .orElseThrow(() -> new EntityNotFoundException("Trainee not found with given id: " + traineeId));
+    public TraineeProfileView findTraineeViewByUsername(String traineeUsername) {
+        log.debug("Find Trainee by username: {}", traineeUsername);
+
+        TraineeDTO traineeDTO = traineeRepository.findTraineeDTOByUsername(traineeUsername)
+                .orElseThrow(() -> new NotFoundException(
+                        "Trainee not found with given username: " + traineeUsername,
+                        ErrorResponse.ErrorPointer.username)
+                );
+
+        List<TraineeProfileTrainerDTO> trainerDTOS = trainerTraineeRelationService.findTrainersOfTraineeByTraineeUsername(traineeUsername);
+
+        return new TraineeProfileView(
+                traineeDTO.firstName(),
+                traineeDTO.lastName(),
+                traineeDTO.address(),
+                traineeDTO.dateOfBirth(),
+                traineeDTO.isActive(),
+                trainerDTOS
+        );
     }
 
     /**
@@ -72,78 +70,91 @@ public class TraineeServiceImpl implements TraineeService {
      * Handles duplicate username scenarios by appending a serial number.
      *
      * @param createRequest the request object containing trainee details
-     * @return created TraineeDTO with generated username and password
+     * @return created UserCredentialsDTO with generated username and password
      */
     @Override
-    public TraineeDTO createTrainee(TraineeCreateRequest createRequest) {
+    public UserCredentialsDTO createTrainee(TraineeCreateRequest createRequest) {
         log.debug("Create Trainee request: {}", createRequest);
 
         // creating a new user
-        UserDTO userDTO = userService.createUser(new UserCreateRequest(createRequest.firstName(), createRequest.lastName()));
+        UserCredentialsDTO userCredentialsDTO = userService.createUser(new UserCreateRequest(createRequest.firstName(), createRequest.lastName()));
 
         // create a new trainee and set required fields
-        Trainee trainee = traineeMapper.toEntity(createRequest);
+        Trainee trainee = new Trainee();
+        trainee.setAddress(createRequest.address());
+        trainee.setDateOfBirth(createRequest.dateOfBirth());
 
-        User userEntityRef = userService.getReferenceById(userDTO.id());
+        User userEntityRef = userService.getReferenceById(userCredentialsDTO.id());
         trainee.setUser(userEntityRef);
 
         traineeRepository.save(trainee);
-        log.debug("Trainee created with username: {}", userDTO.username());
+        log.debug("Trainee created with username: {}", userCredentialsDTO.username());
 
-        return traineeMapper.toDTO(trainee, userDTO.id());
+        return userCredentialsDTO;
     }
 
     /**
      * Update an existing trainee profile.
      *
-     * @param traineeId the ID of the trainee to update
      * @param updateRequest the request object containing updated trainee details
-     * @param authRequest the instance of AuthRequest containing credentials
-     * @throws EntityNotFoundException if Trainee not found with given id
+     * @throws NotFoundException if Trainee not found with given id
      * @return updated TraineeDTO
      */
-    @Secured
     @Override
-    public TraineeDTO updateTrainee(Long traineeId, TraineeUpdateRequest updateRequest, AuthRequest authRequest) {
-        log.debug("Update Trainee id: {} and request: {}", traineeId, updateRequest);
+    public TraineeProfileView updateTrainee(TraineeUpdateRequest updateRequest) {
+        log.debug("Update Trainee request: {}", updateRequest);
 
-        Trainee trainee = traineeRepository.findById(traineeId)
-                .orElseThrow(() -> new EntityNotFoundException("Trainee not found with ID: " + traineeId));
+        Trainee trainee = traineeRepository.findByUserUsername(updateRequest.username())
+                .orElseThrow(() -> new NotFoundException(
+                        "Trainee not found with username: " + updateRequest.username(),
+                        ErrorResponse.ErrorPointer.username)
+                );
 
         // update user details trainee belongs to
         User user = trainee.getUser();
 
         // apply changes to user
-        userService.updateUser(user.getId(), new UserUpdateRequest(updateRequest.firstName(), updateRequest.lastName()), authRequest);
+        userService.updateUser(user.getId(), new UserUpdateRequest(updateRequest.firstName(), updateRequest.lastName()));
 
         // apply changes to training
-        trainee.setAddress(updateRequest.address());
-        trainee.setDateOfBirth(updateRequest.dateOfBirth());
+        if(StringUtils.hasText(updateRequest.address())) {
+            trainee.setAddress(updateRequest.address());
+        }
+        if(Objects.nonNull(updateRequest.dateOfBirth())) {
+            trainee.setDateOfBirth(updateRequest.dateOfBirth());
+        }
         trainee.setUpdatedAt(LocalDateTime.now());
 
         traineeRepository.save(trainee);
 
-        return traineeMapper.toDTO(trainee, user.getId());
+        List<TraineeProfileTrainerDTO> trainerDTOS = trainerTraineeRelationService
+                .findTrainersOfTraineeByTraineeUsername(updateRequest.username());
+
+        return new TraineeProfileView(
+                user.getFirstName(),
+                user.getLastName(),
+                trainee.getAddress(),
+                trainee.getDateOfBirth(),
+                trainee.isActive(),
+                trainerDTOS
+        );
     }
 
     /**
      * Delete a trainee by username.
      *
      * @param traineeUsername the username of the trainee to delete
-     * @param authRequest the instance of AuthRequest containing credentials
      * @return true if deletion was successful, false otherwise
      */
-    @Secured
     @Override
-    public boolean deleteTraineeByUsername(String traineeUsername, AuthRequest authRequest) {
-        Trainee trainee = traineeRepository.findByUserUsername(traineeUsername)
-                .orElse(null);
+    public boolean deleteTrainee(String traineeUsername) {
 
-        if(trainee == null) {
+        if (!traineeRepository.existsByUserUsername(traineeUsername)) {
             log.debug("Trainee not found with username: {}", traineeUsername);
             return false;
         }
-        traineeRepository.deleteById(trainee.getId());
+
+        traineeRepository.deleteByUserUsername(traineeUsername);
         return true;
     }
 
@@ -159,18 +170,89 @@ public class TraineeServiceImpl implements TraineeService {
     }
 
     /**
+     * Get reference to Trainee entity
+     *
+     * @param traineeId the id of Trainee
+     * @return Trainee reference to Trainee entity
+     */
+    @Transactional(readOnly = true)
+    @Override
+    public Trainee getReferenceById(Long traineeId) {
+        return traineeRepository.getReferenceById(traineeId);
+    }
+
+
+    /**
+     * Get all Trainings of Trainee according to given searchCriteria
+     *
+     * @param searchCriteria containing criteria data for filtering
+     * @return list of TrainingView
+     */
+    @Transactional(readOnly = true)
+    @Override
+    public List<TraineeTrainingProfileView> findTrainingsOfTraineeByCriteria(TrainingsOfTraineeSearchCriteria searchCriteria) {
+
+        return traineeRepository.findTrainingsOfTraineeByCriteria(
+                searchCriteria.traineeUsername(),
+                searchCriteria.fromDate(),
+                searchCriteria.toDate(),
+                searchCriteria.trainerName(),
+                searchCriteria.typeId()
+        );
+    }
+
+    /**
+     * Check if trainee exists by username
+     *
+     * @param username the login username of the trainee
+     * @return {@code true} if a trainee with the given username exists
+     */
+    @Override
+    public boolean existsByUsername(String username) {
+        return traineeRepository.existsByUserUsername(username);
+    }
+
+    /**
+     * Find the Trainee entity by username.
+     *
+     * @param username the trainee's login username
+     * @return the Trainee entity
+     * @throws org.example.exception.model.NotFoundException if no trainee with the given username exists
+     */
+    @Override
+    public Trainee findTraineeByUsername(String username) {
+        return traineeRepository.findByUserUsername(username)
+                .orElseThrow(() -> new NotFoundException(
+                        "Trainee not found by username: " + username,
+                        ErrorResponse.ErrorPointer.username
+                ));
+    }
+
+    /**
+     * Activate or deactivate the trainee identified in the request.
+     *
+     * @param statusRequest payload with the trainee's username and desired active state
+     */
+    @Override
+    public void updateStatus(UpdateStatusRequest statusRequest) {
+        if(statusRequest.active()) {
+            activate(statusRequest.username());
+        } else {
+            deactivate(statusRequest.username());
+        }
+    }
+
+    // helper methods
+
+    /**
      * Activate Trainee with given ID
      *
      * @throws RuntimeException if trainee not found or already active
-     * @throws EntityNotFoundException if Trainee not found with given id
-     * @param traineeId the id of the trainee
-     * @param authRequest the instance of AuthRequest containing credentials
+     * @throws NotFoundException if Trainee not found with given id
+     * @param traineeUsername the username of the trainee
      */
-    @Secured
-    @Override
-    public void activate(Long traineeId, AuthRequest authRequest) {
-        Trainee trainee = traineeRepository.findById(traineeId)
-                .orElseThrow(() -> new EntityNotFoundException("Trainee not found with ID: " + traineeId));
+    private void activate(String traineeUsername) {
+        Trainee trainee = findTraineeByUsername(traineeUsername);
 
         if(trainee.isActive()) {
             throw new RuntimeException("Trainee already active");
@@ -183,71 +265,16 @@ public class TraineeServiceImpl implements TraineeService {
      * Deactivate Trainee with given ID
      *
      * @throws RuntimeException if trainee not found or already inactive
-     * @throws EntityNotFoundException if Trainee not found with given id
-     * @param traineeId the id of the trainee
-     * @param authRequest the instance of AuthRequest containing credentials
+     * @throws NotFoundException if Trainee not found with given id
+     * @param traineeUsername the username of the trainee
      */
-    @Secured
-    @Override
-    public void deactivate(Long traineeId, AuthRequest authRequest) {
-        Trainee trainee = traineeRepository.findById(traineeId)
-                .orElseThrow(() -> new EntityNotFoundException("Trainee not found with ID: " + traineeId));
+    private void deactivate(String traineeUsername) {
+        Trainee trainee = findTraineeByUsername(traineeUsername);
 
         if(!trainee.isActive()) {
-            throw new RuntimeException("Trainee already deactive");
+            throw new RuntimeException("Trainee already inactive");
         }
         trainee.setActive(false);
         traineeRepository.save(trainee);
     }
-
-    /**
-     * Get reference to Trainee entity
-     *
-     * @param traineeId the id of Trainee
-     * @return Trainee reference to Trainee entity
-     */
-    @Transactional(readOnly = true)
-    @Override
-    public Trainee getReferenceById(Long traineeId) {
-        return traineeRepository.getReferenceById(traineeId);
-    }
-
-    /**
-     * ChangePassword according given credentials
-     *
-     * @param changePasswordRequest the instance of ChangePasswordRequest
-     * @param authRequest the instance of AuthRequest containing credentials
-     */
-    @Secured
-    @Override
-    public void changePassword(ChangePasswordRequest changePasswordRequest, AuthRequest authRequest) {
-        if(!traineeRepository.existsByUserUsername(changePasswordRequest.username())) {
-            throw new EntityNotFoundException("Trainee not found with username: " + changePasswordRequest.username());
-        }
-        userService.changePassword(changePasswordRequest, authRequest);
-    }
-
-    /**
-     * Get all Trainings of Trainee according to given searchCriteria
-     *
-     * @param searchCriteria containing criteria data for filtering
-     * @param authRequest the instance of AuthRequest containing credentials
-     * @return list of TrainingView
-     */
-    @Secured
-    @Transactional(readOnly = true)
-    @Override
-    public List<TrainingView> findTrainingsOfTraineeByCriteria(TrainingsOfTraineeSearchCriteria searchCriteria,
-                                                               AuthRequest authRequest) {
-        return traineeRepository.findTrainingsOfTraineeByCriteria(
-                searchCriteria.traineeUsername(),
-                searchCriteria.fromDate(),
-                searchCriteria.toDate(),
-                searchCriteria.trainerName(),
-                searchCriteria.typeId()
-        );
-    }
-
-
-
 }

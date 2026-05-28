@@ -15,11 +15,14 @@
     <maven.compiler.source>21</maven.compiler.source>
     <maven.compiler.target>21</maven.compiler.target>
     <java.version>21</java.version>
-    <spring.version>6.2.18</spring.version>
-    <spring.data.jpa.version>3.3.1</spring.data.jpa.version>
-    <hibernate.version>6.5.2.Final</hibernate.version>
+    <spring.version>5.3.39</spring.version>
+    <spring.data.jpa.version>2.7.18</spring.data.jpa.version>
+    <hibernate.version>5.6.15.Final</hibernate.version>
     <mockito.version>5.11.0</mockito.version>
     <lombok.version>1.18.36</lombok.version>
+    <jackson.version>2.17.2</jackson.version>
+    <swagger2.annotations.version>1.6.14</swagger2.annotations.version>
+    <springfox.version>2.9.2</springfox.version>
   </properties>
 
   <dependencies>
@@ -49,9 +52,24 @@
       <version>${spring.data.jpa.version}</version>
     </dependency>
 
+    <!-- REST -->
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-webmvc</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
+
+    <!-- Embedded Tomcat Server -->
+    <dependency>
+      <groupId>org.apache.tomcat.embed</groupId>
+      <artifactId>tomcat-embed-core</artifactId>
+      <version>9.0.95</version>
+      <scope>compile</scope>
+    </dependency>
+
     <!-- Hibernate provider -->
     <dependency>
-      <groupId>org.hibernate.orm</groupId>
+      <groupId>org.hibernate</groupId>
       <artifactId>hibernate-core</artifactId>
       <version>${hibernate.version}</version>
     </dependency>
@@ -72,24 +90,24 @@
       <scope>compile</scope>
     </dependency>
 
-    <!-- Validation API -->
+    <!-- Validation API (javax for Swagger 2 compatible Spring stack) -->
     <dependency>
-      <groupId>jakarta.validation</groupId>
-      <artifactId>jakarta.validation-api</artifactId>
-      <version>3.0.2</version>
+      <groupId>javax.validation</groupId>
+      <artifactId>validation-api</artifactId>
+      <version>2.0.1.Final</version>
     </dependency>
 
     <dependency>
       <groupId>org.hibernate.validator</groupId>
       <artifactId>hibernate-validator</artifactId>
-      <version>8.0.1.Final</version>
+      <version>6.2.5.Final</version>
     </dependency>
 
     <!-- EL Implementation needed by Hibernate Validator for parsing messages -->
     <dependency>
       <groupId>org.glassfish</groupId>
-      <artifactId>jakarta.el</artifactId>
-      <version>4.0.2</version>
+      <artifactId>javax.el</artifactId>
+      <version>3.0.1-b11</version>
     </dependency>
 
     <!-- AOP -->
@@ -129,13 +147,32 @@
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
-      <version>2.17.2</version>
+      <version>${jackson.version}</version>
     </dependency>
 
     <dependency>
       <groupId>com.fasterxml.jackson.datatype</groupId>
       <artifactId>jackson-datatype-jsr310</artifactId>
-      <version>2.17.2</version>
+      <version>${jackson.version}</version>
+    </dependency>
+
+    <!-- Swagger 2 annotations -->
+    <dependency>
+      <groupId>io.swagger</groupId>
+      <artifactId>swagger-annotations</artifactId>
+      <version>${swagger2.annotations.version}</version>
+    </dependency>
+
+    <!-- Swagger 2 runtime for Spring MVC (non-Boot) -->
+    <dependency>
+      <groupId>io.springfox</groupId>
+      <artifactId>springfox-swagger2</artifactId>
+      <version>${springfox.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.springfox</groupId>
+      <artifactId>springfox-swagger-ui</artifactId>
+      <version>${springfox.version}</version>
     </dependency>
 
     <!-- BCrypt hashing -->
@@ -159,6 +196,13 @@
       <version>${spring.version}</version>
       <scope>test</scope>
     </dependency>
+    <!-- JsonPath runtime used by MockMvcResultMatchers.jsonPath(...) -->
+    <dependency>
+      <groupId>com.jayway.jsonpath</groupId>
+      <artifactId>json-path</artifactId>
+      <version>2.9.0</version>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
@@ -175,6 +219,13 @@
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
       <version>3.25.3</version>
+      <scope>test</scope>
+    </dependency>
+    <!-- Hamcrest – required by spring-test MockMvcResultMatchers (not bundled in JUnit 5) -->
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest</artifactId>
+      <version>2.2</version>
       <scope>test</scope>
     </dependency>
 

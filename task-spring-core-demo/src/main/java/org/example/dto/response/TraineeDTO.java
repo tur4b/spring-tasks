@@ -5,10 +5,10 @@ import java.time.LocalDateTime;
 
 public record TraineeDTO(
         Long id,
-        Long userId,
+        String firstName,
+        String lastName,
         String address,
-        boolean isActive,
         LocalDate dateOfBirth,
-        LocalDateTime createdAt,
-        LocalDateTime updatedAt) {
+        boolean isActive
+) {
 }

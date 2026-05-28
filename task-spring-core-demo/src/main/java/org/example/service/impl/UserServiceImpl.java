@@ -1,16 +1,15 @@
 package org.example.service.impl;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.aspect.Secured;
 import org.example.dao.UserRepository;
-import org.example.dto.request.AuthRequest;
-import org.example.dto.request.ChangePasswordRequest;
 import org.example.dto.request.UserCreateRequest;
 import org.example.dto.request.UserUpdateRequest;
+import org.example.dto.response.UserCredentialsDTO;
 import org.example.dto.response.UserDTO;
 import org.example.entity.User;
+import org.example.exception.model.NotFoundException;
+import org.example.exception.model.ErrorResponse;
 import org.example.mapper.UserMapper;
 import org.example.service.api.PasswordEncoder;
 import org.example.service.api.UserService;
@@ -35,13 +34,11 @@ public class UserServiceImpl implements UserService {
     /**
      * Get list of UserDTO
      *
-     * @param authRequest the instance of AuthRequest containing credentials
      * @return list of users that converted to the list of UserDTO
      */
-    @Secured
     @Override
     @Transactional(readOnly = true)
-    public List<UserDTO> findAll(AuthRequest authRequest) {
+    public List<UserDTO> findAll() {
         log.debug("Find All User");
         return userRepository.findAll()
                 .stream()
@@ -53,36 +50,38 @@ public class UserServiceImpl implements UserService {
      * Get UserDTO by user ID
      *
      * @param userId the ID of the user
-     * @param authRequest the instance of AuthRequest containing credentials
-     * @throws EntityNotFoundException if the User not found with given id
+     * @throws NotFoundException if the User not found with given id
      * @return UserDTO corresponding to the given ID
      */
-    @Secured
     @Override
     @Transactional(readOnly = true)
-    public UserDTO findById(Long userId, AuthRequest authRequest) {
+    public UserDTO findById(Long userId) {
         log.debug("Find User by ID: {}", userId);
         return userRepository.findById(userId)
                 .map(userMapper::toDTO)
-                .orElseThrow(() -> new EntityNotFoundException("User not found by id: " + userId));
+                .orElseThrow(() -> new NotFoundException(
+                        "User not found by id: " + userId,
+                        ErrorResponse.ErrorPointer.id)
+                );
     }
 
     /**
      * Get UserDTO by username
      *
      * @param username the username of the user
-     * @param authRequest the instance of AuthRequest containing credentials
-     * @throws EntityNotFoundException if the User not found with given username
+     * @throws NotFoundException if the User not found with given username
      * @return UserDTO corresponding to the given username
      */
-    @Secured
     @Override
     @Transactional(readOnly = true)
-    public UserDTO findByUsername(String username, AuthRequest authRequest) {
+    public UserDTO findByUsername(String username) {
         log.debug("Find User by username: {}", username);
         return userRepository.findByUsername(username)
                 .map(userMapper::toDTO)
-                .orElseThrow(() -> new EntityNotFoundException("User not found by username: " + username));
+                .orElseThrow(() -> new NotFoundException(
+                        "User not found by username: " + username,
+                        ErrorResponse.ErrorPointer.username)
+                );
     }
 
     /**
@@ -90,24 +89,22 @@ public class UserServiceImpl implements UserService {
      *
      * @param userId the ID of user
      * @param updateRequest the request object containing updated user details
-     * @param authRequest the instance of AuthRequest containing credentials
-     * @throws EntityNotFoundException if the User not found with given userId
+     * @throws NotFoundException if the User not found with given userId
      * @return updated UserDTO
      */
-    @Secured
     @Override
-    public UserDTO updateUser(Long userId, UserUpdateRequest updateRequest, AuthRequest authRequest) {
+    public UserDTO updateUser(Long userId, UserUpdateRequest updateRequest) {
         log.debug("Update Trainee id: {} and request: {}", userId, updateRequest);
 
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException("User not found by id: " + userId));
+                .orElseThrow(() -> new NotFoundException(
+                        "User not found by id: " + userId,
+                        ErrorResponse.ErrorPointer.id)
+                );
 
         // apply changes
         user.setFirstName(updateRequest.firstName());
         user.setLastName(updateRequest.lastName());
-
-        String username = defineNewUsernameForNewUserEntity(user);
-        user.setUsername(username);
 
         userRepository.save(user);
 
@@ -121,12 +118,7 @@ public class UserServiceImpl implements UserService {
      * @return created UserDTO
      */
     @Override
-    public UserDTO createUser(UserCreateRequest userCreateRequest) {
-        if(userCreateRequest == null) {
-            log.error("UserCreateRequest cannot be null");
-            throw new IllegalArgumentException("UserCreateRequest cannot be null");
-        }
-
+    public UserCredentialsDTO createUser(UserCreateRequest userCreateRequest) {
         log.debug("Create User request: {}", userCreateRequest);
 
         // User instance without credentials
@@ -141,7 +133,7 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
 
         log.info("User created with username: {}", user.getUsername());
-        return userMapper.toDTO(user);
+        return new UserCredentialsDTO(user.getId(), username, rawPassword);
     }
 
     /**
@@ -165,19 +157,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getReferenceById(Long userId) {
         return userRepository.getReferenceById(userId);
-    }
-
-    /**
-     * Change the password of User
-     *
-     * @param changePasswordRequest the ChangePasswordRequest instance details required to change the password
-     * @param authRequest the instance of AuthRequest containing credentials
-     */
-    @Secured
-    @Override
-    public void changePassword(ChangePasswordRequest changePasswordRequest, AuthRequest authRequest) {
-        String rawPassword = changePasswordRequest.password();
-        userRepository.changePassword(changePasswordRequest.username(), passwordEncoder.encode(rawPassword));
     }
 
     /**
