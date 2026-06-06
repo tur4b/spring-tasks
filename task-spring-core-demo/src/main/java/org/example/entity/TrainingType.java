@@ -1,6 +1,6 @@
 package org.example.entity;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 

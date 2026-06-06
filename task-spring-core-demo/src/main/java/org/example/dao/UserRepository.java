@@ -1,8 +1,5 @@
 package org.example.dao;
 
-import javax.validation.Valid;
-import org.example.dto.request.AuthRequest;
-import org.example.dto.request.ChangePasswordRequest;
 import org.example.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;

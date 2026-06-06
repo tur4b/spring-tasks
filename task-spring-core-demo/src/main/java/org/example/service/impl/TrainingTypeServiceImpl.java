@@ -7,7 +7,6 @@ import org.example.dto.response.TrainingTypeDTO;
 import org.example.entity.TrainingType;
 import org.example.exception.model.NotFoundException;
 import org.example.exception.model.ErrorResponse;
-import org.example.mapper.TrainingTypeMapper;
 import org.example.service.api.TrainingTypeService;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +18,6 @@ import java.util.List;
 public class TrainingTypeServiceImpl implements TrainingTypeService {
 
     private final TrainingTypeRepository trainingTypeRepository;
-    private final TrainingTypeMapper trainingTypeMapper;
 
     /**
      * Get TrainingTypeDTO by training id
@@ -30,7 +28,7 @@ public class TrainingTypeServiceImpl implements TrainingTypeService {
     @Override
     public TrainingTypeDTO findById(Integer id) {
         return trainingTypeRepository.findById(id)
-                .map(trainingTypeMapper::toDTO)
+                .map(type -> new TrainingTypeDTO(type.getId(), type.getName()))
                 .orElseThrow(() -> new NotFoundException("TrainingType found with ID: " + id, ErrorResponse.ErrorPointer.id));
     }
 
@@ -43,7 +41,7 @@ public class TrainingTypeServiceImpl implements TrainingTypeService {
     public List<TrainingTypeDTO> findAll() {
         return trainingTypeRepository.findAll()
                 .stream()
-                .map(trainingTypeMapper::toDTO)
+                .map(type -> new TrainingTypeDTO(type.getId(), type.getName()))
                 .toList();
     }
 

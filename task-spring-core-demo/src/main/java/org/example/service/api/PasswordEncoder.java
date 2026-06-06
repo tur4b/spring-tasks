@@ -1,6 +1,6 @@
 package org.example.service.api;
 
-import javax.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotBlank;
 
 public interface PasswordEncoder {
 

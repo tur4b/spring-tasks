@@ -1,9 +1,10 @@
 package org.example.controller;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.example.dto.request.*;
 import org.example.dto.response.*;
@@ -23,7 +24,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/trainees")
-@Api(tags = "Trainees")
+@Tag(name = "Trainees")
 public class TraineeController {
 
     private final TraineeService traineeService;
@@ -36,7 +37,8 @@ public class TraineeController {
      * @return ResponseEntity with 201 status and UserCredentialsDTO
      */
     @PostMapping
-    @ApiOperation(value = "Register trainee")
+    @SecurityRequirements({})
+    @Operation(summary = "Register trainee")
     public ResponseEntity<BaseResponse<UserCredentialsDTO>> registerTrainee(
             @Valid @RequestBody TraineeCreateRequest registrationRequest) {
 
@@ -57,7 +59,7 @@ public class TraineeController {
      * @return trainee profile view response
      */
     @GetMapping("/{username}")
-    @ApiOperation(value = "Get trainee profile by username")
+    @Operation(summary = "Get trainee profile by username")
     public ResponseEntity<BaseResponse<?>> getTraineeProfile(
             @NotBlank(message = "Username can't be blank") @PathVariable("username") String traineeUsername) {
 
@@ -78,7 +80,7 @@ public class TraineeController {
      * @return updated trainee profile view response
      */
     @PutMapping
-    @ApiOperation(value = "Update trainee profile")
+    @Operation(summary = "Update trainee profile")
     public ResponseEntity<BaseResponse<?>> updateTrainee(@Valid @RequestBody TraineeUpdateRequest updateRequest) {
 
         var traineeProfileView = traineeService.updateTrainee(updateRequest);
@@ -89,30 +91,13 @@ public class TraineeController {
     }
 
     /**
-     * Delete trainee profile by username.
-     *
-     * @param traineeUsername unique trainee username
-     * @return completion response
-     */
-    @DeleteMapping("/{username}")
-    @ApiOperation(value = "Delete trainee by username")
-    public ResponseEntity<?> deleteTrainee(
-            @NotBlank(message = "Username can't be blank") @PathVariable("username") String traineeUsername) {
-
-        traineeService.deleteTrainee(traineeUsername);
-        return ResponseEntity.ok(
-                new BaseResponse<>(null, "Delete operation completed")
-        );
-    }
-
-    /**
      * Replace trainee's assigned trainers list.
      *
      * @param updateRequest validated trainee-trainer assignment payload
      * @return updated list of assigned trainers
      */
     @PutMapping("/{username}/trainers")
-    @ApiOperation(value = "Replace trainee trainers list")
+    @Operation(summary = "Replace trainee trainers list")
     public ResponseEntity<BaseResponse<?>> updateTraineeTrainersList(
             @Valid @RequestBody TraineeUpdateTrainersRequest updateRequest) {
 
@@ -133,7 +118,7 @@ public class TraineeController {
      * @return filtered trainee trainings list
      */
     @GetMapping("/trainings")
-    @ApiOperation(value = "Get trainee trainings by criteria")
+    @Operation(summary = "Get trainee trainings by criteria")
     public ResponseEntity<BaseResponse<?>> getTraineeTrainingsList(@Valid TrainingsOfTraineeSearchCriteria searchCriteria) {
 
         List<TraineeTrainingProfileView> trainings = traineeService.findTrainingsOfTraineeByCriteria(searchCriteria);
@@ -153,7 +138,7 @@ public class TraineeController {
      * @return OK when status update succeeds
      */
     @PatchMapping("/status")
-    @ApiOperation(value = "Update trainee active status")
+    @Operation(summary = "Update trainee active status")
     public ResponseEntity<BaseResponse<?>> statusUpdate(@Valid @RequestBody UpdateStatusRequest statusRequest) {
 
         traineeService.updateStatus(statusRequest);

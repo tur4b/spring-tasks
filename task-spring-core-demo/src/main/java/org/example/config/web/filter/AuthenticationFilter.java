@@ -1,15 +1,16 @@
 package org.example.config.web.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.dto.request.AuthRequest;
 import org.example.exception.model.ErrorResponse;
 import org.example.exception.model.SecurityException;
+import org.example.metrics.CustomMetrics;
 import org.example.service.api.AuthService;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -43,6 +44,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 
     private final AuthService authService;
     private final ObjectMapper objectMapper;
+    private final CustomMetrics customMetrics;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -63,10 +65,13 @@ public class AuthenticationFilter extends OncePerRequestFilter {
         try {
             AuthRequest authRequest = AuthRequest.fromBasicAuth(authToken);
             authService.authenticate(authRequest);
+            customMetrics.recordLoginSuccess();
         } catch (SecurityException ex){
             log.warn("Authentication failed for request {} {}: {}",
                     request.getMethod(), request.getRequestURI(), ex.getMessage());
             writeUnauthorizedResponse(response, ex.getMessage());
+
+            customMetrics.recordLoginFailure();
             return;
         }
 
@@ -76,12 +81,20 @@ public class AuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getRequestURI();
-        String method = request.getMethod();
 
-        if (isSwaggerPath(path)) {
-            log.debug("Path {} method {} is swagger-related (no auth required)", path, method);
+        // Skip /actuator/** endpoints completely
+        if (path.startsWith("/actuator")) {
+            log.debug("Path {} is actuator endpoint (no auth required)", path);
             return true;
         }
+
+        // Skip /swagger-ui/** and related swagger endpoints
+        if (isSwaggerPath(path)) {
+            log.debug("Path {} is swagger-related (no auth required)", path);
+            return true;
+        }
+
+        String method = request.getMethod();
 
         // Check method-specific unsecured routes (exact path match only, no subpaths)
         boolean isUnsecured = UNSECURED_ROUTES.entrySet().stream()
@@ -108,10 +121,9 @@ public class AuthenticationFilter extends OncePerRequestFilter {
     }
 
     private boolean isSwaggerPath(String path) {
-        return "/swagger-ui.html".equals(path)
-                || "/swagger-ui".equals(path)
-                || "/swagger-ui/index.html".equals(path)
-                || "/v2/api-docs".equals(path)
+        return path.startsWith("/swagger-ui")
+                || path.startsWith("/swagger-ui.html")
+                || path.startsWith("/v3/api-docs")
                 || path.startsWith("/swagger-resources")
                 || path.startsWith("/webjars/");
     }

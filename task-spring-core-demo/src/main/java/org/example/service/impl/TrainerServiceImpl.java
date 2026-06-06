@@ -144,8 +144,6 @@ public class TrainerServiceImpl implements TrainerService {
         // update user details trainer belongs to
         User user = trainer.getUser();
 
-        System.out.println("----------------------");
-
         userService.updateUser(user.getId(),
                 new UserUpdateRequest(updateRequest.firstName(), updateRequest.lastName()));
 
