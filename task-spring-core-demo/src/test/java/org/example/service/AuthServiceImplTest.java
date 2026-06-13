@@ -61,11 +61,11 @@ class AuthServiceImplTest {
         when(passwordEncoder.matches("secret", "encoded-password")).thenReturn(true);
         when(jwtService.generateToken("john.doe")).thenReturn("jwt-token");
 
-        String token = authService.login(new AuthRequest("john.doe", "secret"));
+        String token = authService.login(new AuthRequest("john.doe", "secret"), "192.168.1.1");
 
         org.assertj.core.api.Assertions.assertThat(token).isEqualTo("jwt-token");
-        verify(loginAttemptService).validateNotBlocked("john.doe");
-        verify(loginAttemptService).onSuccessfulLogin("john.doe");
+        verify(loginAttemptService).validateNotBlocked("192.168.1.1");
+        verify(loginAttemptService).onSuccessfulLogin("192.168.1.1");
         verify(jwtService).generateToken("john.doe");
     }
 
@@ -74,12 +74,12 @@ class AuthServiceImplTest {
     void authenticate_ThrowsForMissingUser() {
         when(userRepository.findByUsername("john.doe")).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> authService.authenticate(new AuthRequest("john.doe", "secret")))
+        assertThatThrownBy(() -> authService.authenticate(new AuthRequest("john.doe", "secret"), "192.168.1.1"))
                 .isInstanceOf(BadCredentialsException.class)
                 .hasMessageContaining("Invalid credentials");
 
-        verify(loginAttemptService).validateNotBlocked("john.doe");
-        verify(loginAttemptService).onFailedLogin("john.doe");
+        verify(loginAttemptService).validateNotBlocked("192.168.1.1");
+        verify(loginAttemptService).onFailedLogin("192.168.1.1");
         verify(passwordEncoder, never()).matches(any(), any());
     }
 
@@ -93,13 +93,13 @@ class AuthServiceImplTest {
         when(userRepository.findByUsername("john.doe")).thenReturn(Optional.of(user));
         when(passwordEncoder.matches("secret", "encoded-password")).thenReturn(false);
 
-        assertThatThrownBy(() -> authService.authenticate(new AuthRequest("john.doe", "secret")))
+        assertThatThrownBy(() -> authService.authenticate(new AuthRequest("john.doe", "secret"), "192.168.1.1"))
                 .isInstanceOf(BadCredentialsException.class)
                 .hasMessageContaining("Invalid credentials");
 
-        verify(loginAttemptService).validateNotBlocked("john.doe");
-        verify(loginAttemptService).onFailedLogin("john.doe");
-        verify(loginAttemptService, never()).onSuccessfulLogin(eq("john.doe"));
+        verify(loginAttemptService).validateNotBlocked("192.168.1.1");
+        verify(loginAttemptService).onFailedLogin("192.168.1.1");
+        verify(loginAttemptService, never()).onSuccessfulLogin(eq("192.168.1.1"));
     }
 
     @Test
@@ -129,4 +129,3 @@ class AuthServiceImplTest {
         verify(userRepository).changePassword("john.doe", "encoded-new");
     }
 }
-

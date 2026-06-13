@@ -34,34 +34,35 @@ public class AuthServiceImpl implements AuthService {
      * Authenticate according to credentials
      *
      * @param authRequest instance of AuthRequest
+     * @param ipAddress   originating client IP address used for rate-limiting
      * @throws SecurityException if credentials are invalid
      */
     @Override
     @Transactional(readOnly = true)
-    public void authenticate(AuthRequest authRequest) {
+    public void authenticate(AuthRequest authRequest, String ipAddress) {
         BadCredentialsException badCredentialsException = new BadCredentialsException("Invalid credentials",
                 ErrorResponse.ErrorPointer.credentials);
 
-        loginAttemptService.validateNotBlocked(authRequest.username());
+        loginAttemptService.validateNotBlocked(ipAddress);
 
         User user = userRepository.findByUsername(authRequest.username())
                 .orElseThrow(() -> {
-                    loginAttemptService.onFailedLogin(authRequest.username());
+                    loginAttemptService.onFailedLogin(ipAddress);
                     return badCredentialsException;
                 });
 
         if (!passwordEncoder.matches(authRequest.password(), user.getPassword())) {
-            loginAttemptService.onFailedLogin(authRequest.username());
+            loginAttemptService.onFailedLogin(ipAddress);
             throw badCredentialsException;
         }
 
-        loginAttemptService.onSuccessfulLogin(authRequest.username());
+        loginAttemptService.onSuccessfulLogin(ipAddress);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public String login(AuthRequest authRequest) {
-        authenticate(authRequest);
+    public String login(AuthRequest authRequest, String ipAddress) {
+        authenticate(authRequest, ipAddress);
         return jwtService.generateToken(authRequest.username());
     }
 

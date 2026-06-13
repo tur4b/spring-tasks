@@ -3,6 +3,7 @@ package org.example.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.dto.request.AuthRequest;
@@ -30,8 +31,9 @@ public class AuthController {
     @PostMapping("/login")
     @SecurityRequirements({})
     @Operation(summary = "Authenticate user", description = "Validates username and password.")
-    public ResponseEntity<?> login(@Valid @RequestBody AuthRequest authRequest) {
-        String token = authService.login(authRequest);
+    public ResponseEntity<?> login(@Valid @RequestBody AuthRequest authRequest, HttpServletRequest request) {
+        String ipAddress = request.getRemoteAddr();
+        String token = authService.login(authRequest, ipAddress);
         return ResponseEntity.ok(new BaseResponse<>(new AuthResponse(token), "Login successful"));
     }
 
