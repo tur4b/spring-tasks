@@ -2,6 +2,8 @@ package org.example.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.config.security.JwtService;
+import org.example.config.security.LogoutTokenStore;
 import org.example.dao.UserRepository;
 import org.example.dto.request.AuthRequest;
 import org.example.dto.request.ChangePasswordRequest;
@@ -9,7 +11,7 @@ import org.example.entity.User;
 import org.example.exception.model.BadCredentialsException;
 import org.example.exception.model.ErrorResponse;
 import org.example.service.api.AuthService;
-import org.example.service.api.PasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +26,9 @@ public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
+    private final LoginAttemptService loginAttemptService;
+    private final LogoutTokenStore logoutTokenStore;
 
     /**
      * Authenticate according to credentials
@@ -37,12 +42,44 @@ public class AuthServiceImpl implements AuthService {
         BadCredentialsException badCredentialsException = new BadCredentialsException("Invalid credentials",
                 ErrorResponse.ErrorPointer.credentials);
 
+        loginAttemptService.validateNotBlocked(authRequest.username());
+
         User user = userRepository.findByUsername(authRequest.username())
-                .orElseThrow(() -> badCredentialsException);
+                .orElseThrow(() -> {
+                    loginAttemptService.onFailedLogin(authRequest.username());
+                    return badCredentialsException;
+                });
 
         if (!passwordEncoder.matches(authRequest.password(), user.getPassword())) {
+            loginAttemptService.onFailedLogin(authRequest.username());
             throw badCredentialsException;
         }
+
+        loginAttemptService.onSuccessfulLogin(authRequest.username());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public String login(AuthRequest authRequest) {
+        authenticate(authRequest);
+        return jwtService.generateToken(authRequest.username());
+    }
+
+    @Override
+    public void logout(String bearerToken) {
+        BadCredentialsException badCredentialsException = new BadCredentialsException("Invalid token",
+                ErrorResponse.ErrorPointer.credentials);
+
+        if (bearerToken == null || !bearerToken.startsWith("Bearer ")) {
+            throw badCredentialsException;
+        }
+
+        String token = bearerToken.substring(7);
+        if (!jwtService.isTokenValid(token)) {
+            throw badCredentialsException;
+        }
+
+        logoutTokenStore.invalidateToken(token, jwtService.extractExpiration(token).toInstant());
     }
 
     /**

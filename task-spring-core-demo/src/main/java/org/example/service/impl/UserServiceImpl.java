@@ -11,9 +11,12 @@ import org.example.entity.User;
 import org.example.exception.model.NotFoundException;
 import org.example.exception.model.ErrorResponse;
 import org.example.mapper.UserMapper;
-import org.example.service.api.PasswordEncoder;
 import org.example.service.api.UserService;
 import org.example.util.CredentialGenerator;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -25,7 +28,7 @@ import java.util.List;
 @Transactional
 @Validated
 @Service
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService, UserDetailsService {
 
     private final UserMapper userMapper;
     private final UserRepository userRepository;
@@ -175,5 +178,18 @@ public class UserServiceImpl implements UserService {
             serialNumber++;
         }
         return username;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+
+        return org.springframework.security.core.userdetails.User.builder()
+                .username(user.getUsername())
+                .password(user.getPassword())
+                .disabled(!user.isActive())
+                .authorities("ROLE_USER")
+                .build();
     }
 }

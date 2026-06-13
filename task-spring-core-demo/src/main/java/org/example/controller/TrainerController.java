@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
+import org.example.config.security.JwtService;
 import org.example.dto.request.*;
 import org.example.dto.response.BaseResponse;
 import org.example.dto.response.TrainerTrainingProfileView;
@@ -29,6 +30,7 @@ import java.util.List;
 public class TrainerController {
 
     private final TrainerService trainerService;
+    private final JwtService jwtService;
 
     /**
      * Register a new trainer.
@@ -43,9 +45,11 @@ public class TrainerController {
             @Valid @RequestBody TrainerCreateRequest registrationRequest) {
 
         UserCredentialsDTO credentials = trainerService.createTrainer(registrationRequest);
+        String accessToken = jwtService.generateToken(credentials.username());
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
+                .header("X-Auth-Token", accessToken)
                 .body(new BaseResponse<>(
                         credentials,
                         "Trainer registered successfully. Please save your credentials."

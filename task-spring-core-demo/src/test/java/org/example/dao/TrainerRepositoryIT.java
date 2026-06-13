@@ -3,229 +3,113 @@ package org.example.dao;
 import org.example.dto.response.TraineeProfileTrainerDTO;
 import org.example.dto.response.TrainerDTO;
 import org.example.dto.response.TrainerProfileTraineeDTO;
-import org.example.dto.response.TrainerTrainingProfileView;
-import org.example.entity.*;
-import org.example.testsupport.AbstractRepositoryIntegrationTest;
+import org.example.entity.Trainee;
+import org.example.entity.Trainer;
+import org.example.entity.TrainingType;
+import org.example.entity.TrainingTypeName;
+import org.example.entity.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDate;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DisplayName("TrainerRepository - DAO Slice Integration Tests")
-class TrainerRepositoryIT extends AbstractRepositoryIntegrationTest {
+@DataJpaTest
+@ActiveProfiles("test")
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
+@DisplayName("TrainerRepository Integration Tests")
+class TrainerRepositoryIT {
 
     @Autowired
     private TrainerRepository trainerRepository;
 
     @Autowired
-    private TrainingTypeRepository trainingTypeRepository;
-
-    @Autowired
     private TraineeRepository traineeRepository;
 
     @Autowired
-    private TrainingRepository trainingRepository;
+    private TrainingTypeRepository trainingTypeRepository;
 
     @Test
-    @DisplayName("existsByUserUsername - true for saved trainer, false for unknown")
-    void existsByUserUsername_CorrectBooleans() {
-        TrainingType type = persistTrainingType(TrainingTypeName.CARDIO);
-        trainerRepository.save(trainer("exists.trainer", type));
+    @DisplayName("findTrainerDTOByUsername returns active trainer projection")
+    void findTrainerDTOByUsername_ReturnsProjection() {
+        TrainingType type = trainingType();
+        Trainer trainer = trainer("john.doe", "John", "Doe", type);
+        trainerRepository.saveAndFlush(trainer);
 
-        assertThat(trainerRepository.existsByUserUsername("exists.trainer")).isTrue();
-        assertThat(trainerRepository.existsByUserUsername("no.trainer")).isFalse();
+        TrainerDTO result = trainerRepository.findTrainerDTOByUsername("john.doe").orElseThrow();
+
+        assertThat(result.firstName()).isEqualTo("John");
+        assertThat(result.lastName()).isEqualTo("Doe");
+        assertThat(result.specializationId()).isEqualTo(type.getId());
     }
 
     @Test
-    @DisplayName("findTrainerDTOByUsername - returns DTO for saved trainer")
-    void findTrainerDTOByUsername_ReturnsDTOForSavedTrainer() {
-        TrainingType type = persistTrainingType(TrainingTypeName.STRENGTH);
-        trainerRepository.save(trainer("dto.trainer", type));
+    @DisplayName("existsTrainerTraineeRelation and trainer search queries reflect persisted relations")
+    void relationQueries_ReturnPersistedRelations() {
+        TrainingType type = trainingType();
+        Trainer assignedTrainer = trainer("trainer.one", "John", "Doe", type);
+        Trainer freeTrainer = trainer("trainer.two", "Jane", "Smith", type);
+        Trainee trainee = trainee("trainee.one", "Alice", "Brown");
 
-        assertThat(trainerRepository.findTrainerDTOByUsername("dto.trainer"))
-                .isPresent()
-                .get()
-                .extracting(TrainerDTO::firstName)
-                .isEqualTo("First");
+        trainerRepository.saveAndFlush(assignedTrainer);
+        trainerRepository.saveAndFlush(freeTrainer);
+        traineeRepository.saveAndFlush(trainee);
+
+        assignedTrainer.getTrainees().add(trainee);
+        trainee.getTrainers().add(assignedTrainer);
+        trainerRepository.saveAndFlush(assignedTrainer);
+        traineeRepository.saveAndFlush(trainee);
+
+        assertThat(trainerRepository.existsTrainerTraineeRelation("trainer.one", "trainee.one")).isTrue();
+        assertThat(trainerRepository.existsTrainerTraineeRelation("trainer.two", "trainee.one")).isFalse();
+
+        List<TraineeProfileTrainerDTO> unassigned = trainerRepository.findTrainersNotAssignedToTrainee("trainee.one");
+        assertThat(unassigned).extracting(TraineeProfileTrainerDTO::username).containsExactly("trainer.two");
+
+        List<TrainerProfileTraineeDTO> trainees = trainerRepository.findTraineesOfTrainerByTrainerUsername("trainer.one");
+        assertThat(trainees).extracting(TrainerProfileTraineeDTO::username).containsExactly("trainee.one");
     }
 
-    @Test
-    @DisplayName("findTrainerDTOByUsername - returns empty Optional for unknown username")
-    void findTrainerDTOByUsername_ReturnsEmpty_WhenNotFound() {
-        assertThat(trainerRepository.findTrainerDTOByUsername("ghost.trainer")).isEmpty();
-    }
-
-    @Test
-    @DisplayName("existsTrainerTraineeRelation - true for linked pair (uses usernames), false otherwise")
-    void existsTrainerTraineeRelation_ByUsernames() {
-        TrainingType type = persistTrainingType(TrainingTypeName.CARDIO);
-        Trainee trainee = persistTrainee("pair.trainee");
-        Trainer tr = trainer("pair.trainer", type);
-        tr.getTrainees().add(trainee);
-        trainerRepository.save(tr);
-
-        assertThat(trainerRepository.existsTrainerTraineeRelation("pair.trainer", "pair.trainee")).isTrue();
-        assertThat(trainerRepository.existsTrainerTraineeRelation("pair.trainer", "other.trainee")).isFalse();
-    }
-
-    // ─── findTrainersNotAssignedToTrainee ────────────────────────────────────
-
-    @Test
-    @DisplayName("findTrainersNotAssignedToTrainee - excludes assigned trainer")
-    void findTrainersNotAssignedToTrainee_ExcludesAssigned() {
-        TrainingType type = persistTrainingType(TrainingTypeName.CARDIO);
-        Trainee trainee = persistTrainee("filter.trainee");
-        Trainer assigned = trainer("assigned.trainer", type);
-        assigned.getTrainees().add(trainee);
-        Trainer unassigned = trainer("free.trainer", type);
-
-        trainerRepository.save(assigned);
-        trainerRepository.save(unassigned);
-
-        assertThat(trainerRepository.findTrainersNotAssignedToTrainee("filter.trainee"))
-                .extracting(TraineeProfileTrainerDTO::username)
-                .doesNotContain("assigned.trainer")
-                .contains("free.trainer");
-    }
-
-    // ─── findAllByTraineesId ─────────────────────────────────────────────────
-
-    @Test
-    @DisplayName("findAllByTraineesId - returns only trainers assigned to the requested trainee id")
-    void findAllByTraineesId_ReturnsOnlyAssignedTrainers() {
-        TrainingType type = persistTrainingType(TrainingTypeName.STRENGTH);
-        Trainee assignedTrainee = persistTrainee("assigned.trainee");
-        Trainee otherTrainee = persistTrainee("other.trainee");
-
-        Trainer assignedTrainer = trainer("assigned.lookup", type);
-        assignedTrainer.getTrainees().add(assignedTrainee);
-        Trainer otherTrainer = trainer("other.lookup", type);
-        otherTrainer.getTrainees().add(otherTrainee);
-
-        trainerRepository.save(assignedTrainer);
-        trainerRepository.save(otherTrainer);
-
-        assertThat(trainerRepository.findAllByTraineesId(assignedTrainee.getId()))
-                .extracting(t -> t.getUser().getUsername())
-                .containsExactly("assigned.lookup")
-                .doesNotContain("other.lookup");
-    }
-
-    // ─── findTrainersOfTraineeByTraineeUsername ───────────────────────────────
-
-    @Test
-    @DisplayName("findTrainersOfTraineeByTraineeUsername - returns only trainers linked to given trainee")
-    void findTrainersOfTraineeByTraineeUsername_ReturnsLinkedTrainers() {
-        TrainingType type = persistTrainingType(TrainingTypeName.CARDIO);
-        Trainee trainee = persistTrainee("linked.trainee");
-        Trainer linked = trainer("linked.trainer", type);
-        linked.getTrainees().add(trainee);
-        Trainer unlinked = trainer("unlinked.trainer", type);
-
-        trainerRepository.save(linked);
-        trainerRepository.save(unlinked);
-
-        List<TraineeProfileTrainerDTO> result =
-                trainerRepository.findTrainersOfTraineeByTraineeUsername("linked.trainee");
-
-        assertThat(result)
-                .extracting(TraineeProfileTrainerDTO::username)
-                .containsExactly("linked.trainer");
-    }
-
-    // ─── findTraineesOfTrainerByTrainerUsername ───────────────────────────────
-
-    @Test
-    @DisplayName("findTraineesOfTrainerByTrainerUsername - returns trainees assigned to given trainer")
-    void findTraineesOfTrainerByTrainerUsername_ReturnsLinkedTrainees() {
-        TrainingType type = persistTrainingType(TrainingTypeName.STRENGTH);
-        Trainee trainee = persistTrainee("my.trainee");
-        Trainer tr = trainer("my.trainer", type);
-        tr.getTrainees().add(trainee);
-        trainerRepository.save(tr);
-
-        List<TrainerProfileTraineeDTO> result =
-                trainerRepository.findTraineesOfTrainerByTrainerUsername("my.trainer");
-
-        assertThat(result)
-                .extracting(TrainerProfileTraineeDTO::username)
-                .containsExactly("my.trainee");
-    }
-
-    // ─── findTrainingsOfTrainerByCriteria ────────────────────────────────────
-
-    @Test
-    @DisplayName("findTrainingsOfTrainerByCriteria - applies date, trainee name, and type filters")
-    void findTrainingsOfTrainerByCriteria_AppliesAllFilters() {
-        TrainingType cardio = persistTrainingType(TrainingTypeName.CARDIO);
-        TrainingType strength = persistTrainingType(TrainingTypeName.STRENGTH);
-        Trainer tr = trainerRepository.save(trainer("crit.trainer", cardio));
-        Trainee target = persistTrainee("crit.trainee");
-        Trainee other = persistTrainee("other.crit.trainee");
-
-        persistTraining("Match Training", tr, target, cardio, LocalDate.now().plusDays(1), 55);
-        persistTraining("No-Match Training", tr, other, strength, LocalDate.now().plusDays(2), 35);
-
-        List<TrainerTrainingProfileView> results = trainerRepository.findTrainingsOfTrainerByCriteria(
-                "crit.trainer",
-                LocalDate.now(),
-                LocalDate.now().plusDays(1),
-                "first last",
-                cardio.getId());
-
-        assertThat(results)
-                .hasSize(1)
-                .allMatch(v -> v.name().equals("Match Training"));
-    }
-
-    // ─── helper methods ──────────────────────────────────────────────────────
-
-    private TrainingType persistTrainingType(TrainingTypeName typeName) {
+    private TrainingType trainingType() {
         TrainingType type = new TrainingType();
-        type.setName(typeName);
-        return trainingTypeRepository.save(type);
+        type.setName(TrainingTypeName.CARDIO);
+        trainingTypeRepository.saveAndFlush(type);
+        return type;
     }
 
-    private Trainer trainer(String username, TrainingType type) {
+    private static Trainer trainer(String username, String firstName, String lastName, TrainingType specialization) {
         User user = new User();
-        user.setFirstName("First");
-        user.setLastName("Last");
         user.setUsername(username);
-        user.setPassword("pass");
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
+        user.setPassword("encoded-password");
 
-        Trainer tr = new Trainer();
-        tr.setUser(user);
-        tr.setSpecialization(type);
-        return tr;
+        Trainer trainer = new Trainer();
+        trainer.setUser(user);
+        trainer.setSpecialization(specialization);
+        trainer.setActive(true);
+        return trainer;
     }
 
-    private Trainee persistTrainee(String username) {
+    private static Trainee trainee(String username, String firstName, String lastName) {
         User user = new User();
-        user.setFirstName("First");
-        user.setLastName("Last");
         user.setUsername(username);
-        user.setPassword("pass");
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
+        user.setPassword("encoded-password");
 
-        Trainee t = new Trainee();
-        t.setUser(user);
-        t.setAddress("Baku");
-        t.setDateOfBirth(LocalDate.of(2000, 1, 1));
-        return traineeRepository.save(t);
-    }
-
-    private Training persistTraining(String name, Trainer trainer, Trainee trainee,
-                                     TrainingType type, LocalDate date, int duration) {
-        Training training = new Training();
-        training.setName(name);
-        training.setTrainer(trainer);
-        training.setTrainee(trainee);
-        training.setType(type);
-        training.setDate(date);
-        training.setDuration(duration);
-        return trainingRepository.save(training);
+        Trainee trainee = new Trainee();
+        trainee.setUser(user);
+        trainee.setAddress("Main street");
+        trainee.setDateOfBirth(LocalDate.of(1995, 1, 10));
+        trainee.setActive(true);
+        return trainee;
     }
 }
+

@@ -7,11 +7,11 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.dto.request.AuthRequest;
 import org.example.dto.request.ChangePasswordRequest;
+import org.example.dto.response.AuthResponse;
+import org.example.dto.response.BaseResponse;
 import org.example.service.api.AuthService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Base64;
 
 @RequiredArgsConstructor
 @RestController
@@ -31,8 +31,8 @@ public class AuthController {
     @SecurityRequirements({})
     @Operation(summary = "Authenticate user", description = "Validates username and password.")
     public ResponseEntity<?> login(@Valid @RequestBody AuthRequest authRequest) {
-        authService.authenticate(authRequest);
-        return ResponseEntity.ok().build();
+        String token = authService.login(authRequest);
+        return ResponseEntity.ok(new BaseResponse<>(new AuthResponse(token), "Login successful"));
     }
 
     /**
@@ -47,14 +47,5 @@ public class AuthController {
 
         authService.changePassword(changePasswordRequest);
         return ResponseEntity.ok().build();
-    }
-
-    @GetMapping("/base64-token")
-    @SecurityRequirements({})
-    public ResponseEntity<String> getAuthBasicToken(@RequestParam(name = "username") String username,
-                                                    @RequestParam(name = "password") String password) {
-        return ResponseEntity.ok(
-                "Basic " + new String(Base64.getEncoder().encode((username + ":" + password).getBytes()))
-        );
     }
 }

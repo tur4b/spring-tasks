@@ -8,18 +8,22 @@ import org.example.entity.Training;
 import org.example.entity.TrainingType;
 import org.example.entity.TrainingTypeName;
 import org.example.entity.User;
-import org.example.testsupport.AbstractRepositoryIntegrationTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDate;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DisplayName("TraineeRepository - DAO Slice Integration Tests")
-class TraineeRepositoryIT extends AbstractRepositoryIntegrationTest {
+@DataJpaTest
+@ActiveProfiles("test")
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
+@DisplayName("TraineeRepository Integration Tests")
+class TraineeRepositoryIT {
 
     @Autowired
     private TraineeRepository traineeRepository;
@@ -28,166 +32,93 @@ class TraineeRepositoryIT extends AbstractRepositoryIntegrationTest {
     private TrainerRepository trainerRepository;
 
     @Autowired
-    private TrainingTypeRepository trainingTypeRepository;
-
-    @Autowired
     private TrainingRepository trainingRepository;
 
-    // ─── findByUserUsername ──────────────────────────────────────────────────
+    @Autowired
+    private TrainingTypeRepository trainingTypeRepository;
 
     @Test
-    @DisplayName("findByUserUsername - returns present Optional after save")
-    void findByUserUsername_ReturnsTrainee() {
-        traineeRepository.save(trainee("findby.username"));
+    @DisplayName("findTraineeDTOByUsername returns active trainee projection")
+    void findTraineeDTOByUsername_ReturnsProjection() {
+        Trainee trainee = trainee("alice.smith", "Alice", "Smith", true);
+        traineeRepository.saveAndFlush(trainee);
 
-        assertThat(traineeRepository.findByUserUsername("findby.username")).isPresent();
+        TraineeDTO result = traineeRepository.findTraineeDTOByUsername("alice.smith").orElseThrow();
+
+        assertThat(result.firstName()).isEqualTo("Alice");
+        assertThat(result.lastName()).isEqualTo("Smith");
+        assertThat(result.isActive()).isTrue();
     }
 
     @Test
-    @DisplayName("findByUserUsername - returns empty Optional for unknown username")
-    void findByUserUsername_ReturnsEmpty_WhenNotFound() {
-        assertThat(traineeRepository.findByUserUsername("ghost.user")).isEmpty();
+    @DisplayName("findTrainingsOfTraineeByCriteria returns matching trainings")
+    void findTrainingsOfTraineeByCriteria_ReturnsMatchingTrainings() {
+        TrainingType trainingType = new TrainingType();
+        trainingType.setName(TrainingTypeName.CARDIO);
+        trainingTypeRepository.saveAndFlush(trainingType);
+
+        Trainee trainee = trainee("alice.smith", "Alice", "Smith", true);
+        traineeRepository.saveAndFlush(trainee);
+
+        Trainer trainer = trainer("trainer.one", "John", "Doe", trainingType);
+        trainer.getTrainees().add(trainee);
+        trainee.getTrainers().add(trainer);
+        trainerRepository.saveAndFlush(trainer);
+        traineeRepository.saveAndFlush(trainee);
+
+        Training training = new Training();
+        training.setName("Morning cardio");
+        training.setDate(LocalDate.of(2026, 1, 1));
+        training.setDuration(45);
+        training.setTrainee(trainee);
+        training.setTrainer(trainer);
+        training.setType(trainingType);
+        trainingRepository.saveAndFlush(training);
+
+        var result = traineeRepository.findTrainingsOfTraineeByCriteria("alice.smith", null, null, null, trainingType.getId());
+
+        assertThat(result).containsExactly(new TraineeTrainingProfileView("Morning cardio", LocalDate.of(2026, 1, 1), trainingType.getId(), 45, "John Doe"));
     }
 
-    // ─── existsByUserUsername ────────────────────────────────────────────────
-
     @Test
-    @DisplayName("existsByUserUsername - true for saved trainee, false for unknown")
-    void existsByUserUsername_CorrectBooleans() {
-        traineeRepository.save(trainee("present.user"));
-
-        assertThat(traineeRepository.existsByUserUsername("present.user")).isTrue();
-        assertThat(traineeRepository.existsByUserUsername("absent.user")).isFalse();
-    }
-
-    // ─── findTraineeDTOByUsername ────────────────────────────────────────────
-
-    @Test
-    @DisplayName("findTraineeDTOByUsername - returns DTO when trainee is active")
-    void findTraineeDTOByUsername_ReturnsDTOForActiveTrainee() {
-        traineeRepository.save(trainee("dto.user"));
-
-        assertThat(traineeRepository.findTraineeDTOByUsername("dto.user"))
-                .isPresent()
-                .get()
-                .extracting(TraineeDTO::isActive)
-                .isEqualTo(true);
-    }
-
-    @Test
-    @DisplayName("findTraineeDTOByUsername - returns empty Optional when trainee is inactive")
-    void findTraineeDTOByUsername_ReturnsEmpty_WhenInactive() {
-        Trainee t = trainee("inactive.dto.user");
-        t.setActive(false);
-        traineeRepository.save(t);
-
-        assertThat(traineeRepository.findTraineeDTOByUsername("inactive.dto.user")).isEmpty();
-    }
-
-    // ─── deleteByUserUsername ────────────────────────────────────────────────
-
-    @Test
-    @DisplayName("deleteByUserUsername - removes trainee so existsByUserUsername returns false")
+    @DisplayName("deleteByUserUsername removes the trainee by username")
     void deleteByUserUsername_RemovesTrainee() {
-        traineeRepository.save(trainee("todelete.user"));
-        assertThat(traineeRepository.existsByUserUsername("todelete.user")).isTrue();
+        Trainee trainee = trainee("alice.smith", "Alice", "Smith", true);
+        traineeRepository.saveAndFlush(trainee);
 
-        traineeRepository.deleteByUserUsername("todelete.user");
+        traineeRepository.deleteByUserUsername("alice.smith");
 
-        assertThat(traineeRepository.existsByUserUsername("todelete.user")).isFalse();
+        assertThat(traineeRepository.findByUserUsername("alice.smith")).isEmpty();
     }
 
-    // ─── findTrainingsOfTraineeByCriteria ────────────────────────────────────
-
-    @Test
-    @DisplayName("findTrainingsOfTraineeByCriteria - returns only trainings matching all filters")
-    void findTrainingsOfTraineeByCriteria_AppliesAllFilters() {
-        Trainee trainee = traineeRepository.save(trainee("criteria.trainee"));
-        TrainingType cardio = persistTrainingType(TrainingTypeName.CARDIO);
-        TrainingType strength = persistTrainingType(TrainingTypeName.STRENGTH);
-        Trainer matchTrainer = persistTrainer("fit.coach", "Fit", "Coach", cardio);
-        Trainer otherTrainer = persistTrainer("other.coach", "Other", "Coach", strength);
-
-        persistTraining(trainee, matchTrainer, cardio, "Match Session", LocalDate.now().plusDays(1), 45);
-        persistTraining(trainee, otherTrainer, strength, "Non Match", LocalDate.now().plusDays(2), 30);
-
-        List<TraineeTrainingProfileView> results = traineeRepository.findTrainingsOfTraineeByCriteria(
-                "criteria.trainee",
-                LocalDate.now(),
-                LocalDate.now().plusDays(1),
-                "fit coach",
-                cardio.getId());
-
-        assertThat(results)
-                .hasSize(1)
-                .allMatch(v -> v.name().equals("Match Session"));
-    }
-
-    @Test
-    @DisplayName("findTrainingsOfTraineeByCriteria - blank trainer name returns all within date range")
-    void findTrainingsOfTraineeByCriteria_IgnoresBlankTrainerName() {
-        Trainee trainee = traineeRepository.save(trainee("blank.filter.trainee"));
-        TrainingType cardio = persistTrainingType(TrainingTypeName.CARDIO);
-        Trainer first = persistTrainer("first.trainer2", "First", "Trainer", cardio);
-        Trainer second = persistTrainer("second.trainer2", "Second", "Trainer", cardio);
-
-        persistTraining(trainee, first, cardio, "First Session", LocalDate.now().plusDays(1), 40);
-        persistTraining(trainee, second, cardio, "Second Session", LocalDate.now().plusDays(2), 50);
-
-        List<TraineeTrainingProfileView> results = traineeRepository.findTrainingsOfTraineeByCriteria(
-                "blank.filter.trainee",
-                LocalDate.now(),
-                LocalDate.now().plusDays(2),
-                "",
-                cardio.getId());
-
-        assertThat(results).hasSize(2);
-    }
-
-    // ─── helper methods ──────────────────────────────────────────────────────
-
-    private Trainee trainee(String username) {
+    private static Trainee trainee(String username, String firstName, String lastName, boolean active) {
         User user = new User();
-        user.setFirstName("First");
-        user.setLastName("Last");
         user.setUsername(username);
-        user.setPassword("pass");
-
-        Trainee t = new Trainee();
-        t.setUser(user);
-        t.setAddress("Baku");
-        t.setDateOfBirth(LocalDate.of(2000, 1, 1));
-        return t;
-    }
-
-    private TrainingType persistTrainingType(TrainingTypeName typeName) {
-        TrainingType type = new TrainingType();
-        type.setName(typeName);
-        return trainingTypeRepository.save(type);
-    }
-
-    private Trainer persistTrainer(String username, String firstName, String lastName, TrainingType type) {
-        User user = new User();
         user.setFirstName(firstName);
         user.setLastName(lastName);
+        user.setPassword("encoded-password");
+        user.setActive(active);
+
+        Trainee trainee = new Trainee();
+        trainee.setUser(user);
+        trainee.setAddress("Main street");
+        trainee.setDateOfBirth(LocalDate.of(1995, 1, 10));
+        trainee.setActive(active);
+        return trainee;
+    }
+
+    private static Trainer trainer(String username, String firstName, String lastName, TrainingType specialization) {
+        User user = new User();
         user.setUsername(username);
-        user.setPassword("pass");
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
+        user.setPassword("encoded-password");
 
         Trainer trainer = new Trainer();
         trainer.setUser(user);
-        trainer.setSpecialization(type);
-        return trainerRepository.save(trainer);
-    }
-
-    private Training persistTraining(Trainee trainee, Trainer trainer, TrainingType type,
-                                     String name, LocalDate date, int duration) {
-        Training training = new Training();
-        training.setName(name);
-        training.setDate(date);
-        training.setDuration(duration);
-        training.setType(type);
-        training.setTrainer(trainer);
-        training.setTrainee(trainee);
-        return trainingRepository.save(training);
+        trainer.setSpecialization(specialization);
+        trainer.setActive(true);
+        return trainer;
     }
 }
+

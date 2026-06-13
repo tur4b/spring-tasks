@@ -2,43 +2,36 @@ package org.example.dao;
 
 import org.example.entity.TrainingType;
 import org.example.entity.TrainingTypeName;
-import org.example.testsupport.AbstractRepositoryIntegrationTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.List;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DisplayName("TrainingTypeRepository - DAO Slice Integration Tests")
-class TrainingTypeRepositoryIT extends AbstractRepositoryIntegrationTest {
+@DataJpaTest
+@ActiveProfiles("test")
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
+@DisplayName("TrainingTypeRepository Integration Tests")
+class TrainingTypeRepositoryIT {
 
     @Autowired
     private TrainingTypeRepository trainingTypeRepository;
 
     @Test
-    @DisplayName("save + existsById - persists training type")
-    void save_PersistsType() {
-        TrainingType type = new TrainingType();
-        type.setName(TrainingTypeName.CARDIO);
+    @DisplayName("save and findAll returns persisted training types")
+    void saveAndFindAll_ReturnsPersistedTypes() {
+        TrainingType cardio = new TrainingType();
+        cardio.setName(TrainingTypeName.CARDIO);
+        TrainingType strength = new TrainingType();
+        strength.setName(TrainingTypeName.STRENGTH);
 
-        TrainingType saved = trainingTypeRepository.save(type);
+        trainingTypeRepository.saveAndFlush(cardio);
+        trainingTypeRepository.saveAndFlush(strength);
 
-        assertThat(saved.getId()).isNotNull();
-        assertThat(trainingTypeRepository.existsById(saved.getId())).isTrue();
-    }
-
-    @Test
-    @DisplayName("findAll - returns all saved types")
-    void findAll_ReturnsSavedTypes() {
-        TrainingType t1 = new TrainingType();
-        t1.setName(TrainingTypeName.CARDIO);
-        TrainingType t2 = new TrainingType();
-        t2.setName(TrainingTypeName.STRENGTH);
-        trainingTypeRepository.saveAll(List.of(t1, t2));
-
-        assertThat(trainingTypeRepository.findAll()).hasSizeGreaterThanOrEqualTo(2);
+        assertThat(trainingTypeRepository.findAll()).hasSize(2);
     }
 }
 

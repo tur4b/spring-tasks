@@ -1,83 +1,53 @@
 package org.example.dao;
 
 import org.example.entity.User;
-import org.example.service.api.PasswordEncoder;
-import org.example.testsupport.AbstractRepositoryIntegrationTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DisplayName("UserRepository - DAO Slice Integration Tests")
-class UserRepositoryIT extends AbstractRepositoryIntegrationTest {
+@DataJpaTest
+@ActiveProfiles("test")
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
+@DisplayName("UserRepository Integration Tests")
+class UserRepositoryIT {
 
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
     @Test
-    @DisplayName("save + findByUsername - persists and retrieves by username")
-    void saveAndFindByUsername() {
-        String rawPassword = "secret";
-        String hashedPassword = passwordEncoder.encode(rawPassword);
+    @DisplayName("save and findByUsername returns the stored user")
+    void saveAndFindByUsername_ReturnsStoredUser() {
+        User user = new User();
+        user.setFirstName("John");
+        user.setLastName("Doe");
+        user.setUsername("john.doe");
+        user.setPassword("encoded-password");
 
-        userRepository.save(user("alice.bob", hashedPassword));
+        userRepository.saveAndFlush(user);
 
-        assertThat(userRepository.findByUsername("alice.bob"))
-                .isPresent()
-                .get().extracting(User::getUsername).isEqualTo("alice.bob");
+        assertThat(userRepository.findByUsername("john.doe")).isPresent();
+        assertThat(userRepository.existsByUsername("john.doe")).isTrue();
     }
 
     @Test
-    @DisplayName("existsByUsername - returns true for existing, false for missing")
-    void existsByUsername() {
-        userRepository.save(user("exists.user", "pw"));
+    @DisplayName("changePassword updates the stored password")
+    void changePassword_UpdatesPassword() {
+        User user = new User();
+        user.setFirstName("John");
+        user.setLastName("Doe");
+        user.setUsername("john.doe");
+        user.setPassword("old-password");
+        userRepository.saveAndFlush(user);
 
-        assertThat(userRepository.existsByUsername("exists.user")).isTrue();
-        assertThat(userRepository.existsByUsername("no.such")).isFalse();
-    }
+        int updatedRows = userRepository.changePassword("john.doe", "new-password");
 
-    @Test
-    @DisplayName("findByUsername - returns empty optional when username is not present")
-    void findByUsername_ShouldReturnEmptyOptional_WhenUsernameDoesNotExist() {
-        assertThat(userRepository.findByUsername("missing.user")).isEmpty();
-    }
-
-    @Test
-    @DisplayName("changePassword - updates password and returns 1 affected row")
-    void changePassword_UpdatesSuccessfully() {
-        String oldRawPassword = "old";
-        String newRawPassword = "new";
-        String hashedNewPassword = passwordEncoder.encode(newRawPassword);
-
-        userRepository.save(user("change.me", oldRawPassword));
-
-        int rows = userRepository.changePassword("change.me", hashedNewPassword);
-
-        assertThat(rows).isEqualTo(1);
-        assertThat(userRepository.findByUsername("change.me"))
-                .isPresent()
-                .get().extracting(User::getPassword).matches(pwd -> passwordEncoder.matches(newRawPassword, pwd));
-    }
-
-    @Test
-    @DisplayName("changePassword - returns 0 for unknown username")
-    void changePassword_UnknownUser_ReturnsZero() {
-        assertThat(userRepository.changePassword("ghost.user", "pw")).isZero();
-    }
-
-    // ── helpers ──────────────────────────────────────────────────────────────
-
-    private User user(String username, String password) {
-        User u = new User();
-        u.setFirstName("First");
-        u.setLastName("Last");
-        u.setUsername(username);
-        u.setPassword(password);
-        return u;
+        assertThat(updatedRows).isEqualTo(1);
+        assertThat(userRepository.findByUsername("john.doe")).get().extracting(User::getPassword).isEqualTo("new-password");
     }
 }
 

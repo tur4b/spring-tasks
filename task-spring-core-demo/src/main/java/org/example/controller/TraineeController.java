@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
+import org.example.config.security.JwtService;
 import org.example.dto.request.*;
 import org.example.dto.response.*;
 import org.example.service.api.TraineeService;
@@ -29,6 +30,7 @@ public class TraineeController {
 
     private final TraineeService traineeService;
     private final TrainerTraineeRelationService trainerTraineeRelationService;
+    private final JwtService jwtService;
 
     /**
      * Register a new trainee.
@@ -43,9 +45,11 @@ public class TraineeController {
             @Valid @RequestBody TraineeCreateRequest registrationRequest) {
 
         UserCredentialsDTO credentials = traineeService.createTrainee(registrationRequest);
+        String accessToken = jwtService.generateToken(credentials.username());
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
+                .header("X-Auth-Token", accessToken)
                 .body(new BaseResponse<>(
                         credentials,
                         "Trainee registered successfully."
