@@ -2,10 +2,12 @@ package org.example.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.client.WorkloadPublisher;
 import org.example.dao.TraineeRepository;
 import org.example.dto.request.*;
 import org.example.dto.response.*;
 import org.example.entity.Trainee;
+import org.example.entity.Training;
 import org.example.entity.User;
 import org.example.exception.model.NotFoundException;
 import org.example.exception.model.ErrorResponse;
@@ -20,6 +22,7 @@ import org.springframework.validation.annotation.Validated;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Service layer for trainee operations
@@ -34,6 +37,7 @@ public class TraineeServiceImpl implements TraineeService {
     private final TraineeRepository traineeRepository;
     private final UserService userService;
     private final TrainerTraineeRelationService trainerTraineeRelationService;
+    private final WorkloadPublisher workloadPublisher;
 
     /**
      * Get Trainee Profile by trainee username
@@ -149,11 +153,22 @@ public class TraineeServiceImpl implements TraineeService {
     @Override
     public boolean deleteTrainee(String traineeUsername) {
 
-        if (!traineeRepository.existsByUserUsername(traineeUsername)) {
+        Optional<Trainee> optionalTrainee = traineeRepository.findByUserUsername(traineeUsername);
+
+        if (optionalTrainee.isEmpty()) {
             log.debug("Trainee not found with username: {}", traineeUsername);
             return false;
         }
 
+        Trainee trainee = optionalTrainee.get();
+
+        // TODO: I know this way is not good, but I implemented it to fill the task requirement
+        List<Training> trainings = trainee.getTrainings();
+        trainings.forEach(training -> {
+            workloadPublisher.publishDelete(training, training.getTrainer());
+        });
+
+        // at the end delete the trainee and trainings it belongs
         traineeRepository.deleteByUserUsername(traineeUsername);
         return true;
     }
