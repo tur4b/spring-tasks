@@ -1,0 +1,198 @@
+2026-06-27 17:38:38.460 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION processWorkload action=ADD trainer=trainer.one date=2026-06-15 duration=30
+2026-06-27 17:38:38.480 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION updatedMonthlySummary trainer=trainer.one year=2026 month=6 totalDuration=30
+2026-06-27 17:38:38.481 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION processWorkload action=DELETE trainer=trainer.one date=2026-06-15 duration=50
+2026-06-27 17:38:38.482 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION updatedMonthlySummary trainer=trainer.one year=2026 month=6 totalDuration=0
+2026-06-27 17:38:38.723 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION processWorkload action=ADD trainer=trainer.one date=2026-06-15 duration=60
+2026-06-27 17:38:38.724 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION updatedMonthlySummary trainer=trainer.one year=2026 month=6 totalDuration=60
+2026-06-27 17:38:38.724 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION processWorkload action=ADD trainer=trainer.one date=2026-06-20 duration=30
+2026-06-27 17:38:38.726 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION updatedMonthlySummary trainer=trainer.one year=2026 month=6 totalDuration=90
+2026-06-27 17:38:38.738 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION processWorkload action=ADD trainer=trainer.one date=2026-06-15 duration=60
+2026-06-27 17:38:38.739 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION updatedMonthlySummary trainer=trainer.one year=2026 month=6 totalDuration=60
+2026-06-27 17:38:38.739 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION processWorkload action=DELETE trainer=trainer.one date=2026-06-15 duration=20
+2026-06-27 17:38:38.739 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION updatedMonthlySummary trainer=trainer.one year=2026 month=6 totalDuration=40
+2026-06-27 17:38:38.791 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION processWorkload action=ADD trainer=trainer.one date=2026-05-10 duration=45
+2026-06-27 17:38:38.792 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION updatedMonthlySummary trainer=trainer.one year=2026 month=5 totalDuration=45
+2026-06-27 17:38:38.793 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION processWorkload action=ADD trainer=trainer.one date=2026-06-10 duration=55
+2026-06-27 17:38:38.793 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION updatedMonthlySummary trainer=trainer.one year=2026 month=6 totalDuration=55
+2026-06-27 17:42:06.605 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION processWorkload action=ADD trainer=trainer.one date=2026-06-15 duration=30
+2026-06-27 17:42:06.640 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION updatedMonthlySummary trainer=trainer.one year=2026 month=6 totalDuration=30
+2026-06-27 17:42:06.641 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION processWorkload action=DELETE trainer=trainer.one date=2026-06-15 duration=50
+2026-06-27 17:42:06.641 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION updatedMonthlySummary trainer=trainer.one year=2026 month=6 totalDuration=0
+2026-06-27 17:42:07.404 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION processWorkload action=ADD trainer=trainer.one date=2026-06-15 duration=60
+2026-06-27 17:42:07.416 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION updatedMonthlySummary trainer=trainer.one year=2026 month=6 totalDuration=60
+2026-06-27 17:42:07.418 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION processWorkload action=ADD trainer=trainer.one date=2026-06-20 duration=30
+2026-06-27 17:42:07.418 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION updatedMonthlySummary trainer=trainer.one year=2026 month=6 totalDuration=90
+2026-06-27 17:42:07.485 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION processWorkload action=ADD trainer=trainer.one date=2026-06-15 duration=60
+2026-06-27 17:42:07.486 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION updatedMonthlySummary trainer=trainer.one year=2026 month=6 totalDuration=60
+2026-06-27 17:42:07.487 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION processWorkload action=DELETE trainer=trainer.one date=2026-06-15 duration=20
+2026-06-27 17:42:07.487 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION updatedMonthlySummary trainer=trainer.one year=2026 month=6 totalDuration=40
+2026-06-27 17:42:07.504 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION processWorkload action=ADD trainer=trainer.one date=2026-05-10 duration=45
+2026-06-27 17:42:07.505 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION updatedMonthlySummary trainer=trainer.one year=2026 month=5 totalDuration=45
+2026-06-27 17:42:07.505 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION processWorkload action=ADD trainer=trainer.one date=2026-06-10 duration=55
+2026-06-27 17:42:07.508 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION updatedMonthlySummary trainer=trainer.one year=2026 month=6 totalDuration=55
+2026-06-27 17:50:09.184 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION processWorkload action=ADD trainer=trainer.one date=2026-06-15 duration=30
+2026-06-27 17:50:09.209 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION updatedMonthlySummary trainer=trainer.one year=2026 month=6 totalDuration=30
+2026-06-27 17:50:09.210 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION processWorkload action=DELETE trainer=trainer.one date=2026-06-15 duration=50
+2026-06-27 17:50:09.215 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION updatedMonthlySummary trainer=trainer.one year=2026 month=6 totalDuration=0
+2026-06-27 17:50:09.477 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION processWorkload action=ADD trainer=trainer.one date=2026-06-15 duration=60
+2026-06-27 17:50:09.481 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION updatedMonthlySummary trainer=trainer.one year=2026 month=6 totalDuration=60
+2026-06-27 17:50:09.481 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION processWorkload action=ADD trainer=trainer.one date=2026-06-20 duration=30
+2026-06-27 17:50:09.482 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION updatedMonthlySummary trainer=trainer.one year=2026 month=6 totalDuration=90
+2026-06-27 17:50:09.489 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION processWorkload action=ADD trainer=trainer.one date=2026-06-15 duration=60
+2026-06-27 17:50:09.490 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION updatedMonthlySummary trainer=trainer.one year=2026 month=6 totalDuration=60
+2026-06-27 17:50:09.490 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION processWorkload action=DELETE trainer=trainer.one date=2026-06-15 duration=20
+2026-06-27 17:50:09.491 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION updatedMonthlySummary trainer=trainer.one year=2026 month=6 totalDuration=40
+2026-06-27 17:50:09.505 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION processWorkload action=ADD trainer=trainer.one date=2026-05-10 duration=45
+2026-06-27 17:50:09.506 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION updatedMonthlySummary trainer=trainer.one year=2026 month=5 totalDuration=45
+2026-06-27 17:50:09.507 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION processWorkload action=ADD trainer=trainer.one date=2026-06-10 duration=55
+2026-06-27 17:50:09.507 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION updatedMonthlySummary trainer=trainer.one year=2026 month=6 totalDuration=55
+2026-06-27 17:50:13.875 [main] INFO  transactionId=[] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [org.example.workload.controller.WorkloadControllerIT]: WorkloadControllerIT does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-06-27 17:50:14.320 [main] INFO  transactionId=[] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration org.example.workload.TrainerWorkloadApplication for test class org.example.workload.controller.WorkloadControllerIT
+2026-06-27 17:50:15.582 [background-preinit] INFO  transactionId=[] o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2026-06-27 17:50:15.901 [main] INFO  transactionId=[] o.e.w.c.WorkloadControllerIT - Starting WorkloadControllerIT using Java 21.0.9 with PID 12308 (started by Turab in C:\Users\Turab\Desktop\dev-java\spring-tasks\trainer-workload-service)
+2026-06-27 17:50:15.903 [main] INFO  transactionId=[] o.e.w.c.WorkloadControllerIT - No active profile set, falling back to 1 default profile: "default"
+2026-06-27 17:50:21.369 [main] INFO  transactionId=[] o.s.cloud.context.scope.GenericScope - BeanFactory id=ee146838-6cd2-3bcd-9087-1aadb2af76d5
+2026-06-27 17:50:21.936 [main] WARN  transactionId=[] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'org.springframework.cloud.client.loadbalancer.LoadBalancerAutoConfiguration$DeferringLoadBalancerInterceptorConfig' of type [org.springframework.cloud.client.loadbalancer.LoadBalancerAutoConfiguration$DeferringLoadBalancerInterceptorConfig] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). The currently created BeanPostProcessor [lbRestClientPostProcessor] is declared through a non-static factory method on that class; consider declaring it as static instead.
+2026-06-27 17:50:22.002 [main] WARN  transactionId=[] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'deferringLoadBalancerInterceptor' of type [org.springframework.cloud.client.loadbalancer.DeferringLoadBalancerInterceptor] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). Is this bean getting eagerly injected into a currently created BeanPostProcessor [lbRestClientPostProcessor]? Check the corresponding BeanPostProcessor declaration and its dependencies.
+2026-06-27 17:50:22.981 [main] WARN  transactionId=[] o.s.b.a.s.s.UserDetailsServiceAutoConfiguration - 
+
+Using generated security password: c95a9318-0db8-4afb-9a6d-beef3fbaba40
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-06-27 17:50:23.156 [main] INFO  transactionId=[] o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-06-27 17:50:24.971 [main] INFO  transactionId=[] o.s.b.a.e.web.EndpointLinksResolver - Exposing 1 endpoint beneath base path '/actuator'
+2026-06-27 17:50:25.201 [main] INFO  transactionId=[] o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@22fb9a2c, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@2084e65a, org.springframework.security.web.context.SecurityContextHolderFilter@3a861417, org.springframework.security.web.header.HeaderWriterFilter@590013c7, org.springframework.web.filter.CorsFilter@1b8fa2fa, org.springframework.security.web.authentication.logout.LogoutFilter@2347b7af, org.example.common.security.JwtAuthenticationFilter@21527b8, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@68e47e7, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@45f9d394, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@7cc1f72c, org.springframework.security.web.session.SessionManagementFilter@4a6a6a69, org.springframework.security.web.access.ExceptionTranslationFilter@36b53f08, org.springframework.security.web.access.intercept.AuthorizationFilter@2154652c]
+2026-06-27 17:50:26.475 [main] INFO  transactionId=[] o.s.b.t.m.w.SpringBootMockServletContext - Initializing Spring TestDispatcherServlet ''
+2026-06-27 17:50:26.479 [main] INFO  transactionId=[] o.s.t.w.s.TestDispatcherServlet - Initializing Servlet ''
+2026-06-27 17:50:26.488 [main] INFO  transactionId=[] o.s.t.w.s.TestDispatcherServlet - Completed initialization in 3 ms
+2026-06-27 17:50:26.614 [main] INFO  transactionId=[] o.s.c.n.e.c.DiscoveryClientOptionalArgsConfiguration - Eureka HTTP Client uses RestTemplate.
+2026-06-27 17:50:26.774 [main] WARN  transactionId=[] o.s.c.l.c.LoadBalancerCacheAutoConfiguration$LoadBalancerCaffeineWarnLogger - Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
+2026-06-27 17:50:27.122 [main] INFO  transactionId=[] o.e.w.c.WorkloadControllerIT - Started WorkloadControllerIT in 12.477 seconds (process running for 15.625)
+2026-06-27 17:50:29.840 [main] INFO  transactionId=[22d7fe2c-17ea-4c1c-bbed-a4c9f06d99d4] o.e.c.logging.RestCallLoggingFilter - TRANSACTION transactionId=22d7fe2c-17ea-4c1c-bbed-a4c9f06d99d4 endpoint=/workloads method=POST query=null status=401 requestBody= responseMessage=
+2026-06-27 17:50:30.181 [main] INFO  transactionId=[716a7932-f931-46b2-90f6-eee7f69ecadd] o.e.c.logging.RestCallLoggingFilter - TRANSACTION transactionId=716a7932-f931-46b2-90f6-eee7f69ecadd endpoint=/trainers/unknown.trainer/workloads method=GET query=null status=200 requestBody= responseMessage=
+2026-06-27 17:50:30.656 [main] INFO  transactionId=[e24d2991-ac0e-4eb1-803f-f9da9f0cc3da] o.e.w.s.WorkloadCalculationService - [transactionId=e24d2991-ac0e-4eb1-803f-f9da9f0cc3da] OPERATION processWorkload action=ADD trainer=trainer.one date=2026-06-15 duration=60
+2026-06-27 17:50:30.665 [main] INFO  transactionId=[e24d2991-ac0e-4eb1-803f-f9da9f0cc3da] o.e.w.s.WorkloadCalculationService - [transactionId=e24d2991-ac0e-4eb1-803f-f9da9f0cc3da] OPERATION updatedMonthlySummary trainer=trainer.one year=2026 month=6 totalDuration=60
+2026-06-27 17:50:30.688 [main] INFO  transactionId=[e24d2991-ac0e-4eb1-803f-f9da9f0cc3da] o.e.c.logging.RestCallLoggingFilter - TRANSACTION transactionId=e24d2991-ac0e-4eb1-803f-f9da9f0cc3da endpoint=/workloads method=POST query=null status=200 requestBody={
+  "trainerUsername": "trainer.one",
+  "trainerFirstName": "John",
+  "trainerLastName": "Smith",
+  "isActive": true,
+  "trainingDate": "2026-06-15",
+  "trainingDuration": 60,
+  "actionType": "ADD"
+}
+ responseMessage=
+2026-06-27 17:50:30.710 [main] INFO  transactionId=[18b3f75c-71e1-43e6-bec0-9b4cb33d9564] o.e.c.logging.RestCallLoggingFilter - TRANSACTION transactionId=18b3f75c-71e1-43e6-bec0-9b4cb33d9564 endpoint=/trainers/trainer.one/workloads method=GET query=null status=200 requestBody= responseMessage=
+2026-06-27 17:55:28.697 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION processWorkload action=ADD trainer=trainer.one date=2026-06-15 duration=30
+2026-06-27 17:55:28.748 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION updatedMonthlySummary trainer=trainer.one year=2026 month=6 totalDuration=30
+2026-06-27 17:55:28.749 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION processWorkload action=DELETE trainer=trainer.one date=2026-06-15 duration=50
+2026-06-27 17:55:28.750 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION updatedMonthlySummary trainer=trainer.one year=2026 month=6 totalDuration=0
+2026-06-27 17:55:29.363 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION processWorkload action=ADD trainer=trainer.one date=2026-06-15 duration=60
+2026-06-27 17:55:29.363 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION updatedMonthlySummary trainer=trainer.one year=2026 month=6 totalDuration=60
+2026-06-27 17:55:29.364 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION processWorkload action=ADD trainer=trainer.one date=2026-06-20 duration=30
+2026-06-27 17:55:29.364 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION updatedMonthlySummary trainer=trainer.one year=2026 month=6 totalDuration=90
+2026-06-27 17:55:29.376 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION processWorkload action=ADD trainer=trainer.one date=2026-06-15 duration=60
+2026-06-27 17:55:29.377 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION updatedMonthlySummary trainer=trainer.one year=2026 month=6 totalDuration=60
+2026-06-27 17:55:29.377 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION processWorkload action=DELETE trainer=trainer.one date=2026-06-15 duration=20
+2026-06-27 17:55:29.378 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION updatedMonthlySummary trainer=trainer.one year=2026 month=6 totalDuration=40
+2026-06-27 17:55:29.384 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION processWorkload action=ADD trainer=trainer.one date=2026-05-10 duration=45
+2026-06-27 17:55:29.385 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION updatedMonthlySummary trainer=trainer.one year=2026 month=5 totalDuration=45
+2026-06-27 17:55:29.392 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION processWorkload action=ADD trainer=trainer.one date=2026-06-10 duration=55
+2026-06-27 17:55:29.392 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION updatedMonthlySummary trainer=trainer.one year=2026 month=6 totalDuration=55
+2026-06-27 17:55:36.272 [main] INFO  transactionId=[] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [org.example.workload.controller.WorkloadControllerIT]: WorkloadControllerIT does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-06-27 17:55:36.805 [main] INFO  transactionId=[] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration org.example.workload.TrainerWorkloadApplication for test class org.example.workload.controller.WorkloadControllerIT
+2026-06-27 17:55:38.394 [background-preinit] INFO  transactionId=[] o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2026-06-27 17:55:38.959 [main] INFO  transactionId=[] o.e.w.c.WorkloadControllerIT - Starting WorkloadControllerIT using Java 21.0.9 with PID 5432 (started by Turab in C:\Users\Turab\Desktop\dev-java\spring-tasks\trainer-workload-service)
+2026-06-27 17:55:38.965 [main] INFO  transactionId=[] o.e.w.c.WorkloadControllerIT - No active profile set, falling back to 1 default profile: "default"
+2026-06-27 17:55:45.066 [main] INFO  transactionId=[] o.s.cloud.context.scope.GenericScope - BeanFactory id=ee146838-6cd2-3bcd-9087-1aadb2af76d5
+2026-06-27 17:55:45.740 [main] WARN  transactionId=[] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'org.springframework.cloud.client.loadbalancer.LoadBalancerAutoConfiguration$DeferringLoadBalancerInterceptorConfig' of type [org.springframework.cloud.client.loadbalancer.LoadBalancerAutoConfiguration$DeferringLoadBalancerInterceptorConfig] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). The currently created BeanPostProcessor [lbRestClientPostProcessor] is declared through a non-static factory method on that class; consider declaring it as static instead.
+2026-06-27 17:55:45.744 [main] WARN  transactionId=[] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'deferringLoadBalancerInterceptor' of type [org.springframework.cloud.client.loadbalancer.DeferringLoadBalancerInterceptor] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). Is this bean getting eagerly injected into a currently created BeanPostProcessor [lbRestClientPostProcessor]? Check the corresponding BeanPostProcessor declaration and its dependencies.
+2026-06-27 17:55:47.065 [main] WARN  transactionId=[] o.s.b.a.s.s.UserDetailsServiceAutoConfiguration - 
+
+Using generated security password: 38ec4d81-1482-4ef4-8fb0-f54d8b50a4ea
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-06-27 17:55:47.213 [main] INFO  transactionId=[] o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-06-27 17:55:49.113 [main] INFO  transactionId=[] o.s.b.a.e.web.EndpointLinksResolver - Exposing 1 endpoint beneath base path '/actuator'
+2026-06-27 17:55:49.799 [main] INFO  transactionId=[] o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@360d41d0, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@4586a8aa, org.springframework.security.web.context.SecurityContextHolderFilter@6ba6557e, org.springframework.security.web.header.HeaderWriterFilter@6f07d414, org.springframework.web.filter.CorsFilter@3dc82e6a, org.springframework.security.web.authentication.logout.LogoutFilter@66f2ec1c, org.example.common.security.JwtAuthenticationFilter@54463380, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@5409dfdd, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@283a8ad6, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@819fb19, org.springframework.security.web.session.SessionManagementFilter@16ac4d3d, org.springframework.security.web.access.ExceptionTranslationFilter@1fcaea93, org.springframework.security.web.access.intercept.AuthorizationFilter@7cc1f72c]
+2026-06-27 17:55:51.945 [main] INFO  transactionId=[] o.s.b.t.m.w.SpringBootMockServletContext - Initializing Spring TestDispatcherServlet ''
+2026-06-27 17:55:51.946 [main] INFO  transactionId=[] o.s.t.w.s.TestDispatcherServlet - Initializing Servlet ''
+2026-06-27 17:55:51.950 [main] INFO  transactionId=[] o.s.t.w.s.TestDispatcherServlet - Completed initialization in 4 ms
+2026-06-27 17:55:52.108 [main] INFO  transactionId=[] o.s.c.n.e.c.DiscoveryClientOptionalArgsConfiguration - Eureka HTTP Client uses RestTemplate.
+2026-06-27 17:55:52.295 [main] WARN  transactionId=[] o.s.c.l.c.LoadBalancerCacheAutoConfiguration$LoadBalancerCaffeineWarnLogger - Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
+2026-06-27 17:55:52.643 [main] INFO  transactionId=[] o.e.w.c.WorkloadControllerIT - Started WorkloadControllerIT in 15.487 seconds (process running for 19.982)
+2026-06-27 17:55:56.044 [main] INFO  transactionId=[7986be6a-a69c-465c-9e2d-d0fff129616d] o.e.c.logging.RestCallLoggingFilter - TRANSACTION transactionId=7986be6a-a69c-465c-9e2d-d0fff129616d endpoint=/workloads method=POST query=null status=401 requestBody= responseMessage=
+2026-06-27 17:55:56.693 [main] INFO  transactionId=[79c10413-ef56-4697-bcc2-246c790b555d] o.e.w.service.WorkloadQueryService - [transactionId=79c10413-ef56-4697-bcc2-246c790b555d] OPERATION getMonthlySummary trainer=unknown.trainer year=2026 month=6
+2026-06-27 17:55:56.791 [main] INFO  transactionId=[79c10413-ef56-4697-bcc2-246c790b555d] o.e.c.logging.RestCallLoggingFilter - TRANSACTION transactionId=79c10413-ef56-4697-bcc2-246c790b555d endpoint=/trainers/unknown.trainer/workloads method=GET query=null status=404 requestBody= responseMessage=No workload found for trainer unknown.trainer in 2026-6
+2026-06-27 17:55:57.420 [main] INFO  transactionId=[4e2eaf50-c0a1-4be6-86fa-bdaa436e1661] o.e.w.s.WorkloadCalculationService - [transactionId=4e2eaf50-c0a1-4be6-86fa-bdaa436e1661] OPERATION processWorkload action=ADD trainer=trainer.one date=2026-06-15 duration=60
+2026-06-27 17:55:57.425 [main] INFO  transactionId=[4e2eaf50-c0a1-4be6-86fa-bdaa436e1661] o.e.w.s.WorkloadCalculationService - [transactionId=4e2eaf50-c0a1-4be6-86fa-bdaa436e1661] OPERATION updatedMonthlySummary trainer=trainer.one year=2026 month=6 totalDuration=60
+2026-06-27 17:55:57.429 [main] INFO  transactionId=[4e2eaf50-c0a1-4be6-86fa-bdaa436e1661] o.e.c.logging.RestCallLoggingFilter - TRANSACTION transactionId=4e2eaf50-c0a1-4be6-86fa-bdaa436e1661 endpoint=/workloads method=POST query=null status=200 requestBody={
+  "trainerUsername": "trainer.one",
+  "trainerFirstName": "John",
+  "trainerLastName": "Smith",
+  "isActive": true,
+  "trainingDate": "2026-06-15",
+  "trainingDuration": 60,
+  "actionType": "ADD"
+}
+ responseMessage=
+2026-06-27 17:55:57.454 [main] INFO  transactionId=[1f36198f-83c7-44b5-8978-95aff5dc5dd3] o.e.w.service.WorkloadQueryService - [transactionId=1f36198f-83c7-44b5-8978-95aff5dc5dd3] OPERATION getMonthlySummary trainer=trainer.one year=2026 month=6
+2026-06-27 17:55:57.472 [main] INFO  transactionId=[1f36198f-83c7-44b5-8978-95aff5dc5dd3] o.e.c.logging.RestCallLoggingFilter - TRANSACTION transactionId=1f36198f-83c7-44b5-8978-95aff5dc5dd3 endpoint=/trainers/trainer.one/workloads method=GET query=null status=200 requestBody= responseMessage=
+2026-06-27 18:00:27.017 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION processWorkload action=ADD trainer=trainer.one date=2026-06-15 duration=30
+2026-06-27 18:00:27.030 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION updatedMonthlySummary trainer=trainer.one year=2026 month=6 totalDuration=30
+2026-06-27 18:00:27.030 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION processWorkload action=DELETE trainer=trainer.one date=2026-06-15 duration=50
+2026-06-27 18:00:27.030 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION updatedMonthlySummary trainer=trainer.one year=2026 month=6 totalDuration=0
+2026-06-27 18:00:27.171 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION processWorkload action=ADD trainer=trainer.one date=2026-06-15 duration=60
+2026-06-27 18:00:27.172 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION updatedMonthlySummary trainer=trainer.one year=2026 month=6 totalDuration=60
+2026-06-27 18:00:27.172 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION processWorkload action=ADD trainer=trainer.one date=2026-06-20 duration=30
+2026-06-27 18:00:27.173 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION updatedMonthlySummary trainer=trainer.one year=2026 month=6 totalDuration=90
+2026-06-27 18:00:27.179 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION processWorkload action=ADD trainer=trainer.one date=2026-06-15 duration=60
+2026-06-27 18:00:27.181 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION updatedMonthlySummary trainer=trainer.one year=2026 month=6 totalDuration=60
+2026-06-27 18:00:27.184 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION processWorkload action=DELETE trainer=trainer.one date=2026-06-15 duration=20
+2026-06-27 18:00:27.185 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION updatedMonthlySummary trainer=trainer.one year=2026 month=6 totalDuration=40
+2026-06-27 18:00:27.192 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION processWorkload action=ADD trainer=trainer.one date=2026-05-10 duration=45
+2026-06-27 18:00:27.192 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION updatedMonthlySummary trainer=trainer.one year=2026 month=5 totalDuration=45
+2026-06-27 18:00:27.193 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION processWorkload action=ADD trainer=trainer.one date=2026-06-10 duration=55
+2026-06-27 18:00:27.193 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION updatedMonthlySummary trainer=trainer.one year=2026 month=6 totalDuration=55
+2026-06-27 18:00:30.543 [main] INFO  transactionId=[] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [org.example.workload.controller.WorkloadControllerIT]: WorkloadControllerIT does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-06-27 18:00:30.908 [main] INFO  transactionId=[] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration org.example.workload.TrainerWorkloadApplication for test class org.example.workload.controller.WorkloadControllerIT
+2026-06-27 18:00:31.818 [background-preinit] INFO  transactionId=[] o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2026-06-27 18:00:31.939 [main] INFO  transactionId=[] o.e.w.c.WorkloadControllerIT - Starting WorkloadControllerIT using Java 21.0.9 with PID 22324 (started by Turab in C:\Users\Turab\Desktop\dev-java\spring-tasks\trainer-workload-service)
+2026-06-27 18:00:31.941 [main] INFO  transactionId=[] o.e.w.c.WorkloadControllerIT - No active profile set, falling back to 1 default profile: "default"
+2026-06-27 18:00:36.237 [main] INFO  transactionId=[] o.s.cloud.context.scope.GenericScope - BeanFactory id=ee146838-6cd2-3bcd-9087-1aadb2af76d5
+2026-06-27 18:00:36.668 [main] WARN  transactionId=[] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'org.springframework.cloud.client.loadbalancer.LoadBalancerAutoConfiguration$DeferringLoadBalancerInterceptorConfig' of type [org.springframework.cloud.client.loadbalancer.LoadBalancerAutoConfiguration$DeferringLoadBalancerInterceptorConfig] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). The currently created BeanPostProcessor [lbRestClientPostProcessor] is declared through a non-static factory method on that class; consider declaring it as static instead.
+2026-06-27 18:00:36.690 [main] WARN  transactionId=[] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'deferringLoadBalancerInterceptor' of type [org.springframework.cloud.client.loadbalancer.DeferringLoadBalancerInterceptor] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). Is this bean getting eagerly injected into a currently created BeanPostProcessor [lbRestClientPostProcessor]? Check the corresponding BeanPostProcessor declaration and its dependencies.
+2026-06-27 18:00:37.723 [main] WARN  transactionId=[] o.s.b.a.s.s.UserDetailsServiceAutoConfiguration - 
+
+Using generated security password: b6a0de24-cd9a-41fc-99e8-ad14034663de
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-06-27 18:00:37.863 [main] INFO  transactionId=[] o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-06-27 18:00:39.470 [main] INFO  transactionId=[] o.s.b.a.e.web.EndpointLinksResolver - Exposing 1 endpoint beneath base path '/actuator'
+2026-06-27 18:00:39.748 [main] INFO  transactionId=[] o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@351e89fc, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@2b682e9, org.springframework.security.web.context.SecurityContextHolderFilter@590013c7, org.springframework.security.web.header.HeaderWriterFilter@3d0352, org.springframework.web.filter.CorsFilter@15586843, org.springframework.security.web.authentication.logout.LogoutFilter@451816fd, org.example.common.security.JwtAuthenticationFilter@4fbb1144, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@7b211077, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@734fbae3, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@e2b3026, org.springframework.security.web.session.SessionManagementFilter@6a4af081, org.springframework.security.web.access.ExceptionTranslationFilter@489f62a3, org.springframework.security.web.access.intercept.AuthorizationFilter@668a32a4]
+2026-06-27 18:00:41.222 [main] INFO  transactionId=[] o.s.b.t.m.w.SpringBootMockServletContext - Initializing Spring TestDispatcherServlet ''
+2026-06-27 18:00:41.223 [main] INFO  transactionId=[] o.s.t.w.s.TestDispatcherServlet - Initializing Servlet ''
+2026-06-27 18:00:41.226 [main] INFO  transactionId=[] o.s.t.w.s.TestDispatcherServlet - Completed initialization in 2 ms
+2026-06-27 18:00:41.312 [main] INFO  transactionId=[] o.s.c.n.e.c.DiscoveryClientOptionalArgsConfiguration - Eureka HTTP Client uses RestTemplate.
+2026-06-27 18:00:41.503 [main] WARN  transactionId=[] o.s.c.l.c.LoadBalancerCacheAutoConfiguration$LoadBalancerCaffeineWarnLogger - Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
+2026-06-27 18:00:41.985 [main] INFO  transactionId=[] o.e.w.c.WorkloadControllerIT - Started WorkloadControllerIT in 10.81 seconds (process running for 13.662)
+2026-06-27 18:00:43.934 [main] INFO  transactionId=[c457224c-a05b-4688-89b4-9e83e8315bca] o.e.c.logging.RestCallLoggingFilter - TRANSACTION transactionId=c457224c-a05b-4688-89b4-9e83e8315bca endpoint=/workloads method=POST query=null status=401 requestBody= responseMessage=
+2026-06-27 18:00:44.242 [main] INFO  transactionId=[e3b3135f-08d7-47e7-9ddb-1102c1e635db] o.e.w.service.WorkloadQueryService - [transactionId=e3b3135f-08d7-47e7-9ddb-1102c1e635db] OPERATION getMonthlySummary trainer=unknown.trainer year=2026 month=6
+2026-06-27 18:00:44.321 [main] INFO  transactionId=[e3b3135f-08d7-47e7-9ddb-1102c1e635db] o.e.c.logging.RestCallLoggingFilter - TRANSACTION transactionId=e3b3135f-08d7-47e7-9ddb-1102c1e635db endpoint=/trainers/unknown.trainer/workloads method=GET query=null status=404 requestBody= responseMessage=No workload found for trainer unknown.trainer in 2026-6
+2026-06-27 18:00:44.715 [main] INFO  transactionId=[ef093625-49a8-4680-a30c-d8cd864fb69d] o.e.w.s.WorkloadCalculationService - [transactionId=ef093625-49a8-4680-a30c-d8cd864fb69d] OPERATION processWorkload action=ADD trainer=trainer.one date=2026-06-15 duration=60
+2026-06-27 18:00:44.759 [main] INFO  transactionId=[ef093625-49a8-4680-a30c-d8cd864fb69d] o.e.w.s.WorkloadCalculationService - [transactionId=ef093625-49a8-4680-a30c-d8cd864fb69d] OPERATION updatedMonthlySummary trainer=trainer.one year=2026 month=6 totalDuration=60
+2026-06-27 18:00:44.766 [main] INFO  transactionId=[ef093625-49a8-4680-a30c-d8cd864fb69d] o.e.c.logging.RestCallLoggingFilter - TRANSACTION transactionId=ef093625-49a8-4680-a30c-d8cd864fb69d endpoint=/workloads method=POST query=null status=200 requestBody={
+  "trainerUsername": "trainer.one",
+  "trainerFirstName": "John",
+  "trainerLastName": "Smith",
+  "isActive": true,
+  "trainingDate": "2026-06-15",
+  "trainingDuration": 60,
+  "actionType": "ADD"
+}
+ responseMessage=
+2026-06-27 18:00:44.843 [main] INFO  transactionId=[3d7df67b-eaf2-488c-a284-91a9a44b525e] o.e.w.service.WorkloadQueryService - [transactionId=3d7df67b-eaf2-488c-a284-91a9a44b525e] OPERATION getMonthlySummary trainer=trainer.one year=2026 month=6
+2026-06-27 18:00:44.901 [main] INFO  transactionId=[3d7df67b-eaf2-488c-a284-91a9a44b525e] o.e.c.logging.RestCallLoggingFilter - TRANSACTION transactionId=3d7df67b-eaf2-488c-a284-91a9a44b525e endpoint=/trainers/trainer.one/workloads method=GET query=null status=200 requestBody= responseMessage=
