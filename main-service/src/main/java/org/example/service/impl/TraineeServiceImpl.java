@@ -162,7 +162,7 @@ public class TraineeServiceImpl implements TraineeService {
 
         Trainee trainee = optionalTrainee.get();
 
-        // TODO: I know this way is not good, but I implemented it to fill the task requirement
+        // TODO: I know this is not efficient way, but I implemented it to fill the task requirement
         List<Training> trainings = trainee.getTrainings();
         trainings.forEach(training -> {
             workloadPublisher.publishDelete(training, training.getTrainer());

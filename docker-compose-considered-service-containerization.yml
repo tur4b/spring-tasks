@@ -1,0 +1,76 @@
+services:
+  eureka-server:
+    build:
+      context: .
+      dockerfile: eureka-server/Dockerfile
+    ports:
+      - "8761:8761"
+
+  activemq:
+    image: apache/activemq-classic:5.18.3
+    ports:
+      - "61616:61616"
+      - "8161:8161"
+    environment:
+      ACTIVEMQ_CONNECTION_USER: admin
+      ACTIVEMQ_CONNECTION_PASSWORD: admin
+
+  postgresql:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: simpleDB
+      POSTGRES_USER: postgresql
+      POSTGRES_PASSWORD: postgresql
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./main-service/src/main/resources/data/01_schema.sql:/docker-entrypoint-initdb.d/01_schema.sql
+      - ./main-service/src/main/resources/data/02_data.sql:/docker-entrypoint-initdb.d/02_data.sql
+
+  main-service:
+    build:
+      context: .
+      dockerfile: main-service/Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgresql:5432/simpleDB
+      SPRING_DATASOURCE_USERNAME: postgresql
+      SPRING_DATASOURCE_PASSWORD: postgresql
+      SPRING_ACTIVEMQ_BROKER_URL: tcp://activemq:61616
+      SPRING_ACTIVEMQ_USER: admin
+      SPRING_ACTIVEMQ_PASSWORD: admin
+    depends_on:
+      - eureka-server
+      - postgresql
+      - activemq
+
+  trainer-workload-service:
+    build:
+      context: .
+      dockerfile: trainer-workload-service/Dockerfile
+    ports:
+      - "8081:8081"
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+      SPRING_ACTIVEMQ_BROKER_URL: tcp://activemq:61616
+      SPRING_ACTIVEMQ_USER: admin
+      SPRING_ACTIVEMQ_PASSWORD: admin
+    depends_on:
+      - eureka-server
+      - activemq
+
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./main-service/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+
+volumes:
+  postgres_data:
+  prometheus_data:

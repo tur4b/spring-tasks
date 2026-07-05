@@ -1,0 +1,18 @@
+FROM maven:3.9-eclipse-temurin-21 AS build
+WORKDIR /app
+COPY pom.xml .
+COPY common-lib/pom.xml common-lib/pom.xml
+COPY eureka-server/pom.xml eureka-server/pom.xml
+COPY main-service/pom.xml main-service/pom.xml
+COPY trainer-workload-service/pom.xml trainer-workload-service/pom.xml
+COPY common-lib/src common-lib/src
+COPY eureka-server/src eureka-server/src
+COPY main-service/src main-service/src
+COPY trainer-workload-service/src trainer-workload-service/src
+RUN mvn -pl eureka-server -am package -DskipTests
+
+FROM eclipse-temurin:21-jre
+WORKDIR /app
+COPY --from=build /app/eureka-server/target/eureka-server-*-exec.jar app.jar
+EXPOSE 8761
+ENTRYPOINT ["java", "-jar", "app.jar"]

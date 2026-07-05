@@ -20,25 +20,25 @@ import static org.mockito.Mockito.verify;
 class WorkloadPublisherTest {
 
     @Mock
-    private TrainerWorkloadClient trainerWorkloadClient;
+    private WorkloadMessageSender workloadMessageSender;
 
     @InjectMocks
     private WorkloadPublisher workloadPublisher;
 
     @Test
-    @DisplayName("publishAdd delegates to workload client")
-    void publishAdd_DelegatesToClient() {
+    @DisplayName("publishAdd delegates to JMS sender")
+    void publishAdd_DelegatesToSender() {
         workloadPublisher.publishAdd(training(), trainer());
 
-        verify(trainerWorkloadClient).submitWorkload(any());
+        verify(workloadMessageSender).send(any());
     }
 
     @Test
-    @DisplayName("publishDelete delegates to workload client")
-    void publishDelete_DelegatesToClient() {
+    @DisplayName("publishDelete delegates to JMS sender")
+    void publishDelete_DelegatesToSender() {
         workloadPublisher.publishDelete(training(), trainer());
 
-        verify(trainerWorkloadClient).submitWorkload(any());
+        verify(workloadMessageSender).send(any());
     }
 
     private Training training() {

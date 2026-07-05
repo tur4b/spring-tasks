@@ -66,4 +66,8 @@ public class WorkloadStore {
                     return created;
                 });
     }
+
+    public void clear() {
+        summaries.clear();
+    }
 }
