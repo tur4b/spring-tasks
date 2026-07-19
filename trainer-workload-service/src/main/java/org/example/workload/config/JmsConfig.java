@@ -1,9 +1,12 @@
 package org.example.workload.config;
 
 import jakarta.jms.Queue;
+import org.apache.activemq.ActiveMQConnectionFactory;
+import org.apache.activemq.RedeliveryPolicy;
 import org.apache.activemq.command.ActiveMQQueue;
 import org.example.common.messaging.WorkloadMessagingConstants;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.jms.activemq.ActiveMQConnectionFactoryCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jms.support.converter.MappingJackson2MessageConverter;
@@ -30,5 +33,23 @@ public class JmsConfig {
         converter.setTargetType(MessageType.TEXT);
         converter.setTypeIdPropertyName("_type");
         return converter;
+    }
+
+    /**
+     * Configures redelivery: up to 3 retries with 2-second initial delay and
+     * exponential back-off (multiplier 2.0), capped at 10 seconds per attempt.
+     * After exhausting retries ActiveMQ routes the message to the DLQ automatically.
+     */
+    @Bean
+    public ActiveMQConnectionFactoryCustomizer redeliveryPolicyCustomizer() {
+        return (ActiveMQConnectionFactory factory) -> {
+            RedeliveryPolicy policy = new RedeliveryPolicy();
+            policy.setMaximumRedeliveries(3);
+            policy.setInitialRedeliveryDelay(2_000L);
+            policy.setBackOffMultiplier(2.0);
+            policy.setUseExponentialBackOff(true);
+            policy.setMaximumRedeliveryDelay(10_000L);
+            factory.setRedeliveryPolicy(policy);
+        };
     }
 }

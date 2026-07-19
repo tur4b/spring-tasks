@@ -7,6 +7,7 @@ import org.example.common.logging.TransactionContext;
 import org.example.common.messaging.WorkloadMessagingConstants;
 import org.slf4j.MDC;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.jms.JmsException;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Component;
 
@@ -20,17 +21,21 @@ public class WorkloadJmsProducer implements WorkloadMessageSender {
 
     @Override
     public void send(WorkloadEventRequest request) {
+        String txId = MDC.get(TransactionContext.TRANSACTION_MDC_KEY);
         log.info("[transactionId={}] OPERATION sendWorkloadMessage action={} trainer={}",
-                MDC.get(TransactionContext.TRANSACTION_MDC_KEY),
-                request.actionType(),
-                request.trainerUsername());
+                txId, request.actionType(), request.trainerUsername());
 
-        jmsTemplate.convertAndSend(WorkloadMessagingConstants.WORKLOAD_QUEUE, request, message -> {
-            String transactionId = MDC.get(TransactionContext.TRANSACTION_MDC_KEY);
-            if (transactionId != null) {
-                message.setStringProperty(TransactionContext.TRANSACTION_HEADER, transactionId);
-            }
-            return message;
-        });
+        try {
+            jmsTemplate.convertAndSend(WorkloadMessagingConstants.WORKLOAD_QUEUE, request, message -> {
+                if (txId != null) {
+                    message.setStringProperty(TransactionContext.TRANSACTION_HEADER, txId);
+                }
+                return message;
+            });
+        } catch (JmsException e) {
+            log.error("[transactionId={}] OPERATION sendWorkloadMessage FAILED action={} trainer={} reason={}",
+                    txId, request.actionType(), request.trainerUsername(), e.getMessage());
+            throw e;
+        }
     }
 }
