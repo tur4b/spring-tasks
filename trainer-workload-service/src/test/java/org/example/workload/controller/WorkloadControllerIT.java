@@ -1,7 +1,7 @@
 package org.example.workload.controller;
 
 import org.example.common.security.JwtService;
-import org.example.workload.store.WorkloadStore;
+import org.example.workload.repository.TrainerSummaryRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,11 +29,11 @@ class WorkloadControllerIT {
     private JwtService jwtService;
 
     @Autowired
-    private WorkloadStore workloadStore;
+    private TrainerSummaryRepository repository;
 
     @BeforeEach
-    void resetWorkloadStore() {
-        workloadStore.clear();
+    void resetStore() {
+        repository.deleteAll();
     }
 
     @Test
@@ -106,7 +106,7 @@ class WorkloadControllerIT {
     }
 
     @Test
-    @DisplayName("DELETE workload entry returns 204")
+    @DisplayName("DELETE workload entry reduces duration and returns 204")
     void deleteWorkload() throws Exception {
         String token = jwtService.generateToken("main-service");
 

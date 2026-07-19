@@ -1,84 +1,117 @@
 package org.example.workload.service;
 
-import org.example.common.dto.WorkloadEventRequest;
-import org.example.common.model.ActionType;
 import org.example.common.model.MonthSummary;
 import org.example.common.model.TrainerSummary;
+import org.example.workload.document.MonthSummaryDocument;
+import org.example.workload.document.TrainerSummaryDocument;
+import org.example.workload.document.YearSummaryDocument;
 import org.example.workload.exception.WorkloadNotFoundException;
-import org.example.workload.store.WorkloadStore;
+import org.example.workload.repository.TrainerSummaryRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 @DisplayName("WorkloadQueryService Unit Tests")
 class WorkloadQueryServiceTest {
 
-    private WorkloadCalculationService workloadCalculationService;
-    private WorkloadQueryService workloadQueryService;
+    @Mock
+    private TrainerSummaryRepository repository;
+
+    private WorkloadQueryService queryService;
 
     @BeforeEach
     void setUp() {
-        WorkloadStore workloadStore = new WorkloadStore();
-        workloadCalculationService = new WorkloadCalculationService(workloadStore);
-        workloadQueryService = new WorkloadQueryService(workloadStore);
+        queryService = new WorkloadQueryService(repository);
     }
 
     @Test
-    @DisplayName("getMonthlySummary returns month summary for existing workload")
+    @DisplayName("getMonthlySummary returns summary for existing month")
     void getMonthlySummary_ReturnsSummary() {
-        workloadCalculationService.processEvent(event(ActionType.ADD, "trainer.one", LocalDate.of(2026, 6, 15), 60));
+        when(repository.findByUsername("trainer.one"))
+                .thenReturn(Optional.of(documentWithMonth("trainer.one", 2026, 6, 60)));
 
-        MonthSummary summary = workloadQueryService.getMonthlySummary("trainer.one", 2026, 6);
+        MonthSummary summary = queryService.getMonthlySummary("trainer.one", 2026, 6);
 
         assertThat(summary.getMonth()).isEqualTo(6);
         assertThat(summary.getTrainingSummaryDuration()).isEqualTo(60);
     }
 
     @Test
-    @DisplayName("getMonthlySummary throws when month workload is missing")
-    void getMonthlySummary_NotFound() {
-        workloadCalculationService.processEvent(event(ActionType.ADD, "trainer.one", LocalDate.of(2026, 5, 10), 45));
+    @DisplayName("getMonthlySummary throws WorkloadNotFoundException for unknown month")
+    void getMonthlySummary_UnknownMonth_Throws() {
+        when(repository.findByUsername("trainer.one"))
+                .thenReturn(Optional.of(documentWithMonth("trainer.one", 2026, 5, 45)));
 
-        assertThatThrownBy(() -> workloadQueryService.getMonthlySummary("trainer.one", 2026, 6))
+        assertThatThrownBy(() -> queryService.getMonthlySummary("trainer.one", 2026, 6))
                 .isInstanceOf(WorkloadNotFoundException.class)
                 .hasMessageContaining("2026-6");
     }
 
     @Test
-    @DisplayName("getTrainerSummary returns trainer summary for existing workload")
-    void getTrainerSummary_ReturnsSummary() {
-        workloadCalculationService.processEvent(event(ActionType.ADD, "trainer.one", LocalDate.of(2026, 6, 15), 60));
+    @DisplayName("getMonthlySummary throws WorkloadNotFoundException for unknown trainer")
+    void getMonthlySummary_UnknownTrainer_Throws() {
+        when(repository.findByUsername("unknown")).thenReturn(Optional.empty());
 
-        TrainerSummary summary = workloadQueryService.getTrainerSummary("trainer.one");
+        assertThatThrownBy(() -> queryService.getMonthlySummary("unknown", 2026, 6))
+                .isInstanceOf(WorkloadNotFoundException.class)
+                .hasMessageContaining("unknown");
+    }
+
+    @Test
+    @DisplayName("getTrainerSummary returns full mapped summary")
+    void getTrainerSummary_ReturnsSummary() {
+        when(repository.findByUsername("trainer.one"))
+                .thenReturn(Optional.of(documentWithMonth("trainer.one", 2026, 6, 60)));
+
+        TrainerSummary summary = queryService.getTrainerSummary("trainer.one");
 
         assertThat(summary.getUsername()).isEqualTo("trainer.one");
         assertThat(summary.getFirstName()).isEqualTo("John");
         assertThat(summary.getLastName()).isEqualTo("Smith");
         assertThat(summary.isActive()).isTrue();
+        assertThat(summary.getYears()).hasSize(1);
+        assertThat(summary.getYears().get(0).getYear()).isEqualTo(2026);
+        assertThat(summary.getYears().get(0).getMonths()).hasSize(1);
+        assertThat(summary.getYears().get(0).getMonths().get(0).getTrainingSummaryDuration()).isEqualTo(60);
     }
 
     @Test
-    @DisplayName("getTrainerSummary throws when trainer workload is missing")
-    void getTrainerSummary_NotFound() {
-        assertThatThrownBy(() -> workloadQueryService.getTrainerSummary("unknown.trainer"))
+    @DisplayName("getTrainerSummary throws WorkloadNotFoundException for unknown trainer")
+    void getTrainerSummary_NotFound_Throws() {
+        when(repository.findByUsername("unknown.trainer")).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> queryService.getTrainerSummary("unknown.trainer"))
                 .isInstanceOf(WorkloadNotFoundException.class)
                 .hasMessageContaining("unknown.trainer");
     }
 
-    private WorkloadEventRequest event(ActionType actionType, String username, LocalDate date, int duration) {
-        return new WorkloadEventRequest(
-                username,
-                "John",
-                "Smith",
-                true,
-                date,
-                duration,
-                actionType
-        );
+    private TrainerSummaryDocument documentWithMonth(String username, int year, int month, int duration) {
+        MonthSummaryDocument monthDoc = MonthSummaryDocument.builder()
+                .month(month)
+                .trainingSummaryDuration(duration)
+                .build();
+        YearSummaryDocument yearDoc = YearSummaryDocument.builder()
+                .year(year)
+                .months(new ArrayList<>(List.of(monthDoc)))
+                .build();
+        return TrainerSummaryDocument.builder()
+                .username(username)
+                .firstName("John")
+                .lastName("Smith")
+                .isActive(true)
+                .years(new ArrayList<>(List.of(yearDoc)))
+                .build();
     }
 }
