@@ -8,11 +8,29 @@ spring:
   jackson:
     serialization:
       write-dates-as-timestamps: false
+  activemq:
+    broker-url: tcp://localhost:61616
+    user: admin
+    password: admin
+
+server:
+  port: 8081
 
 eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka/
+  instance:
+    prefer-ip-address: true
+
+security:
+  jwt:
+    secret: ZmFpZV9qd3Rfc2VjcmV0X2tleV9mb3IvcHJvZA==
+    expiration-ms: 3600000
+
+workload:
+  messaging:
+    enabled: true
 
 logging:
   level:
@@ -29,7 +47,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,metrics,prometheus
+        include: health,info,metrics,prometheus
   metrics:
     export:
       prometheus:

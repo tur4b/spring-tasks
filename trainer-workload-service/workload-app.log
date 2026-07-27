@@ -2440,3 +2440,583 @@ java.lang.IllegalStateException: ApplicationContext failure threshold (1) exceed
 2026-07-27 12:21:13.867 [main] INFO  transactionId=[] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration org.example.workload.TrainerWorkloadApplication for test class org.example.workload.cucumber.CucumberSpringContext
 2026-07-27 12:21:13.877 [main] INFO  transactionId=[] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [org.example.workload.cucumber.CucumberSpringContext]: CucumberSpringContext does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
 2026-07-27 12:21:13.881 [main] INFO  transactionId=[] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration org.example.workload.TrainerWorkloadApplication for test class org.example.workload.cucumber.CucumberSpringContext
+2026-07-27 12:27:46.036 [main] WARN  transactionId=[] o.e.w.m.WorkloadEventConsumer - [transactionId=null] OPERATION workloadMessageRejected reason=Trainer username can't be blank
+2026-07-27 12:27:46.132 [main] WARN  transactionId=[] o.e.w.m.WorkloadEventConsumer - [transactionId=null] OPERATION workloadMessageRejected reason=Cannot convert
+2026-07-27 12:27:46.133 [main] WARN  transactionId=[] o.e.w.m.WorkloadEventConsumer - [transactionId=null] OPERATION workloadMessageRejected reason=Message payload is missing or could not be deserialized
+2026-07-27 12:27:46.162 [main] INFO  transactionId=[] o.e.w.m.WorkloadEventConsumer - [transactionId=null] OPERATION consumeWorkload action=ADD trainer=trainer.one
+2026-07-27 12:27:46.533 [main] INFO  transactionId=[] o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2026-07-27 12:27:47.682 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] TRANSACTION processWorkload started action=DELETE trainer=trainer.one date=2026-06-15 duration=50
+2026-07-27 12:27:47.688 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION updatedMonthlySummary trainer=trainer.one year=2026 month=6 totalDuration=0
+2026-07-27 12:27:47.700 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] TRANSACTION processWorkload started action=ADD trainer=trainer.one date=2026-06-20 duration=30
+2026-07-27 12:27:47.700 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION updatedMonthlySummary trainer=trainer.one year=2026 month=6 totalDuration=70
+2026-07-27 12:27:47.709 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] TRANSACTION processWorkload started action=ADD trainer=trainer.one date=2026-06-15 duration=60
+2026-07-27 12:27:47.710 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION creating new trainer document for username=trainer.one
+2026-07-27 12:27:47.710 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION creating year entry year=2026 for trainer=trainer.one
+2026-07-27 12:27:47.710 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION creating month entry year=2026 month=6 for trainer=trainer.one
+2026-07-27 12:27:47.711 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION updatedMonthlySummary trainer=trainer.one year=2026 month=6 totalDuration=60
+2026-07-27 12:27:47.741 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] TRANSACTION processWorkload started action=DELETE trainer=trainer.one date=2026-06-15 duration=20
+2026-07-27 12:27:47.743 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION updatedMonthlySummary trainer=trainer.one year=2026 month=6 totalDuration=40
+2026-07-27 12:27:47.751 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] TRANSACTION processWorkload started action=ADD trainer=trainer.one date=2026-06-10 duration=55
+2026-07-27 12:27:47.753 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION creating month entry year=2026 month=6 for trainer=trainer.one
+2026-07-27 12:27:47.753 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION updatedMonthlySummary trainer=trainer.one year=2026 month=6 totalDuration=55
+2026-07-27 12:27:47.777 [main] INFO  transactionId=[] o.e.w.service.WorkloadQueryService - [transactionId=null] OPERATION getMonthlySummary trainer=trainer.one year=2026 month=6
+2026-07-27 12:27:47.797 [main] INFO  transactionId=[] o.e.w.service.WorkloadQueryService - [transactionId=null] OPERATION getTrainerSummary trainer=trainer.one
+2026-07-27 12:27:47.856 [main] INFO  transactionId=[] o.e.w.service.WorkloadQueryService - [transactionId=null] OPERATION getMonthlySummary trainer=trainer.one year=2026 month=6
+2026-07-27 12:27:47.878 [main] INFO  transactionId=[] o.e.w.service.WorkloadQueryService - [transactionId=null] OPERATION getMonthlySummary trainer=unknown year=2026 month=6
+2026-07-27 12:27:47.888 [main] INFO  transactionId=[] o.e.w.service.WorkloadQueryService - [transactionId=null] OPERATION getTrainerSummary trainer=unknown.trainer
+2026-07-27 12:27:52.262 [main] INFO  transactionId=[] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [org.example.workload.cucumber.CucumberSpringContext]: CucumberSpringContext does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-07-27 12:27:52.456 [main] INFO  transactionId=[] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration org.example.workload.TrainerWorkloadApplication for test class org.example.workload.cucumber.CucumberSpringContext
+2026-07-27 12:27:53.506 [background-preinit] INFO  transactionId=[] o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2026-07-27 12:27:53.535 [main] INFO  transactionId=[] o.e.w.cucumber.CucumberSpringContext - Starting CucumberSpringContext using Java 21.0.9 with PID 5716 (started by Turab in C:\Users\Turab\Desktop\dev-java\spring-tasks\trainer-workload-service)
+2026-07-27 12:27:53.535 [main] DEBUG transactionId=[] o.e.w.cucumber.CucumberSpringContext - Running with Spring Boot v3.3.0, Spring v6.1.8
+2026-07-27 12:27:53.536 [main] INFO  transactionId=[] o.e.w.cucumber.CucumberSpringContext - The following 1 profile is active: "test"
+2026-07-27 12:27:56.621 [main] INFO  transactionId=[] o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data MongoDB repositories in DEFAULT mode.
+2026-07-27 12:27:57.041 [main] INFO  transactionId=[] o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 405 ms. Found 1 MongoDB repository interface.
+2026-07-27 12:27:57.620 [main] INFO  transactionId=[] o.s.cloud.context.scope.GenericScope - BeanFactory id=1431d5d8-c054-3584-80ab-c520dd7fd3bd
+2026-07-27 12:27:57.944 [main] WARN  transactionId=[] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'de.flapdoodle.embed.mongo.spring.autoconfigure.EmbeddedMongoAutoConfiguration' of type [de.flapdoodle.embed.mongo.spring.autoconfigure.EmbeddedMongoAutoConfiguration] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). The currently created BeanPostProcessor [fixTransactionAndAuth] is declared through a non-static factory method on that class; consider declaring it as static instead.
+2026-07-27 12:27:57.961 [main] WARN  transactionId=[] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'org.springframework.cloud.commons.config.CommonsConfigAutoConfiguration' of type [org.springframework.cloud.commons.config.CommonsConfigAutoConfiguration] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). Is this bean getting eagerly injected into a currently created BeanPostProcessor [fixTransactionAndAuth]? Check the corresponding BeanPostProcessor declaration and its dependencies.
+2026-07-27 12:27:57.966 [main] WARN  transactionId=[] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'org.springframework.cloud.client.loadbalancer.LoadBalancerDefaultMappingsProviderAutoConfiguration' of type [org.springframework.cloud.client.loadbalancer.LoadBalancerDefaultMappingsProviderAutoConfiguration] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). Is this bean getting eagerly injected into a currently created BeanPostProcessor [fixTransactionAndAuth]? Check the corresponding BeanPostProcessor declaration and its dependencies.
+2026-07-27 12:27:57.972 [main] WARN  transactionId=[] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'loadBalancerClientsDefaultsMappingsProvider' of type [org.springframework.cloud.client.loadbalancer.LoadBalancerDefaultMappingsProviderAutoConfiguration$$Lambda/0x000001e1815ee240] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). Is this bean getting eagerly injected into a currently created BeanPostProcessor [fixTransactionAndAuth]? Check the corresponding BeanPostProcessor declaration and its dependencies.
+2026-07-27 12:27:57.977 [main] WARN  transactionId=[] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'defaultsBindHandlerAdvisor' of type [org.springframework.cloud.commons.config.DefaultsBindHandlerAdvisor] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). Is this bean getting eagerly injected into a currently created BeanPostProcessor [fixTransactionAndAuth]? Check the corresponding BeanPostProcessor declaration and its dependencies.
+2026-07-27 12:27:57.998 [main] WARN  transactionId=[] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'de.flapdoodle.mongodb.embedded-de.flapdoodle.embed.mongo.spring.autoconfigure.EmbeddedMongoProperties' of type [de.flapdoodle.embed.mongo.spring.autoconfigure.EmbeddedMongoProperties] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). Is this bean getting eagerly injected into a currently created BeanPostProcessor [fixTransactionAndAuth]? Check the corresponding BeanPostProcessor declaration and its dependencies.
+2026-07-27 12:27:58.089 [main] WARN  transactionId=[] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'net' of type [de.flapdoodle.embed.mongo.config.ImmutableNet] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). Is this bean getting eagerly injected into a currently created BeanPostProcessor [fixTransactionAndAuth]? Check the corresponding BeanPostProcessor declaration and its dependencies.
+2026-07-27 12:27:58.116 [main] WARN  transactionId=[] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'spring.data.mongodb-org.springframework.boot.autoconfigure.mongo.MongoProperties' of type [org.springframework.boot.autoconfigure.mongo.MongoProperties] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). Is this bean getting eagerly injected into a currently created BeanPostProcessor [fixTransactionAndAuth]? Check the corresponding BeanPostProcessor declaration and its dependencies.
+2026-07-27 12:27:58.188 [main] WARN  transactionId=[] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'org.springframework.cloud.client.loadbalancer.LoadBalancerAutoConfiguration$DeferringLoadBalancerInterceptorConfig' of type [org.springframework.cloud.client.loadbalancer.LoadBalancerAutoConfiguration$DeferringLoadBalancerInterceptorConfig] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). The currently created BeanPostProcessor [lbRestClientPostProcessor] is declared through a non-static factory method on that class; consider declaring it as static instead.
+2026-07-27 12:27:58.197 [main] WARN  transactionId=[] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'deferringLoadBalancerInterceptor' of type [org.springframework.cloud.client.loadbalancer.DeferringLoadBalancerInterceptor] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). Is this bean getting eagerly injected into a currently created BeanPostProcessor [lbRestClientPostProcessor]? Check the corresponding BeanPostProcessor declaration and its dependencies.
+2026-07-27 12:27:58.370 [main] WARN  transactionId=[] o.s.w.c.s.GenericWebApplicationContext - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'workloadController' defined in URL [jar:file:/C:/Users/Turab/Desktop/dev-java/spring-tasks/trainer-workload-service/target/trainer-workload-service-1.0-SNAPSHOT.jar!/org/example/workload/controller/WorkloadController.class]: Unsatisfied dependency expressed through constructor parameter 0: Error creating bean with name 'workloadCalculationService' defined in URL [jar:file:/C:/Users/Turab/Desktop/dev-java/spring-tasks/trainer-workload-service/target/trainer-workload-service-1.0-SNAPSHOT.jar!/org/example/workload/service/WorkloadCalculationService.class]: Unsatisfied dependency expressed through constructor parameter 0: Error creating bean with name 'trainerSummaryRepository' defined in org.example.workload.repository.TrainerSummaryRepository defined in @EnableMongoRepositories declared on MongoRepositoriesRegistrar.EnableMongoRepositoriesConfiguration: Cannot resolve reference to bean 'mongoTemplate' while setting bean property 'mongoOperations'
+2026-07-27 12:27:58.432 [main] INFO  transactionId=[] o.s.b.a.l.ConditionEvaluationReportLogger - 
+
+Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+2026-07-27 12:27:58.493 [main] ERROR transactionId=[] o.s.boot.SpringApplication - Application run failed
+org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'workloadController' defined in URL [jar:file:/C:/Users/Turab/Desktop/dev-java/spring-tasks/trainer-workload-service/target/trainer-workload-service-1.0-SNAPSHOT.jar!/org/example/workload/controller/WorkloadController.class]: Unsatisfied dependency expressed through constructor parameter 0: Error creating bean with name 'workloadCalculationService' defined in URL [jar:file:/C:/Users/Turab/Desktop/dev-java/spring-tasks/trainer-workload-service/target/trainer-workload-service-1.0-SNAPSHOT.jar!/org/example/workload/service/WorkloadCalculationService.class]: Unsatisfied dependency expressed through constructor parameter 0: Error creating bean with name 'trainerSummaryRepository' defined in org.example.workload.repository.TrainerSummaryRepository defined in @EnableMongoRepositories declared on MongoRepositoriesRegistrar.EnableMongoRepositoriesConfiguration: Cannot resolve reference to bean 'mongoTemplate' while setting bean property 'mongoOperations'
+	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:795)
+	at org.springframework.beans.factory.support.ConstructorResolver.autowireConstructor(ConstructorResolver.java:237)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.autowireConstructor(AbstractAutowireCapableBeanFactory.java:1357)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1194)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:562)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:522)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:337)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:335)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:200)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:975)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:962)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:624)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:754)
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:456)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:335)
+	at org.springframework.boot.test.context.SpringBootContextLoader.lambda$loadContext$3(SpringBootContextLoader.java:137)
+	at org.springframework.util.function.ThrowingSupplier.get(ThrowingSupplier.java:58)
+	at org.springframework.util.function.ThrowingSupplier.get(ThrowingSupplier.java:46)
+	at org.springframework.boot.SpringApplication.withHook(SpringApplication.java:1463)
+	at org.springframework.boot.test.context.SpringBootContextLoader$ContextLoaderHook.run(SpringBootContextLoader.java:553)
+	at org.springframework.boot.test.context.SpringBootContextLoader.loadContext(SpringBootContextLoader.java:137)
+	at org.springframework.boot.test.context.SpringBootContextLoader.loadContext(SpringBootContextLoader.java:108)
+	at org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate.loadContextInternal(DefaultCacheAwareContextLoaderDelegate.java:225)
+	at org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate.loadContext(DefaultCacheAwareContextLoaderDelegate.java:152)
+	at org.springframework.test.context.support.DefaultTestContext.getApplicationContext(DefaultTestContext.java:130)
+	at io.cucumber.spring.TestContextAdaptor.create(TestContextAdaptor.java:42)
+	at io.cucumber.spring.SpringFactory.start(SpringFactory.java:121)
+	at io.cucumber.core.runner.Runner.buildBackendWorlds(Runner.java:134)
+	at io.cucumber.core.runner.Runner.runPickle(Runner.java:70)
+	at io.cucumber.junit.platform.engine.CucumberEngineExecutionContext.lambda$runTestCase$4(CucumberEngineExecutionContext.java:112)
+	at io.cucumber.core.runtime.CucumberExecutionContext.lambda$runTestCase$5(CucumberExecutionContext.java:136)
+	at io.cucumber.core.runtime.RethrowingThrowableCollector.executeAndThrow(RethrowingThrowableCollector.java:23)
+	at io.cucumber.core.runtime.CucumberExecutionContext.runTestCase(CucumberExecutionContext.java:136)
+	at io.cucumber.junit.platform.engine.CucumberEngineExecutionContext.runTestCase(CucumberEngineExecutionContext.java:109)
+	at io.cucumber.junit.platform.engine.NodeDescriptor$PickleDescriptor.execute(NodeDescriptor.java:168)
+	at io.cucumber.junit.platform.engine.NodeDescriptor$PickleDescriptor.execute(NodeDescriptor.java:90)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:151)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:141)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:139)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:138)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:155)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:141)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:139)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:138)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:155)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:141)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:139)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:138)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.submit(SameThreadHierarchicalTestExecutorService.java:35)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestExecutor.execute(HierarchicalTestExecutor.java:57)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestEngine.execute(HierarchicalTestEngine.java:54)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:198)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:169)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:93)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:76)
+	at org.junit.platform.suite.engine.SuiteLauncher.execute(SuiteLauncher.java:63)
+	at org.junit.platform.suite.engine.SuiteTestDescriptor.execute(SuiteTestDescriptor.java:128)
+	at org.junit.platform.suite.engine.SuiteTestEngine.lambda$execute$0(SuiteTestEngine.java:73)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.Iterator.forEachRemaining(Iterator.java:133)
+	at java.base/java.util.Spliterators$IteratorSpliterator.forEachRemaining(Spliterators.java:1939)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)
+	at org.junit.platform.suite.engine.SuiteTestEngine.execute(SuiteTestEngine.java:73)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:198)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:169)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:93)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:58)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:141)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:57)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:103)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:85)
+	at org.junit.platform.launcher.core.DelegatingLauncher.execute(DelegatingLauncher.java:47)
+	at org.apache.maven.surefire.junitplatform.LazyLauncher.execute(LazyLauncher.java:56)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.execute(JUnitPlatformProvider.java:184)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invokeAllTests(JUnitPlatformProvider.java:148)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invoke(JUnitPlatformProvider.java:122)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:385)
+	at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.java:162)
+	at org.apache.maven.surefire.booter.ForkedBooter.run(ForkedBooter.java:507)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:495)
+Caused by: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'workloadCalculationService' defined in URL [jar:file:/C:/Users/Turab/Desktop/dev-java/spring-tasks/trainer-workload-service/target/trainer-workload-service-1.0-SNAPSHOT.jar!/org/example/workload/service/WorkloadCalculationService.class]: Unsatisfied dependency expressed through constructor parameter 0: Error creating bean with name 'trainerSummaryRepository' defined in org.example.workload.repository.TrainerSummaryRepository defined in @EnableMongoRepositories declared on MongoRepositoriesRegistrar.EnableMongoRepositoriesConfiguration: Cannot resolve reference to bean 'mongoTemplate' while setting bean property 'mongoOperations'
+	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:795)
+	at org.springframework.beans.factory.support.ConstructorResolver.autowireConstructor(ConstructorResolver.java:237)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.autowireConstructor(AbstractAutowireCapableBeanFactory.java:1357)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1194)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:562)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:522)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:337)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:335)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:200)
+	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:254)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1443)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1353)
+	at org.springframework.beans.factory.support.ConstructorResolver.resolveAutowiredArgument(ConstructorResolver.java:904)
+	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:782)
+	... 102 common frames omitted
+Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'trainerSummaryRepository' defined in org.example.workload.repository.TrainerSummaryRepository defined in @EnableMongoRepositories declared on MongoRepositoriesRegistrar.EnableMongoRepositoriesConfiguration: Cannot resolve reference to bean 'mongoTemplate' while setting bean property 'mongoOperations'
+	at org.springframework.beans.factory.support.BeanDefinitionValueResolver.resolveReference(BeanDefinitionValueResolver.java:377)
+	at org.springframework.beans.factory.support.BeanDefinitionValueResolver.resolveValueIfNecessary(BeanDefinitionValueResolver.java:135)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.applyPropertyValues(AbstractAutowireCapableBeanFactory.java:1687)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1436)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:599)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:522)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:337)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:335)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:200)
+	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:254)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1443)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1353)
+	at org.springframework.beans.factory.support.ConstructorResolver.resolveAutowiredArgument(ConstructorResolver.java:904)
+	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:782)
+	... 116 common frames omitted
+Caused by: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'mongoTemplate' defined in class path resource [org/springframework/boot/autoconfigure/data/mongo/MongoDatabaseFactoryDependentConfiguration.class]: Unsatisfied dependency expressed through method 'mongoTemplate' parameter 0: Error creating bean with name 'mongoDatabaseFactory' defined in class path resource [org/springframework/boot/autoconfigure/data/mongo/MongoDatabaseFactoryConfiguration.class]: Unsatisfied dependency expressed through method 'mongoDatabaseFactory' parameter 0: Error creating bean with name 'syncClientServerWrapper' defined in class path resource [de/flapdoodle/embed/mongo/spring/autoconfigure/EmbeddedMongoAutoConfiguration$SyncClientServerWrapperConfig.class]: Unsatisfied dependency expressed through method 'syncClientServerWrapper' parameter 0: Error creating bean with name 'version' defined in class path resource [de/flapdoodle/embed/mongo/spring/autoconfigure/EmbeddedMongoAutoConfiguration.class]: Failed to instantiate [de.flapdoodle.embed.mongo.distribution.IFeatureAwareVersion]: Factory method 'version' threw exception with message: Set the de.flapdoodle.mongodb.embedded.version property or define your own IFeatureAwareVersion bean to use embedded MongoDB
+	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:795)
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:542)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1337)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1167)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:562)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:522)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:337)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:335)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:200)
+	at org.springframework.beans.factory.support.BeanDefinitionValueResolver.resolveReference(BeanDefinitionValueResolver.java:365)
+	... 130 common frames omitted
+Caused by: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'mongoDatabaseFactory' defined in class path resource [org/springframework/boot/autoconfigure/data/mongo/MongoDatabaseFactoryConfiguration.class]: Unsatisfied dependency expressed through method 'mongoDatabaseFactory' parameter 0: Error creating bean with name 'syncClientServerWrapper' defined in class path resource [de/flapdoodle/embed/mongo/spring/autoconfigure/EmbeddedMongoAutoConfiguration$SyncClientServerWrapperConfig.class]: Unsatisfied dependency expressed through method 'syncClientServerWrapper' parameter 0: Error creating bean with name 'version' defined in class path resource [de/flapdoodle/embed/mongo/spring/autoconfigure/EmbeddedMongoAutoConfiguration.class]: Failed to instantiate [de.flapdoodle.embed.mongo.distribution.IFeatureAwareVersion]: Factory method 'version' threw exception with message: Set the de.flapdoodle.mongodb.embedded.version property or define your own IFeatureAwareVersion bean to use embedded MongoDB
+	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:795)
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:542)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1337)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1167)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:562)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:522)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:337)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:335)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:200)
+	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:254)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1443)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1353)
+	at org.springframework.beans.factory.support.ConstructorResolver.resolveAutowiredArgument(ConstructorResolver.java:904)
+	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:782)
+	... 140 common frames omitted
+Caused by: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'syncClientServerWrapper' defined in class path resource [de/flapdoodle/embed/mongo/spring/autoconfigure/EmbeddedMongoAutoConfiguration$SyncClientServerWrapperConfig.class]: Unsatisfied dependency expressed through method 'syncClientServerWrapper' parameter 0: Error creating bean with name 'version' defined in class path resource [de/flapdoodle/embed/mongo/spring/autoconfigure/EmbeddedMongoAutoConfiguration.class]: Failed to instantiate [de.flapdoodle.embed.mongo.distribution.IFeatureAwareVersion]: Factory method 'version' threw exception with message: Set the de.flapdoodle.mongodb.embedded.version property or define your own IFeatureAwareVersion bean to use embedded MongoDB
+	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:795)
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:542)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1337)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1167)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:562)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:522)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:337)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:335)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:200)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:313)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:200)
+	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:254)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1443)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1353)
+	at org.springframework.beans.factory.support.ConstructorResolver.resolveAutowiredArgument(ConstructorResolver.java:904)
+	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:782)
+	... 154 common frames omitted
+Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'version' defined in class path resource [de/flapdoodle/embed/mongo/spring/autoconfigure/EmbeddedMongoAutoConfiguration.class]: Failed to instantiate [de.flapdoodle.embed.mongo.distribution.IFeatureAwareVersion]: Factory method 'version' threw exception with message: Set the de.flapdoodle.mongodb.embedded.version property or define your own IFeatureAwareVersion bean to use embedded MongoDB
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:648)
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:636)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1337)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1167)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:562)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:522)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:337)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:335)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:200)
+	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:254)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1443)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1353)
+	at org.springframework.beans.factory.support.ConstructorResolver.resolveAutowiredArgument(ConstructorResolver.java:904)
+	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:782)
+	... 170 common frames omitted
+Caused by: org.springframework.beans.BeanInstantiationException: Failed to instantiate [de.flapdoodle.embed.mongo.distribution.IFeatureAwareVersion]: Factory method 'version' threw exception with message: Set the de.flapdoodle.mongodb.embedded.version property or define your own IFeatureAwareVersion bean to use embedded MongoDB
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:177)
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:644)
+	... 184 common frames omitted
+Caused by: java.lang.IllegalStateException: Set the de.flapdoodle.mongodb.embedded.version property or define your own IFeatureAwareVersion bean to use embedded MongoDB
+	at org.springframework.util.Assert.state(Assert.java:76)
+	at de.flapdoodle.embed.mongo.spring.autoconfigure.EmbeddedMongoAutoConfiguration.determineVersion(EmbeddedMongoAutoConfiguration.java:133)
+	at de.flapdoodle.embed.mongo.spring.autoconfigure.EmbeddedMongoAutoConfiguration.version(EmbeddedMongoAutoConfiguration.java:129)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:140)
+	... 185 common frames omitted
+2026-07-27 12:27:58.581 [main] INFO  transactionId=[] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [org.example.workload.cucumber.CucumberSpringContext]: CucumberSpringContext does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-07-27 12:27:58.615 [main] INFO  transactionId=[] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration org.example.workload.TrainerWorkloadApplication for test class org.example.workload.cucumber.CucumberSpringContext
+2026-07-27 12:27:58.625 [main] INFO  transactionId=[] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [org.example.workload.cucumber.CucumberSpringContext]: CucumberSpringContext does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-07-27 12:27:58.632 [main] INFO  transactionId=[] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration org.example.workload.TrainerWorkloadApplication for test class org.example.workload.cucumber.CucumberSpringContext
+2026-07-27 12:27:58.650 [main] INFO  transactionId=[] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [org.example.workload.cucumber.CucumberSpringContext]: CucumberSpringContext does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-07-27 12:27:58.663 [main] INFO  transactionId=[] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration org.example.workload.TrainerWorkloadApplication for test class org.example.workload.cucumber.CucumberSpringContext
+2026-07-27 12:27:58.679 [main] INFO  transactionId=[] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [org.example.workload.cucumber.CucumberSpringContext]: CucumberSpringContext does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-07-27 12:27:58.689 [main] INFO  transactionId=[] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration org.example.workload.TrainerWorkloadApplication for test class org.example.workload.cucumber.CucumberSpringContext
+2026-07-27 12:27:58.719 [main] INFO  transactionId=[] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [org.example.workload.cucumber.CucumberSpringContext]: CucumberSpringContext does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-07-27 12:27:58.726 [main] INFO  transactionId=[] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration org.example.workload.TrainerWorkloadApplication for test class org.example.workload.cucumber.CucumberSpringContext
+2026-07-27 12:27:58.772 [main] INFO  transactionId=[] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [org.example.workload.cucumber.CucumberSpringContext]: CucumberSpringContext does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-07-27 12:27:58.782 [main] INFO  transactionId=[] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration org.example.workload.TrainerWorkloadApplication for test class org.example.workload.cucumber.CucumberSpringContext
+2026-07-27 12:27:58.823 [main] INFO  transactionId=[] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [org.example.workload.cucumber.CucumberSpringContext]: CucumberSpringContext does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-07-27 12:27:58.827 [main] INFO  transactionId=[] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration org.example.workload.TrainerWorkloadApplication for test class org.example.workload.cucumber.CucumberSpringContext
+2026-07-27 12:27:58.862 [main] INFO  transactionId=[] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [org.example.workload.cucumber.CucumberSpringContext]: CucumberSpringContext does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-07-27 12:27:58.870 [main] INFO  transactionId=[] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration org.example.workload.TrainerWorkloadApplication for test class org.example.workload.cucumber.CucumberSpringContext
+2026-07-27 12:27:58.900 [main] INFO  transactionId=[] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [org.example.workload.cucumber.CucumberSpringContext]: CucumberSpringContext does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-07-27 12:27:58.904 [main] INFO  transactionId=[] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration org.example.workload.TrainerWorkloadApplication for test class org.example.workload.cucumber.CucumberSpringContext
+2026-07-27 12:27:58.911 [main] INFO  transactionId=[] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [org.example.workload.cucumber.CucumberSpringContext]: CucumberSpringContext does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-07-27 12:27:58.916 [main] INFO  transactionId=[] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration org.example.workload.TrainerWorkloadApplication for test class org.example.workload.cucumber.CucumberSpringContext
+2026-07-27 12:27:58.930 [main] INFO  transactionId=[] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [org.example.workload.cucumber.CucumberSpringContext]: CucumberSpringContext does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-07-27 12:27:58.937 [main] INFO  transactionId=[] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration org.example.workload.TrainerWorkloadApplication for test class org.example.workload.cucumber.CucumberSpringContext
+2026-07-27 12:27:58.951 [main] INFO  transactionId=[] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [org.example.workload.cucumber.CucumberSpringContext]: CucumberSpringContext does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-07-27 12:27:58.957 [main] INFO  transactionId=[] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration org.example.workload.TrainerWorkloadApplication for test class org.example.workload.cucumber.CucumberSpringContext
+2026-07-27 12:27:58.966 [main] INFO  transactionId=[] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [org.example.workload.cucumber.CucumberSpringContext]: CucumberSpringContext does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-07-27 12:27:58.972 [main] INFO  transactionId=[] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration org.example.workload.TrainerWorkloadApplication for test class org.example.workload.cucumber.CucumberSpringContext
+2026-07-27 12:31:15.222 [main] WARN  transactionId=[] o.e.w.m.WorkloadEventConsumer - [transactionId=null] OPERATION workloadMessageRejected reason=Trainer username can't be blank
+2026-07-27 12:31:15.331 [main] WARN  transactionId=[] o.e.w.m.WorkloadEventConsumer - [transactionId=null] OPERATION workloadMessageRejected reason=Cannot convert
+2026-07-27 12:31:15.332 [main] WARN  transactionId=[] o.e.w.m.WorkloadEventConsumer - [transactionId=null] OPERATION workloadMessageRejected reason=Message payload is missing or could not be deserialized
+2026-07-27 12:31:15.347 [main] INFO  transactionId=[] o.e.w.m.WorkloadEventConsumer - [transactionId=null] OPERATION consumeWorkload action=ADD trainer=trainer.one
+2026-07-27 12:31:15.609 [main] INFO  transactionId=[] o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2026-07-27 12:31:16.523 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] TRANSACTION processWorkload started action=DELETE trainer=trainer.one date=2026-06-15 duration=50
+2026-07-27 12:31:16.528 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION updatedMonthlySummary trainer=trainer.one year=2026 month=6 totalDuration=0
+2026-07-27 12:31:16.539 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] TRANSACTION processWorkload started action=ADD trainer=trainer.one date=2026-06-20 duration=30
+2026-07-27 12:31:16.539 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION updatedMonthlySummary trainer=trainer.one year=2026 month=6 totalDuration=70
+2026-07-27 12:31:16.544 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] TRANSACTION processWorkload started action=ADD trainer=trainer.one date=2026-06-15 duration=60
+2026-07-27 12:31:16.545 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION creating new trainer document for username=trainer.one
+2026-07-27 12:31:16.545 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION creating year entry year=2026 for trainer=trainer.one
+2026-07-27 12:31:16.546 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION creating month entry year=2026 month=6 for trainer=trainer.one
+2026-07-27 12:31:16.546 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION updatedMonthlySummary trainer=trainer.one year=2026 month=6 totalDuration=60
+2026-07-27 12:31:16.569 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] TRANSACTION processWorkload started action=DELETE trainer=trainer.one date=2026-06-15 duration=20
+2026-07-27 12:31:16.571 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION updatedMonthlySummary trainer=trainer.one year=2026 month=6 totalDuration=40
+2026-07-27 12:31:16.577 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] TRANSACTION processWorkload started action=ADD trainer=trainer.one date=2026-06-10 duration=55
+2026-07-27 12:31:16.578 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION creating month entry year=2026 month=6 for trainer=trainer.one
+2026-07-27 12:31:16.579 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION updatedMonthlySummary trainer=trainer.one year=2026 month=6 totalDuration=55
+2026-07-27 12:31:16.607 [main] INFO  transactionId=[] o.e.w.service.WorkloadQueryService - [transactionId=null] OPERATION getMonthlySummary trainer=trainer.one year=2026 month=6
+2026-07-27 12:31:16.627 [main] INFO  transactionId=[] o.e.w.service.WorkloadQueryService - [transactionId=null] OPERATION getTrainerSummary trainer=trainer.one
+2026-07-27 12:31:16.642 [main] INFO  transactionId=[] o.e.w.service.WorkloadQueryService - [transactionId=null] OPERATION getMonthlySummary trainer=trainer.one year=2026 month=6
+2026-07-27 12:31:16.666 [main] INFO  transactionId=[] o.e.w.service.WorkloadQueryService - [transactionId=null] OPERATION getMonthlySummary trainer=unknown year=2026 month=6
+2026-07-27 12:31:16.678 [main] INFO  transactionId=[] o.e.w.service.WorkloadQueryService - [transactionId=null] OPERATION getTrainerSummary trainer=unknown.trainer
+2026-07-27 12:31:20.553 [main] INFO  transactionId=[] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [org.example.workload.cucumber.CucumberSpringContext]: CucumberSpringContext does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-07-27 12:31:20.751 [main] INFO  transactionId=[] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration org.example.workload.TrainerWorkloadApplication for test class org.example.workload.cucumber.CucumberSpringContext
+2026-07-27 12:31:21.612 [background-preinit] INFO  transactionId=[] o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2026-07-27 12:31:21.756 [main] INFO  transactionId=[] o.e.w.cucumber.CucumberSpringContext - Starting CucumberSpringContext using Java 21.0.9 with PID 18592 (started by Turab in C:\Users\Turab\Desktop\dev-java\spring-tasks\trainer-workload-service)
+2026-07-27 12:31:21.757 [main] DEBUG transactionId=[] o.e.w.cucumber.CucumberSpringContext - Running with Spring Boot v3.3.0, Spring v6.1.8
+2026-07-27 12:31:21.760 [main] INFO  transactionId=[] o.e.w.cucumber.CucumberSpringContext - The following 1 profile is active: "test"
+2026-07-27 12:31:24.683 [main] INFO  transactionId=[] o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data MongoDB repositories in DEFAULT mode.
+2026-07-27 12:31:24.928 [main] INFO  transactionId=[] o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 233 ms. Found 1 MongoDB repository interface.
+2026-07-27 12:31:25.477 [main] INFO  transactionId=[] o.s.cloud.context.scope.GenericScope - BeanFactory id=1431d5d8-c054-3584-80ab-c520dd7fd3bd
+2026-07-27 12:31:25.915 [main] WARN  transactionId=[] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'de.flapdoodle.embed.mongo.spring.autoconfigure.EmbeddedMongoAutoConfiguration' of type [de.flapdoodle.embed.mongo.spring.autoconfigure.EmbeddedMongoAutoConfiguration] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). The currently created BeanPostProcessor [fixTransactionAndAuth] is declared through a non-static factory method on that class; consider declaring it as static instead.
+2026-07-27 12:31:25.930 [main] WARN  transactionId=[] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'org.springframework.cloud.commons.config.CommonsConfigAutoConfiguration' of type [org.springframework.cloud.commons.config.CommonsConfigAutoConfiguration] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). Is this bean getting eagerly injected into a currently created BeanPostProcessor [fixTransactionAndAuth]? Check the corresponding BeanPostProcessor declaration and its dependencies.
+2026-07-27 12:31:25.934 [main] WARN  transactionId=[] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'org.springframework.cloud.client.loadbalancer.LoadBalancerDefaultMappingsProviderAutoConfiguration' of type [org.springframework.cloud.client.loadbalancer.LoadBalancerDefaultMappingsProviderAutoConfiguration] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). Is this bean getting eagerly injected into a currently created BeanPostProcessor [fixTransactionAndAuth]? Check the corresponding BeanPostProcessor declaration and its dependencies.
+2026-07-27 12:31:25.938 [main] WARN  transactionId=[] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'loadBalancerClientsDefaultsMappingsProvider' of type [org.springframework.cloud.client.loadbalancer.LoadBalancerDefaultMappingsProviderAutoConfiguration$$Lambda/0x0000014daa5eb3a0] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). Is this bean getting eagerly injected into a currently created BeanPostProcessor [fixTransactionAndAuth]? Check the corresponding BeanPostProcessor declaration and its dependencies.
+2026-07-27 12:31:25.941 [main] WARN  transactionId=[] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'defaultsBindHandlerAdvisor' of type [org.springframework.cloud.commons.config.DefaultsBindHandlerAdvisor] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). Is this bean getting eagerly injected into a currently created BeanPostProcessor [fixTransactionAndAuth]? Check the corresponding BeanPostProcessor declaration and its dependencies.
+2026-07-27 12:31:25.984 [main] WARN  transactionId=[] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'de.flapdoodle.mongodb.embedded-de.flapdoodle.embed.mongo.spring.autoconfigure.EmbeddedMongoProperties' of type [de.flapdoodle.embed.mongo.spring.autoconfigure.EmbeddedMongoProperties] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). Is this bean getting eagerly injected into a currently created BeanPostProcessor [fixTransactionAndAuth]? Check the corresponding BeanPostProcessor declaration and its dependencies.
+2026-07-27 12:31:26.033 [main] WARN  transactionId=[] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'net' of type [de.flapdoodle.embed.mongo.config.ImmutableNet] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). Is this bean getting eagerly injected into a currently created BeanPostProcessor [fixTransactionAndAuth]? Check the corresponding BeanPostProcessor declaration and its dependencies.
+2026-07-27 12:31:26.049 [main] WARN  transactionId=[] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'spring.data.mongodb-org.springframework.boot.autoconfigure.mongo.MongoProperties' of type [org.springframework.boot.autoconfigure.mongo.MongoProperties] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). Is this bean getting eagerly injected into a currently created BeanPostProcessor [fixTransactionAndAuth]? Check the corresponding BeanPostProcessor declaration and its dependencies.
+2026-07-27 12:31:26.114 [main] WARN  transactionId=[] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'org.springframework.cloud.client.loadbalancer.LoadBalancerAutoConfiguration$DeferringLoadBalancerInterceptorConfig' of type [org.springframework.cloud.client.loadbalancer.LoadBalancerAutoConfiguration$DeferringLoadBalancerInterceptorConfig] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). The currently created BeanPostProcessor [lbRestClientPostProcessor] is declared through a non-static factory method on that class; consider declaring it as static instead.
+2026-07-27 12:31:26.119 [main] WARN  transactionId=[] o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'deferringLoadBalancerInterceptor' of type [org.springframework.cloud.client.loadbalancer.DeferringLoadBalancerInterceptor] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). Is this bean getting eagerly injected into a currently created BeanPostProcessor [lbRestClientPostProcessor]? Check the corresponding BeanPostProcessor declaration and its dependencies.
+2026-07-27 12:31:26.229 [main] WARN  transactionId=[] o.s.w.c.s.GenericWebApplicationContext - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'workloadController' defined in URL [jar:file:/C:/Users/Turab/Desktop/dev-java/spring-tasks/trainer-workload-service/target/trainer-workload-service-1.0-SNAPSHOT.jar!/org/example/workload/controller/WorkloadController.class]: Unsatisfied dependency expressed through constructor parameter 0: Error creating bean with name 'workloadCalculationService' defined in URL [jar:file:/C:/Users/Turab/Desktop/dev-java/spring-tasks/trainer-workload-service/target/trainer-workload-service-1.0-SNAPSHOT.jar!/org/example/workload/service/WorkloadCalculationService.class]: Unsatisfied dependency expressed through constructor parameter 0: Error creating bean with name 'trainerSummaryRepository' defined in org.example.workload.repository.TrainerSummaryRepository defined in @EnableMongoRepositories declared on MongoRepositoriesRegistrar.EnableMongoRepositoriesConfiguration: Cannot resolve reference to bean 'mongoTemplate' while setting bean property 'mongoOperations'
+2026-07-27 12:31:26.260 [main] INFO  transactionId=[] o.s.b.a.l.ConditionEvaluationReportLogger - 
+
+Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+2026-07-27 12:31:26.325 [main] ERROR transactionId=[] o.s.boot.SpringApplication - Application run failed
+org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'workloadController' defined in URL [jar:file:/C:/Users/Turab/Desktop/dev-java/spring-tasks/trainer-workload-service/target/trainer-workload-service-1.0-SNAPSHOT.jar!/org/example/workload/controller/WorkloadController.class]: Unsatisfied dependency expressed through constructor parameter 0: Error creating bean with name 'workloadCalculationService' defined in URL [jar:file:/C:/Users/Turab/Desktop/dev-java/spring-tasks/trainer-workload-service/target/trainer-workload-service-1.0-SNAPSHOT.jar!/org/example/workload/service/WorkloadCalculationService.class]: Unsatisfied dependency expressed through constructor parameter 0: Error creating bean with name 'trainerSummaryRepository' defined in org.example.workload.repository.TrainerSummaryRepository defined in @EnableMongoRepositories declared on MongoRepositoriesRegistrar.EnableMongoRepositoriesConfiguration: Cannot resolve reference to bean 'mongoTemplate' while setting bean property 'mongoOperations'
+	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:795)
+	at org.springframework.beans.factory.support.ConstructorResolver.autowireConstructor(ConstructorResolver.java:237)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.autowireConstructor(AbstractAutowireCapableBeanFactory.java:1357)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1194)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:562)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:522)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:337)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:335)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:200)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:975)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:962)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:624)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:754)
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:456)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:335)
+	at org.springframework.boot.test.context.SpringBootContextLoader.lambda$loadContext$3(SpringBootContextLoader.java:137)
+	at org.springframework.util.function.ThrowingSupplier.get(ThrowingSupplier.java:58)
+	at org.springframework.util.function.ThrowingSupplier.get(ThrowingSupplier.java:46)
+	at org.springframework.boot.SpringApplication.withHook(SpringApplication.java:1463)
+	at org.springframework.boot.test.context.SpringBootContextLoader$ContextLoaderHook.run(SpringBootContextLoader.java:553)
+	at org.springframework.boot.test.context.SpringBootContextLoader.loadContext(SpringBootContextLoader.java:137)
+	at org.springframework.boot.test.context.SpringBootContextLoader.loadContext(SpringBootContextLoader.java:108)
+	at org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate.loadContextInternal(DefaultCacheAwareContextLoaderDelegate.java:225)
+	at org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate.loadContext(DefaultCacheAwareContextLoaderDelegate.java:152)
+	at org.springframework.test.context.support.DefaultTestContext.getApplicationContext(DefaultTestContext.java:130)
+	at io.cucumber.spring.TestContextAdaptor.create(TestContextAdaptor.java:42)
+	at io.cucumber.spring.SpringFactory.start(SpringFactory.java:121)
+	at io.cucumber.core.runner.Runner.buildBackendWorlds(Runner.java:134)
+	at io.cucumber.core.runner.Runner.runPickle(Runner.java:70)
+	at io.cucumber.junit.platform.engine.CucumberEngineExecutionContext.lambda$runTestCase$4(CucumberEngineExecutionContext.java:112)
+	at io.cucumber.core.runtime.CucumberExecutionContext.lambda$runTestCase$5(CucumberExecutionContext.java:136)
+	at io.cucumber.core.runtime.RethrowingThrowableCollector.executeAndThrow(RethrowingThrowableCollector.java:23)
+	at io.cucumber.core.runtime.CucumberExecutionContext.runTestCase(CucumberExecutionContext.java:136)
+	at io.cucumber.junit.platform.engine.CucumberEngineExecutionContext.runTestCase(CucumberEngineExecutionContext.java:109)
+	at io.cucumber.junit.platform.engine.NodeDescriptor$PickleDescriptor.execute(NodeDescriptor.java:168)
+	at io.cucumber.junit.platform.engine.NodeDescriptor$PickleDescriptor.execute(NodeDescriptor.java:90)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:151)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:141)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:139)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:138)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:155)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:141)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:139)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:138)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:155)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:141)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:139)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:138)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.submit(SameThreadHierarchicalTestExecutorService.java:35)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestExecutor.execute(HierarchicalTestExecutor.java:57)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestEngine.execute(HierarchicalTestEngine.java:54)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:198)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:169)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:93)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:76)
+	at org.junit.platform.suite.engine.SuiteLauncher.execute(SuiteLauncher.java:63)
+	at org.junit.platform.suite.engine.SuiteTestDescriptor.execute(SuiteTestDescriptor.java:128)
+	at org.junit.platform.suite.engine.SuiteTestEngine.lambda$execute$0(SuiteTestEngine.java:73)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:197)
+	at java.base/java.util.Iterator.forEachRemaining(Iterator.java:133)
+	at java.base/java.util.Spliterators$IteratorSpliterator.forEachRemaining(Spliterators.java:1939)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:509)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:499)
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:596)
+	at org.junit.platform.suite.engine.SuiteTestEngine.execute(SuiteTestEngine.java:73)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:198)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:169)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:93)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:58)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:141)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:57)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:103)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:85)
+	at org.junit.platform.launcher.core.DelegatingLauncher.execute(DelegatingLauncher.java:47)
+	at org.apache.maven.surefire.junitplatform.LazyLauncher.execute(LazyLauncher.java:56)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.execute(JUnitPlatformProvider.java:184)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invokeAllTests(JUnitPlatformProvider.java:148)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invoke(JUnitPlatformProvider.java:122)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:385)
+	at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.java:162)
+	at org.apache.maven.surefire.booter.ForkedBooter.run(ForkedBooter.java:507)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:495)
+Caused by: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'workloadCalculationService' defined in URL [jar:file:/C:/Users/Turab/Desktop/dev-java/spring-tasks/trainer-workload-service/target/trainer-workload-service-1.0-SNAPSHOT.jar!/org/example/workload/service/WorkloadCalculationService.class]: Unsatisfied dependency expressed through constructor parameter 0: Error creating bean with name 'trainerSummaryRepository' defined in org.example.workload.repository.TrainerSummaryRepository defined in @EnableMongoRepositories declared on MongoRepositoriesRegistrar.EnableMongoRepositoriesConfiguration: Cannot resolve reference to bean 'mongoTemplate' while setting bean property 'mongoOperations'
+	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:795)
+	at org.springframework.beans.factory.support.ConstructorResolver.autowireConstructor(ConstructorResolver.java:237)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.autowireConstructor(AbstractAutowireCapableBeanFactory.java:1357)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1194)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:562)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:522)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:337)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:335)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:200)
+	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:254)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1443)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1353)
+	at org.springframework.beans.factory.support.ConstructorResolver.resolveAutowiredArgument(ConstructorResolver.java:904)
+	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:782)
+	... 102 common frames omitted
+Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'trainerSummaryRepository' defined in org.example.workload.repository.TrainerSummaryRepository defined in @EnableMongoRepositories declared on MongoRepositoriesRegistrar.EnableMongoRepositoriesConfiguration: Cannot resolve reference to bean 'mongoTemplate' while setting bean property 'mongoOperations'
+	at org.springframework.beans.factory.support.BeanDefinitionValueResolver.resolveReference(BeanDefinitionValueResolver.java:377)
+	at org.springframework.beans.factory.support.BeanDefinitionValueResolver.resolveValueIfNecessary(BeanDefinitionValueResolver.java:135)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.applyPropertyValues(AbstractAutowireCapableBeanFactory.java:1687)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1436)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:599)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:522)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:337)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:335)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:200)
+	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:254)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1443)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1353)
+	at org.springframework.beans.factory.support.ConstructorResolver.resolveAutowiredArgument(ConstructorResolver.java:904)
+	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:782)
+	... 116 common frames omitted
+Caused by: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'mongoTemplate' defined in class path resource [org/springframework/boot/autoconfigure/data/mongo/MongoDatabaseFactoryDependentConfiguration.class]: Unsatisfied dependency expressed through method 'mongoTemplate' parameter 0: Error creating bean with name 'mongoDatabaseFactory' defined in class path resource [org/springframework/boot/autoconfigure/data/mongo/MongoDatabaseFactoryConfiguration.class]: Unsatisfied dependency expressed through method 'mongoDatabaseFactory' parameter 0: Error creating bean with name 'syncClientServerWrapper' defined in class path resource [de/flapdoodle/embed/mongo/spring/autoconfigure/EmbeddedMongoAutoConfiguration$SyncClientServerWrapperConfig.class]: Unsatisfied dependency expressed through method 'syncClientServerWrapper' parameter 0: Error creating bean with name 'version' defined in class path resource [de/flapdoodle/embed/mongo/spring/autoconfigure/EmbeddedMongoAutoConfiguration.class]: Failed to instantiate [de.flapdoodle.embed.mongo.distribution.IFeatureAwareVersion]: Factory method 'version' threw exception with message: Set the de.flapdoodle.mongodb.embedded.version property or define your own IFeatureAwareVersion bean to use embedded MongoDB
+	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:795)
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:542)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1337)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1167)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:562)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:522)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:337)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:335)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:200)
+	at org.springframework.beans.factory.support.BeanDefinitionValueResolver.resolveReference(BeanDefinitionValueResolver.java:365)
+	... 130 common frames omitted
+Caused by: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'mongoDatabaseFactory' defined in class path resource [org/springframework/boot/autoconfigure/data/mongo/MongoDatabaseFactoryConfiguration.class]: Unsatisfied dependency expressed through method 'mongoDatabaseFactory' parameter 0: Error creating bean with name 'syncClientServerWrapper' defined in class path resource [de/flapdoodle/embed/mongo/spring/autoconfigure/EmbeddedMongoAutoConfiguration$SyncClientServerWrapperConfig.class]: Unsatisfied dependency expressed through method 'syncClientServerWrapper' parameter 0: Error creating bean with name 'version' defined in class path resource [de/flapdoodle/embed/mongo/spring/autoconfigure/EmbeddedMongoAutoConfiguration.class]: Failed to instantiate [de.flapdoodle.embed.mongo.distribution.IFeatureAwareVersion]: Factory method 'version' threw exception with message: Set the de.flapdoodle.mongodb.embedded.version property or define your own IFeatureAwareVersion bean to use embedded MongoDB
+	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:795)
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:542)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1337)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1167)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:562)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:522)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:337)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:335)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:200)
+	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:254)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1443)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1353)
+	at org.springframework.beans.factory.support.ConstructorResolver.resolveAutowiredArgument(ConstructorResolver.java:904)
+	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:782)
+	... 140 common frames omitted
+Caused by: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'syncClientServerWrapper' defined in class path resource [de/flapdoodle/embed/mongo/spring/autoconfigure/EmbeddedMongoAutoConfiguration$SyncClientServerWrapperConfig.class]: Unsatisfied dependency expressed through method 'syncClientServerWrapper' parameter 0: Error creating bean with name 'version' defined in class path resource [de/flapdoodle/embed/mongo/spring/autoconfigure/EmbeddedMongoAutoConfiguration.class]: Failed to instantiate [de.flapdoodle.embed.mongo.distribution.IFeatureAwareVersion]: Factory method 'version' threw exception with message: Set the de.flapdoodle.mongodb.embedded.version property or define your own IFeatureAwareVersion bean to use embedded MongoDB
+	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:795)
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:542)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1337)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1167)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:562)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:522)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:337)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:335)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:200)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:313)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:200)
+	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:254)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1443)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1353)
+	at org.springframework.beans.factory.support.ConstructorResolver.resolveAutowiredArgument(ConstructorResolver.java:904)
+	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:782)
+	... 154 common frames omitted
+Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'version' defined in class path resource [de/flapdoodle/embed/mongo/spring/autoconfigure/EmbeddedMongoAutoConfiguration.class]: Failed to instantiate [de.flapdoodle.embed.mongo.distribution.IFeatureAwareVersion]: Factory method 'version' threw exception with message: Set the de.flapdoodle.mongodb.embedded.version property or define your own IFeatureAwareVersion bean to use embedded MongoDB
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:648)
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:636)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1337)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1167)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:562)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:522)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:337)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:335)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:200)
+	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:254)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1443)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1353)
+	at org.springframework.beans.factory.support.ConstructorResolver.resolveAutowiredArgument(ConstructorResolver.java:904)
+	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:782)
+	... 170 common frames omitted
+Caused by: org.springframework.beans.BeanInstantiationException: Failed to instantiate [de.flapdoodle.embed.mongo.distribution.IFeatureAwareVersion]: Factory method 'version' threw exception with message: Set the de.flapdoodle.mongodb.embedded.version property or define your own IFeatureAwareVersion bean to use embedded MongoDB
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:177)
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:644)
+	... 184 common frames omitted
+Caused by: java.lang.IllegalStateException: Set the de.flapdoodle.mongodb.embedded.version property or define your own IFeatureAwareVersion bean to use embedded MongoDB
+	at org.springframework.util.Assert.state(Assert.java:76)
+	at de.flapdoodle.embed.mongo.spring.autoconfigure.EmbeddedMongoAutoConfiguration.determineVersion(EmbeddedMongoAutoConfiguration.java:133)
+	at de.flapdoodle.embed.mongo.spring.autoconfigure.EmbeddedMongoAutoConfiguration.version(EmbeddedMongoAutoConfiguration.java:129)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:140)
+	... 185 common frames omitted
+2026-07-27 12:31:26.423 [main] INFO  transactionId=[] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [org.example.workload.cucumber.CucumberSpringContext]: CucumberSpringContext does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-07-27 12:31:26.433 [main] INFO  transactionId=[] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration org.example.workload.TrainerWorkloadApplication for test class org.example.workload.cucumber.CucumberSpringContext
+2026-07-27 12:31:26.460 [main] INFO  transactionId=[] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [org.example.workload.cucumber.CucumberSpringContext]: CucumberSpringContext does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-07-27 12:31:26.468 [main] INFO  transactionId=[] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration org.example.workload.TrainerWorkloadApplication for test class org.example.workload.cucumber.CucumberSpringContext
+2026-07-27 12:31:26.717 [main] INFO  transactionId=[] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [org.example.workload.cucumber.CucumberSpringContext]: CucumberSpringContext does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-07-27 12:31:26.728 [main] INFO  transactionId=[] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration org.example.workload.TrainerWorkloadApplication for test class org.example.workload.cucumber.CucumberSpringContext
+2026-07-27 12:31:26.807 [main] INFO  transactionId=[] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [org.example.workload.cucumber.CucumberSpringContext]: CucumberSpringContext does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-07-27 12:31:26.855 [main] INFO  transactionId=[] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration org.example.workload.TrainerWorkloadApplication for test class org.example.workload.cucumber.CucumberSpringContext
+2026-07-27 12:31:27.044 [main] INFO  transactionId=[] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [org.example.workload.cucumber.CucumberSpringContext]: CucumberSpringContext does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-07-27 12:31:27.211 [main] INFO  transactionId=[] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration org.example.workload.TrainerWorkloadApplication for test class org.example.workload.cucumber.CucumberSpringContext
+2026-07-27 12:31:27.422 [main] INFO  transactionId=[] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [org.example.workload.cucumber.CucumberSpringContext]: CucumberSpringContext does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-07-27 12:31:27.560 [main] INFO  transactionId=[] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration org.example.workload.TrainerWorkloadApplication for test class org.example.workload.cucumber.CucumberSpringContext
+2026-07-27 12:31:27.717 [main] INFO  transactionId=[] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [org.example.workload.cucumber.CucumberSpringContext]: CucumberSpringContext does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-07-27 12:31:27.725 [main] INFO  transactionId=[] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration org.example.workload.TrainerWorkloadApplication for test class org.example.workload.cucumber.CucumberSpringContext
+2026-07-27 12:31:27.937 [main] INFO  transactionId=[] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [org.example.workload.cucumber.CucumberSpringContext]: CucumberSpringContext does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-07-27 12:31:27.975 [main] INFO  transactionId=[] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration org.example.workload.TrainerWorkloadApplication for test class org.example.workload.cucumber.CucumberSpringContext
+2026-07-27 12:31:28.039 [main] INFO  transactionId=[] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [org.example.workload.cucumber.CucumberSpringContext]: CucumberSpringContext does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-07-27 12:31:28.049 [main] INFO  transactionId=[] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration org.example.workload.TrainerWorkloadApplication for test class org.example.workload.cucumber.CucumberSpringContext
+2026-07-27 12:31:28.074 [main] INFO  transactionId=[] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [org.example.workload.cucumber.CucumberSpringContext]: CucumberSpringContext does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-07-27 12:31:28.083 [main] INFO  transactionId=[] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration org.example.workload.TrainerWorkloadApplication for test class org.example.workload.cucumber.CucumberSpringContext
+2026-07-27 12:31:28.144 [main] INFO  transactionId=[] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [org.example.workload.cucumber.CucumberSpringContext]: CucumberSpringContext does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-07-27 12:31:28.167 [main] INFO  transactionId=[] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration org.example.workload.TrainerWorkloadApplication for test class org.example.workload.cucumber.CucumberSpringContext
+2026-07-27 12:31:28.190 [main] INFO  transactionId=[] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [org.example.workload.cucumber.CucumberSpringContext]: CucumberSpringContext does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-07-27 12:31:28.241 [main] INFO  transactionId=[] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration org.example.workload.TrainerWorkloadApplication for test class org.example.workload.cucumber.CucumberSpringContext
+2026-07-27 12:31:28.290 [main] INFO  transactionId=[] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [org.example.workload.cucumber.CucumberSpringContext]: CucumberSpringContext does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-07-27 12:31:28.309 [main] INFO  transactionId=[] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration org.example.workload.TrainerWorkloadApplication for test class org.example.workload.cucumber.CucumberSpringContext
