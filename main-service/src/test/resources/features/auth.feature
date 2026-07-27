@@ -31,4 +31,4 @@ Feature: Authentication
     When I logout with the current token
     Then the response status should be 200
     When I logout with the current token again
-    Then the response status should be 401
+    Then the response status should be 403
