@@ -30,6 +30,7 @@
     <springdoc.version>2.3.0</springdoc.version>
     <mockito.version>5.11.0</mockito.version>
     <jjwt.version>0.11.5</jjwt.version>
+    <cucumber.version>7.18.1</cucumber.version>
   </properties>
 
   <dependencyManagement>

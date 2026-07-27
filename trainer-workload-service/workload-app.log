@@ -1,0 +1,24 @@
+2026-07-27 09:29:15.532 [main] WARN  transactionId=[] o.e.w.m.WorkloadEventConsumer - [transactionId=null] OPERATION workloadMessageRejected reason=Trainer username can't be blank
+2026-07-27 09:29:15.689 [main] WARN  transactionId=[] o.e.w.m.WorkloadEventConsumer - [transactionId=null] OPERATION workloadMessageRejected reason=Cannot convert
+2026-07-27 09:29:15.689 [main] WARN  transactionId=[] o.e.w.m.WorkloadEventConsumer - [transactionId=null] OPERATION workloadMessageRejected reason=Message payload is missing or could not be deserialized
+2026-07-27 09:29:15.703 [main] INFO  transactionId=[] o.e.w.m.WorkloadEventConsumer - [transactionId=null] OPERATION consumeWorkload action=ADD trainer=trainer.one
+2026-07-27 09:29:16.373 [main] INFO  transactionId=[] o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2026-07-27 09:29:17.855 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] TRANSACTION processWorkload started action=DELETE trainer=trainer.one date=2026-06-15 duration=50
+2026-07-27 09:29:17.862 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION updatedMonthlySummary trainer=trainer.one year=2026 month=6 totalDuration=0
+2026-07-27 09:29:17.891 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] TRANSACTION processWorkload started action=ADD trainer=trainer.one date=2026-06-20 duration=30
+2026-07-27 09:29:17.893 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION updatedMonthlySummary trainer=trainer.one year=2026 month=6 totalDuration=70
+2026-07-27 09:29:17.912 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] TRANSACTION processWorkload started action=ADD trainer=trainer.one date=2026-06-15 duration=60
+2026-07-27 09:29:17.914 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION creating new trainer document for username=trainer.one
+2026-07-27 09:29:17.915 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION creating year entry year=2026 for trainer=trainer.one
+2026-07-27 09:29:17.916 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION creating month entry year=2026 month=6 for trainer=trainer.one
+2026-07-27 09:29:17.916 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION updatedMonthlySummary trainer=trainer.one year=2026 month=6 totalDuration=60
+2026-07-27 09:29:17.946 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] TRANSACTION processWorkload started action=DELETE trainer=trainer.one date=2026-06-15 duration=20
+2026-07-27 09:29:17.960 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION updatedMonthlySummary trainer=trainer.one year=2026 month=6 totalDuration=40
+2026-07-27 09:29:17.971 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] TRANSACTION processWorkload started action=ADD trainer=trainer.one date=2026-06-10 duration=55
+2026-07-27 09:29:17.974 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION creating month entry year=2026 month=6 for trainer=trainer.one
+2026-07-27 09:29:17.981 [main] INFO  transactionId=[] o.e.w.s.WorkloadCalculationService - [transactionId=null] OPERATION updatedMonthlySummary trainer=trainer.one year=2026 month=6 totalDuration=55
+2026-07-27 09:29:18.044 [main] INFO  transactionId=[] o.e.w.service.WorkloadQueryService - [transactionId=null] OPERATION getMonthlySummary trainer=trainer.one year=2026 month=6
+2026-07-27 09:29:18.078 [main] INFO  transactionId=[] o.e.w.service.WorkloadQueryService - [transactionId=null] OPERATION getTrainerSummary trainer=trainer.one
+2026-07-27 09:29:18.099 [main] INFO  transactionId=[] o.e.w.service.WorkloadQueryService - [transactionId=null] OPERATION getMonthlySummary trainer=trainer.one year=2026 month=6
+2026-07-27 09:29:18.146 [main] INFO  transactionId=[] o.e.w.service.WorkloadQueryService - [transactionId=null] OPERATION getMonthlySummary trainer=unknown year=2026 month=6
+2026-07-27 09:29:18.163 [main] INFO  transactionId=[] o.e.w.service.WorkloadQueryService - [transactionId=null] OPERATION getTrainerSummary trainer=unknown.trainer
