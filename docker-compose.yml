@@ -11,6 +11,8 @@ services:
       - postgres_data:/var/lib/postgresql/data
       - ./data/01_schema.sql:/docker-entrypoint-initdb.d/01_schema.sql
       - ./data/02_data.sql:/docker-entrypoint-initdb.d/02_data.sql
+    networks:
+      - app-network
 
   prometheus:
     image: prom/prometheus:latest
@@ -19,6 +21,8 @@ services:
     volumes:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - prometheus_data:/prometheus
+    networks:
+      - app-network
 
   activemq:
     image: apache/activemq-classic:5.18.3
@@ -28,6 +32,8 @@ services:
     environment:
       ACTIVEMQ_CONNECTION_USER: admin
       ACTIVEMQ_CONNECTION_PASSWORD: admin
+    networks:
+      - app-network
 
   mongodb:
     image: mongo:7.0
@@ -39,10 +45,68 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: admin123
     volumes:
       - mongo_data:/data/db
+    networks:
+      - app-network
+
+  # Spring apps
+  eureka-server:
+    build:
+      context: .
+      dockerfile: eureka-server/Dockerfile
+    ports:
+      - "8761:8761"
+    networks:
+      - app-network
+
+  main-service:
+    build:
+      context: .
+      dockerfile: main-service/Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgresql:5432/simpleDB
+      SPRING_DATASOURCE_USERNAME: postgresql
+      SPRING_DATASOURCE_PASSWORD: postgresql
+      SPRING_ACTIVEMQ_BROKER_URL: tcp://activemq:61616
+      SPRING_ACTIVEMQ_USER: admin
+      SPRING_ACTIVEMQ_PASSWORD: admin
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+      SECURITY_JWT_SECRET: ZmFrZV9qd3Rfc2VjcmV0X2tleV9mb3IvcHJvZA==
+    depends_on:
+      - eureka-server
+      - postgresql
+      - activemq
+    networks:
+      - app-network
+
+  trainer-workload-service:
+    build:
+      context: .
+      dockerfile: trainer-workload-service/Dockerfile
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_DATA_MONGODB_URI: mongodb://admin:admin123@mongodb:27017/trainers_db?authSource=admin
+      SPRING_DATA_MONGODB_DATABASE: trainers_db
+      SPRING_ACTIVEMQ_BROKER_URL: tcp://activemq:61616
+      SPRING_ACTIVEMQ_USER: admin
+      SPRING_ACTIVEMQ_PASSWORD: admin
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+      SECURITY_JWT_SECRET: ZmFpZV9qd3Rfc2VjcmV0X2tleV9mb3IvcHJvZA==
+    depends_on:
+      - eureka-server
+      - mongodb
+      - activemq
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
 
 volumes:
   postgres_data:
   prometheus_data:
   mongo_data:
-
-

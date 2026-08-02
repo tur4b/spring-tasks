@@ -6,9 +6,8 @@ COPY eureka-server/pom.xml eureka-server/pom.xml
 COPY main-service/pom.xml main-service/pom.xml
 COPY trainer-workload-service/pom.xml trainer-workload-service/pom.xml
 COPY common-lib/src common-lib/src
-COPY eureka-server/src eureka-server/src
 COPY main-service/src main-service/src
-COPY trainer-workload-service/src trainer-workload-service/src
+
 RUN mvn -pl main-service -am package -DskipTests
 
 FROM eclipse-temurin:21-jre
