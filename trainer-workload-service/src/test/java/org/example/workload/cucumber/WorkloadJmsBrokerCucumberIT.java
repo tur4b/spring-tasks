@@ -10,9 +10,10 @@ import static io.cucumber.junit.platform.engine.Constants.PLUGIN_PROPERTY_NAME;
 
 @Suite
 @IncludeEngines("cucumber")
-@SelectClasspathResource("features/workload.feature")
-@ConfigurationParameter(key = GLUE_PROPERTY_NAME, value = "org.example.workload.cucumber")
+@SelectClasspathResource("features/workload_jms_integration.feature")
+@ConfigurationParameter(key = GLUE_PROPERTY_NAME,
+        value = "org.example.workload.jmscucumber,org.example.workload.cucumber.steps")
 @ConfigurationParameter(key = PLUGIN_PROPERTY_NAME,
-        value = "pretty, html:target/cucumber-reports/workload-service.html, json:target/cucumber-reports/workload-service.json")
-public class WorkloadServiceCucumberIT {
+        value = "pretty, html:target/cucumber-reports/workload-jms-broker.html, json:target/cucumber-reports/workload-jms-broker.json")
+public class WorkloadJmsBrokerCucumberIT {
 }

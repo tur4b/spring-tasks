@@ -11,4 +11,5 @@ public class WorkloadScenarioState {
     private int lastStatus;
     private String lastResponseBody;
     private String jwtToken;
+    private boolean jmsProcessingErrored = false;
 }

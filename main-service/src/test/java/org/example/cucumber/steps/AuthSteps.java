@@ -6,6 +6,7 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import lombok.extern.slf4j.Slf4j;
 import org.example.cucumber.ScenarioState;
 import org.example.dto.request.AuthRequest;
 import org.example.dto.request.ChangePasswordRequest;
@@ -18,6 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 
+@Slf4j
 public class AuthSteps {
 
     @Autowired
@@ -31,6 +33,7 @@ public class AuthSteps {
 
     @When("I login with the registered trainee credentials")
     public void loginWithRegisteredCredentials() throws Exception {
+        log.debug("[Step] POST /auth/login user={}", state.getRegisteredUsername());
         MockHttpServletResponse response = mockMvc.perform(post("/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(
@@ -41,10 +44,12 @@ public class AuthSteps {
         if (response.getStatus() == 200) {
             state.setJwtToken(JsonPath.read(response.getContentAsString(), "$.data.accessToken"));
         }
+        log.debug("[Step] POST /auth/login → status={}", state.getLastStatus());
     }
 
     @When("I login with username and password {string}")
     public void loginWithWrongPassword(String wrongPassword) throws Exception {
+        log.debug("[Step] POST /auth/login user={} (wrong password)", state.getRegisteredUsername());
         MockHttpServletResponse response = mockMvc.perform(post("/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(
@@ -52,20 +57,24 @@ public class AuthSteps {
                 .andReturn().getResponse();
         state.setLastStatus(response.getStatus());
         state.setLastResponseBody(response.getContentAsString());
+        log.debug("[Step] POST /auth/login (wrong pw) → status={}", state.getLastStatus());
     }
 
     @When("I login with username {string} and password {string}")
     public void loginWithUsernameAndPassword(String username, String password) throws Exception {
+        log.debug("[Step] POST /auth/login user={}", username);
         MockHttpServletResponse response = mockMvc.perform(post("/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(new AuthRequest(username, password))))
                 .andReturn().getResponse();
         state.setLastStatus(response.getStatus());
         state.setLastResponseBody(response.getContentAsString());
+        log.debug("[Step] POST /auth/login → status={}", state.getLastStatus());
     }
 
     @When("I change the password to {string}")
     public void changePasswordTo(String newPassword) throws Exception {
+        log.debug("[Step] PUT /auth/change-password user={}", state.getRegisteredUsername());
         MockHttpServletResponse response = mockMvc.perform(put("/auth/change-password")
                         .header("Authorization", "Bearer " + state.getJwtToken())
                         .contentType(MediaType.APPLICATION_JSON)
@@ -75,10 +84,12 @@ public class AuthSteps {
                 .andReturn().getResponse();
         state.setLastStatus(response.getStatus());
         state.setLastResponseBody(response.getContentAsString());
+        log.debug("[Step] PUT /auth/change-password → status={}", state.getLastStatus());
     }
 
     @When("I change the password for {string} oldPassword {string} newPassword {string} without token")
     public void changePasswordWithoutToken(String username, String oldPassword, String newPassword) throws Exception {
+        log.debug("[Step] PUT /auth/change-password (no token) user={}", username);
         MockHttpServletResponse response = mockMvc.perform(put("/auth/change-password")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(
@@ -86,15 +97,18 @@ public class AuthSteps {
                 .andReturn().getResponse();
         state.setLastStatus(response.getStatus());
         state.setLastResponseBody(response.getContentAsString());
+        log.debug("[Step] PUT /auth/change-password (no token) → status={}", state.getLastStatus());
     }
 
     @When("I logout with the current token")
     public void logoutWithCurrentToken() throws Exception {
+        log.debug("[Step] POST /auth/logout");
         MockHttpServletResponse response = mockMvc.perform(post("/auth/logout")
                         .header("Authorization", "Bearer " + state.getJwtToken()))
                 .andReturn().getResponse();
         state.setLastStatus(response.getStatus());
         state.setLastResponseBody(response.getContentAsString());
+        log.debug("[Step] POST /auth/logout → status={}", state.getLastStatus());
     }
 
     @When("I logout with the current token again")

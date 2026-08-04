@@ -1,9 +1,11 @@
 package org.example.workload.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.jms.Queue;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.RedeliveryPolicy;
 import org.apache.activemq.command.ActiveMQQueue;
+import org.example.common.dto.WorkloadEventRequest;
 import org.example.common.messaging.WorkloadMessagingConstants;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.jms.activemq.ActiveMQConnectionFactoryCustomizer;
@@ -12,6 +14,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.jms.support.converter.MappingJackson2MessageConverter;
 import org.springframework.jms.support.converter.MessageConverter;
 import org.springframework.jms.support.converter.MessageType;
+
+import java.util.Map;
 
 @Configuration
 @ConditionalOnProperty(name = "workload.messaging.enabled", havingValue = "true", matchIfMissing = true)
@@ -28,10 +32,14 @@ public class JmsConfig {
     }
 
     @Bean
-    public MessageConverter jacksonJmsMessageConverter() {
+    public MessageConverter jacksonJmsMessageConverter(ObjectMapper objectMapper) {
         MappingJackson2MessageConverter converter = new MappingJackson2MessageConverter();
+        converter.setObjectMapper(objectMapper);  // <-- uses Boot's mapper (already has JavaTimeModule)
         converter.setTargetType(MessageType.TEXT);
         converter.setTypeIdPropertyName("_type");
+        converter.setTypeIdMappings(Map.of(
+                "WorkloadEventRequest", WorkloadEventRequest.class
+        ));
         return converter;
     }
 

@@ -1,4 +1,4 @@
-package org.example.workload.cucumber;
+package org.example.workload.jmscucumber;
 
 import io.cucumber.spring.CucumberContextConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -7,7 +7,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 @CucumberContextConfiguration
 @SpringBootTest
-@ActiveProfiles("test")
+@ActiveProfiles({"test", "jms-test"})
 @AutoConfigureMockMvc(addFilters = true)
-public class CucumberSpringContext {
+public class CucumberJmsBrokerContext {
 }
